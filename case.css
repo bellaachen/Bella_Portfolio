@@ -206,3 +206,17 @@ html[lang="zh-Hant"] .article-page .closing{font-size:20px;font-weight:600}
   .article-page .toc{display:none}
 }
 @media print{.site-header{position:static}.article-page .toc{display:none}}
+
+/* ---- Community groups case study (reuses the trading layout) ---- */
+.case-community .table-scroll{overflow-x:auto;margin-top:24px}
+.case-community .table-scroll .matrix{margin-top:0;min-width:620px}
+.case-community .matrix td{color:var(--ink-secondary);vertical-align:top}
+.case-community .matrix tbody th{vertical-align:top;white-space:nowrap}
+.case-community .bodycopy + .bodycopy{margin-top:16px}
+.case-community .head + .bodycopy + .table-scroll,.case-community .table-scroll + .bodycopy,.case-community .note + .bodycopy,.case-community .flow + .bodycopy,.case-community .rules + .bodycopy,.case-community .rules + .sub{margin-top:24px}
+.case-community .sub{margin:48px 0 12px;font-family:var(--serif);font-size:24px;line-height:1.25}
+.case-community .note{margin:10px 0 0;font-size:13px;color:var(--ink-muted)}
+.case-community .flow-label{margin:32px 0 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+.case-community .rules{margin-top:24px}
+.case-community .demo-frame{height:min(92vh,900px);min-height:720px}
+@media(max-width:760px){.case-community .table-scroll .matrix{min-width:560px}.case-community .matrix tbody th{white-space:normal}}
