@@ -72,9 +72,9 @@
   var ZH = {
     'Case studies': '案例研究', 'Writing': '文章', 'Capabilities': '能力地圖', 'Experience': '工作經歷', 'Lab': '實驗室', 'Home': '首頁',
     'Product Manager · FinTech & Platforms': '產品經理 · 金融科技與平台',
-    'Making complex systems': '讓複雜的系統', 'feel simple.': '變得簡單。',
+    'Building is half of it.': '規劃產品，', 'The other half is asking why.': '也理解它背後的世界。',
     'Trading platforms': '交易平台', 'FIX API & connectivity': 'FIX API 與連線介接', 'Permissions / RBAC': '權限管理 / RBAC', 'AI-built prototypes': '用 AI 打造的原型',
-    "Hi, I'm Bella. 10+ years across trading systems, API management, financial data and global mobile apps — turning complex requirements into clear, scalable products.": '你好，我是 Bella。十年以上橫跨交易系統、API 管理、金融資料與全球化行動 App 的產品經驗，擅長把複雜需求轉化為清晰、可擴展的產品。',
+    "Hi, I'm Bella. For 10+ years I've built products from trading systems and APIs to consumer mobile apps — and with each one, I want to know how it works, how it makes money, and who it's really for. Lately, I build my own prototypes with AI, too.": '你好，我是 Bella。十年來做過交易系統、API 平台，也做過面向一般使用者的行動 App。每個產品，我都想弄懂它怎麼運作、怎麼賺錢、真正為誰而做。現在，我也會用 AI 親手把想法做成原型。',
     'years in product': '年產品經驗', 'domains — FinTech, Enterprise, Consumer, Data': '大領域：金融科技、企業、消費性產品、資料',
     'product case studies': '個產品案例', 'prototypes built with AI': '個用 AI 打造的原型',
     'Featured case studies': '精選案例', 'What I shipped, and why it mattered.': '我做了什麼，以及它為什麼重要。',

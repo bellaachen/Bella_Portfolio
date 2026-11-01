@@ -52,9 +52,9 @@ html[lang="zh-Hant"] :is(h1,h2,h3,.case-title,.article-title,.job-where,.outcome
 .hero{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:64px;align-items:end;align-content:center;padding-top:48px;padding-bottom:48px}
 .hero-copy{grid-column:span 2;min-width:0}
 .hero-kicker{margin:0 0 32px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-subtle)}
-.hero h1{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(44px,min(7vw,11svh),96px);line-height:1.02;letter-spacing:-.025em}
-.hero h1 em{font-style:italic}
-html[lang="zh-Hant"] .hero h1{font-weight:600;letter-spacing:-.01em;line-height:1.2;font-size:clamp(40px,min(6vw,9.5svh),84px)}
+.hero h1{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(40px,min(7vw,11svh),88px);line-height:1.02;letter-spacing:-.025em}
+.hero h1 em{display:block;font-style:italic;text-wrap:balance}
+html[lang="zh-Hant"] .hero h1{font-weight:600;letter-spacing:-.01em;line-height:1.2;font-size:clamp(32px,min(8.4vw,8.2svh),72px)}
 html[lang="zh-Hant"] .hero h1 em{display:block;font-style:normal}
 .hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px}
 .hero-side{display:flex;flex-direction:column;gap:24px;min-width:0}
