@@ -105,7 +105,7 @@
     'Side projects outside my day job — designed, built and shipped end-to-end.': '工作之外的個人專案，從設計、開發到上線都自己完成。',
     'Bilingual tech-workplace bingo, live on the web.': '中英雙語的科技職場賓果，已上線可玩。', 'Play it ↗': '來玩 ↗',
     'Story Writer skill': 'Story Writer 技能', 'Claude skill: brief → dev-ready Jira stories.': 'Claude 技能：把需求簡述轉成可開發的 Jira Story。', 'View on GitHub ↗': '在 GitHub 查看 ↗',
-    'This portfolio': '這個作品集網站', 'Bilingual site built with AI, iterated in public.': '用 AI 打造的雙語網站，公開持續迭代。', 'Source ↗': '原始碼 ↗',
+    'This portfolio': '這個作品集網站', 'Design system': '設計系統', 'Tokens, rules and decisions behind this site.': '這個網站背後的 tokens、規則與設計決策。', 'Bilingual site built with AI, iterated in public.': '用 AI 打造的雙語網站，公開持續迭代。', 'Source ↗': '原始碼 ↗',
     "Let's build systems that work better.": '一起打造更好用的系統。',
     'Open to conversations about systems product management, financial technology, and platform products.': '歡迎交流系統型產品管理、金融科技與平台產品相關機會。',
     '© Bella Chen · Designed and built with AI-assisted development': '© Bella Chen · 以 AI 輔助開發設計與建置', 'Source on GitHub ↗': 'GitHub 原始碼 ↗',

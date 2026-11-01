@@ -27,7 +27,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 | Enterprise Permission Studio | [Case study](https://bellaachen.github.io/Bella_Portfolio/permission/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/permission/demo.html) |
 | AI Chart — Chart Analysis Concept | [Prototype](https://bellaachen.github.io/Bella_Portfolio/ai-chart-lens/prototype.html) |
 | Product thinking | [Designing a Reliable Symbol Management System](https://bellaachen.github.io/Bella_Portfolio/product-thinking/symbol-management.html) |
-| Lab | [Career Bingo · 職場賓果](https://bellaachen.github.io/career-bingo/) · [Story Writer skill](ai-workflow/story-writer) |
+| Lab | [Career Bingo · 職場賓果](https://bellaachen.github.io/career-bingo/) · [Story Writer skill](ai-workflow/story-writer) · [Design system](design-system) |
 
 **Contact:** [LinkedIn](https://www.linkedin.com/in/bella-chen-2ba68a141/) · [GitHub](https://github.com/bellaachen)
 
@@ -63,6 +63,7 @@ A static site published with GitHub Pages from the `main` branch root. No build 
 | `ai-chart-lens/` | AI Chart concept prototype |
 | `product-thinking/` | Product thinking articles |
 | `ai-workflow/story-writer/` | Story Writer — a Claude skill that turns a brief into dev-ready Jira stories |
+| `design-system/` | **Design system** — `tokens.css` (single source of all colours, fonts, radii) and the rules behind the site |
 | `assets/` | Logo and Lab icons |
 
 Designed and built with AI-assisted development · © Bella Chen

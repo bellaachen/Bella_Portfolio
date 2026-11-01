@@ -1,0 +1,59 @@
+/* Bella Chen Portfolio — design tokens.
+   Single source of truth for colour, type, radius and layout values.
+   Every page loads this file before its own stylesheet (site.css or case.css).
+   Rules for using these tokens: design-system/README.md */
+
+:root{
+  /* Surfaces */
+  --surface:#FAF9F5;          /* Ivory page background */
+  --surface-raised:#FFFFFF;   /* Cards */
+  --surface-muted:#F0EEE6;    /* Quiet blocks, Lab panel, tag fills */
+  --surface-sunken:#EEF0F1;   /* Image well behind covers */
+  --cover-muted:#E4E5E9;      /* "Coming soon" article cover */
+
+  /* Text */
+  --ink:#141413;              /* Headings, primary text */
+  --ink-secondary:#3D3D3A;    /* Body copy — 10.3:1 on surface */
+  --ink-muted:#5E5D59;        /* Meta lines, captions — 6.3:1 */
+  --ink-subtle:#6B6A65;       /* Footer, small labels — 5.1:1 */
+
+  /* Lines */
+  --border:#E8E6DC;           /* Hairlines, card outlines (decorative) */
+  --border-strong:#8F8D84;    /* Outline of clickable controls only — 3.2:1 */
+  --border-ink:#141413;       /* Outline buttons, stats rule */
+
+  /* Brand — Slate Indigo 藍鼠 */
+  --brand:#3F4E7A;            /* The only accent — 7.7:1 on surface */
+  --on-brand:#FAF9F5;         /* Text on brand fills */
+  --brand-hover:#34416A;      /* Primary button hover */
+  --brand-tint:#ECEDF2;       /* Hero focus chips, callouts */
+  --brand-cover:#DDDCDA;      /* Placeholder case cover */
+
+  /* Logo only */
+  --spark-start:#3F4E7A;--spark-mid:#7D97E0;--spark-end:#D6E4FF;--logo-ink:#16273a;
+
+  /* Type */
+  --serif:"Newsreader",Georgia,serif;
+  --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --jp-serif:"Shippori Mincho","Noto Serif TC",serif;   /* English contact headline only */
+  --jp-sans:"Zen Kaku Gothic New","Noto Sans TC",system-ui,sans-serif;
+  --zh:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+
+  /* Radius */
+  --radius-xs:4px;            /* Portrait, case tags */
+  --radius-sm:6px;            /* Capability chips */
+  --radius-md:10px;           /* Lab cards, callouts */
+  --radius-lg:12px;           /* Covers, content cards */
+  --radius-xl:14px;           /* Case cards, Lab panel */
+  --radius-pill:999px;        /* Buttons, filters, focus chips, AI badge */
+
+  /* Layout */
+  --container:1200px;
+  --gutter:32px;
+  --control-min:44px;
+}
+
+/* 中文: Chinese characters fall through to the system sans; Latin keeps Newsreader / Instrument Sans. */
+html[lang="zh-Hant"]{--serif:"Newsreader",Georgia,var(--zh);--jp-serif:var(--zh);--jp-sans:var(--zh)}
+
+@media(max-width:760px){:root{--gutter:16px}}
