@@ -514,6 +514,7 @@ const L = {
   sharedPost:['分享了一則貼文','shared a post'], from:g=>[`來自 ${g}`,`From ${g}`],
   joinedToast:['已加入社團','You joined the group'], reqToast:['已送出申請，等待管理員審核','Request sent. An admin will review it.'],
   cancelReq:['取消申請','Cancel request'], cancelReqToast:['已取消申請','Request cancelled'],
+  pendingToast:['管理員審核中，通過後就會收到通知','An admin is reviewing your request. You\'ll be notified when it\'s approved.'],
   approved:g=>[`你已成為「${g}」的成員`,`You're now a member of ${g}`],
   lockedH:['這是私密社團','This group is private'], lockedP:['加入後才能看到成員與貼文','Join to see members and posts'],
   inviteFriends:['邀請好友','Invite friends'], inviteSub:['邀請好友一起來佈置社團','Invite friends to build the group with you'], invited:['已邀請','Invited'], copyGroupLink:['複製社團連結','Copy group link'],
@@ -993,8 +994,10 @@ const NOTES = {
          ['按讚資訊顯示數量最多的三種表情，以及「你和其他 N 人」','Reaction summary shows the top three reactions and "You and N others"'],
          ['點「讚」直接按讚，長按叫出五種表情，一次只能選一個','Tap Like to like. Press and hold for five reactions. One reaction per person']],
   lobbyPriv:[['私密社團未加入時看不到貼文與成員，只能看簡介','Non-members of a private group only see the About tab'],
-             ['MVP 只需按「申請加入」，沒有入社問題與規範勾選','MVP: one tap to request. No entry questions or rules checkbox'],
-             ['送出後按鈕變成「審核中」，點擊可以取消申請','After sending, the button changes to "Request sent". Tap it to cancel']],
+             ['審核是獨立設定，公開與私密社團都能開啟；私密社團預設開啟，公開社團預設關閉','Review is its own setting for public and private groups alike: on by default for private groups, off for public ones'],
+             ['管理員可以逐一批准或拒絕，也可以全部批准、全部拒絕','Admins approve or reject one by one, or all at once'],
+             ['第一階段沒有入社問題','Phase 1 has no entry questions'],
+             ['原型補上了「取消申請」：點「審核中」就能取消。上線的第一階段沒有這個功能，用戶要先加入再退出','The prototype adds "Cancel request": tap "Request sent" to cancel. Phase 1 shipped without it, so users had to join and then leave']],
   detail:[['留言共兩層：回覆的回覆齊頭顯示在同一則留言下，並自動標記對方','Two comment levels. A reply to a reply sits at the same level and tags the person automatically'],
           ['留言預設顯示兩行，超過顯示「⋯⋯ 顯示更多」','Comments show two lines, then "… See more"'],
           ['留言數 = 留言 + 回覆','Comment count = comments + replies'],
@@ -1158,7 +1161,7 @@ const A = {
     else { g.joined = true; g.members++; toast(t('joinedToast')); }
     render();
   },
-  pendingMenu:d => openSheet(`<div class="list"><button class="srow danger" data-a="cancelReq" data-gid="${d.gid}"><span class="si">${I.x}</span><span class="grow-1">${t('cancelReq')}</span></button><button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`),
+  pendingMenu:d => openSheet(`<p class="sub" style="margin-top:4px">${t('pendingToast')}</p><div class="list"><button class="srow danger" data-a="cancelReq" data-gid="${d.gid}"><span class="si">${I.x}</span><span class="grow-1">${t('cancelReq')}</span></button><button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`),
   cancelReq:d => { G(d.gid).pending = false; closeSheet(); toast(t('cancelReqToast')); render(); },
   approve:d => { const g = G(d.gid); g.pending = false; g.joined = true; g.members++; toast(t('approved', loc(g.name))); render(); },
   groupMore:d => {
