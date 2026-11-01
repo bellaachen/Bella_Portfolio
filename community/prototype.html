@@ -1018,7 +1018,7 @@ const NOTES = {
   createAvatar:[['5 張預設頭像，預選第一張','Five preset pictures. The first is preselected'],
                 ['相機：選擇相片／拍攝相片，支援 JPG、PNG、GIF','Camera: choose or take a photo. JPG, PNG and GIF']],
   createCover:[['預設背景同一個樣式、不同顏色','Preset covers share one style in different colours'],
-               ['預覽會跟著左邊的背景圖方案變化','The preview follows the cover option on the left']],
+               ['預覽採用最終方案：滿版的沉浸式背景圖','The preview uses the shipped full-bleed immersive cover']],
   createIntro:[['簡介上限 5,000 字，預留給管理員把簡介當社團 wiki','Descriptions allow 5,000 characters so admins can use them as a group wiki'],
                ['按完成時一次上傳頭像、背景與簡介','"Done" uploads the picture, cover and description together'],
                ['完成後進大廳並開啟邀請好友','Then the lobby opens with the invite sheet']]
@@ -1061,7 +1061,12 @@ function renderPanel(){
     </div>
     <div class="p-sec"><h2 class="p-h">${zh ? '流程' : 'Flows'}</h2>
       <ol class="flows">${FLOWS.map(([k,l],n) => `<li><button data-a="flow" data-v="${k}" aria-current="${af===k}"><span class="n">${String(n+1).padStart(2,'0')}</span><span>${l[i]}</span></button></li>`).join('')}</ol></div>
-`;
+    <div class="p-sec"><h2 class="p-h">${zh ? '這個畫面的規格' : 'Spec for this screen'}</h2>
+      <ul class="notes">${notes.map(n => `<li>${n[i]}</li>`).join('')}</ul>
+      ${pendG ? `<button class="demo-btn" data-a="approve" data-gid="${pendG.id}">${zh ? '模擬：管理員核准申請' : 'Simulate: admin approves request'}</button>` : ''}
+      <p class="hint">${zh ? '原型裡的按讚按鈕可以長按（滑鼠按住）叫出表情選單。' : 'Press and hold any Like button (or hold the mouse) to open the reaction picker.'}</p>
+    </div>
+    <div class="p-foot">Bella Chen</div>`;
 }
 
 /* ================= overlays ================= */
