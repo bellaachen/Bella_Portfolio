@@ -53,8 +53,9 @@ html[lang="zh-Hant"] :is(h1,h2,h3,.case-title,.article-title,.job-where,.outcome
 .filter{min-height:44px;padding:8px 16px;border-radius:var(--radius-pill);border:1px solid var(--border-strong);background:transparent;color:var(--ink);font-size:14px;cursor:pointer}
 .filter[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .filter .n{opacity:.7}
-.cap-chip{font-size:13px;padding:4px 10px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface-raised)}
-.tag{font-size:12px;padding:3px 10px;border:1px solid var(--border-strong);border-radius:var(--radius-pill);color:var(--ink-secondary)}
+/* Descriptive labels: filled, no border — outlines are reserved for clickable controls */
+.cap-chip{font-size:14px;line-height:1.4;padding:5px 10px;border-radius:var(--radius-sm);background:var(--surface-muted);color:var(--ink-secondary)}
+.tag{font-size:12px;line-height:1.4;padding:3px 8px;border-radius:var(--radius-xs);background:var(--surface-muted);color:var(--ink-secondary)}
 
 /* Hero */
 .intro{display:flex;flex-direction:column;min-height:calc(100svh - 79px)}

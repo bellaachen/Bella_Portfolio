@@ -19,7 +19,7 @@
       summary: ['Role templates, role-based access control, permission matrices, and operational governance.', '角色範本、角色權限控管（RBAC）、權限矩陣與後台營運治理。'],
       tags: ['RBAC', 'Permissions', 'Back Office'],
       img: 'permission/assets/managers-preview.svg', link: 'permission/case-study.html',
-      ai: ['AI demo · ChatGPT', 'AI Demo · ChatGPT'], cta: ['Read case study', '閱讀案例'] },
+      ai: ['AI prototype · ChatGPT', 'AI 原型 · ChatGPT'], cta: ['Read case study', '閱讀案例'] },
     { id: 'fix', area: 'fintech', featured: true,
       title: ['FIX API Management', 'FIX API 管理'],
       category: ['Connectivity', '連線與介接'], company: ['ACY Securities', 'ACY Securities'],
