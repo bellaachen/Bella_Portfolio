@@ -513,6 +513,7 @@ const L = {
   pickGroup:['分享到哪個社團？','Share to which group?'], noGroups:['你還沒有加入任何社團','You haven\'t joined any groups yet'],
   sharedPost:['分享了一則貼文','shared a post'], from:g=>[`來自 ${g}`,`From ${g}`],
   joinedToast:['已加入社團','You joined the group'], reqToast:['已送出申請，等待管理員審核','Request sent. An admin will review it.'],
+  cancelReq:['取消申請','Cancel request'], cancelReqToast:['已取消申請','Request cancelled'],
   pendingToast:['管理員審核中，通過後就會收到通知','An admin is reviewing your request. You\'ll be notified when it\'s approved.'],
   approved:g=>[`你已成為「${g}」的成員`,`You're now a member of ${g}`],
   lockedH:['這是私密社團','This group is private'], lockedP:['加入後才能看到成員與貼文','Join to see members and posts'],
@@ -995,7 +996,8 @@ const NOTES = {
   lobbyPriv:[['私密社團未加入時看不到貼文與成員，只能看簡介','Non-members of a private group only see the About tab'],
              ['審核是獨立設定，公開與私密社團都能開啟；私密社團預設開啟，公開社團預設關閉','Review is its own setting for public and private groups alike: on by default for private groups, off for public ones'],
              ['管理員可以逐一批准或拒絕，也可以全部批准、全部拒絕','Admins approve or reject one by one, or all at once'],
-             ['第一階段沒有入社問題，送出後也不能取消申請，可以先加入再退出','Phase 1 has no entry questions, and a request cannot be cancelled; members can join and then leave']],
+             ['第一階段沒有入社問題','Phase 1 has no entry questions'],
+             ['原型補上了「取消申請」：點「審核中」就能取消。上線的第一階段沒有這個功能，用戶要先加入再退出','The prototype adds "Cancel request": tap "Request sent" to cancel. Phase 1 shipped without it, so users had to join and then leave']],
   detail:[['留言共兩層：回覆的回覆齊頭顯示在同一則留言下，並自動標記對方','Two comment levels. A reply to a reply sits at the same level and tags the person automatically'],
           ['留言預設顯示兩行，超過顯示「⋯⋯ 顯示更多」','Comments show two lines, then "… See more"'],
           ['留言數 = 留言 + 回覆','Comment count = comments + replies'],
@@ -1159,7 +1161,8 @@ const A = {
     else { g.joined = true; g.members++; toast(t('joinedToast')); }
     render();
   },
-  pendingMenu:() => toast(t('pendingToast')),
+  pendingMenu:d => openSheet(`<p class="sub" style="margin-top:4px">${t('pendingToast')}</p><div class="list"><button class="srow danger" data-a="cancelReq" data-gid="${d.gid}"><span class="si">${I.x}</span><span class="grow-1">${t('cancelReq')}</span></button><button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`),
+  cancelReq:d => { G(d.gid).pending = false; closeSheet(); toast(t('cancelReqToast')); render(); },
   approve:d => { const g = G(d.gid); g.pending = false; g.joined = true; g.members++; toast(t('approved', loc(g.name))); render(); },
   groupMore:d => {
     const g = G(d.gid);
