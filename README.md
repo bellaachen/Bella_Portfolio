@@ -8,7 +8,7 @@
 
 ## English
 
-Hi, I'm Bella — a **Product Manager in FinTech & platforms** with 10+ years across trading systems, API management, financial data and global mobile apps. I turn complex requirements into clear, scalable products: making complex systems feel simple.
+Hi, I'm Bella — a **Product Manager in FinTech & platforms** with 10+ years across trading systems, API management, financial data and global mobile apps. Building is half of it. The other half is asking why: how a product works, how it makes money, and who it's really for.
 
 **What I work on**
 - **Trading & FinTech** — trading platforms, order flows, FIX API governance, trading configuration and financial operations
@@ -36,7 +36,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 
 ## 中文
 
-你好，我是 Bella，一位專注**金融科技與平台**的產品經理。十年以上橫跨交易系統、API 管理、金融資料與全球化行動 App 的產品經驗，擅長把複雜需求轉化為清晰、可擴展的產品——讓複雜的系統變得簡單。
+你好，我是 Bella，一位專注**金融科技與平台**的產品經理。十年以上橫跨交易系統、API 管理、金融資料與全球化行動 App 的產品經驗，規劃產品，也理解它背後的世界：它怎麼運作、怎麼賺錢、真正為誰而做。
 
 **專長領域**
 - **交易系統與金融科技**：交易平台、訂單流程、FIX API 管理、交易設定與金融營運
