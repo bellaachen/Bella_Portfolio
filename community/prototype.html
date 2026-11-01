@@ -981,7 +981,7 @@ const NOTES = {
            ['右上角「建立社團」進入建立流程','"Create group" at the top right starts the creation flow']],
   lobby:[['大廳目標：讓用戶一進來就有「回到小家園」的沉浸感，最後採用加大的背景圖','Lobby goal: members should feel they have come home. The final design uses the larger cover image'],
          ['公開／私密、加入／未加入都要一眼看出來','Public vs private and joined vs not joined must be obvious at a glance'],
-         ['發文入口安靜不打擾：往下捲過發文框後才出現浮動發文鈕','A quiet way to post: the floating post button only appears after you scroll past the composer'],
+         ['我的提案：往下捲過發文框後，右下角才出現懸浮發文鈕。上線版本只保留頂端發文框','My proposal: a floating post button appears once you scroll past the composer. The shipped version kept only the composer at the top'],
          ['按讚資訊顯示數量最多的三種表情，以及「你和其他 N 人」','Reaction summary shows the top three reactions and "You and N others"'],
          ['點「讚」直接按讚，長按叫出五種表情，一次只能選一個','Tap Like to like. Press and hold for five reactions. One reaction per person']],
   lobbyPriv:[['私密社團未加入時看不到貼文與成員，只能看簡介','Non-members of a private group only see the About tab'],
@@ -1054,7 +1054,7 @@ function renderPanel(){
     <div class="p-sec"><h2 class="p-h">${zh ? '大廳背景圖尺寸' : 'Lobby cover size'}</h2>
       <div class="ratios">${ratios.map(([k,l,r,h]) => `<button class="ratio" aria-pressed="${S.ratio===k}" data-a="ratio" data-v="${k}">${k==='imm' ? `<span class="final">${zh ? '最終採用' : 'Shipped'}</span>` : ''}<span class="shape" style="height:${h}px"></span><span class="lab">${l[i]}</span><span class="rt">${r}</span></button>`).join('')}</div>
       ${showMetric ? `<dl class="metric"><dt>${zh ? '背景圖佔首屏' : 'Cover share of first screen'}</dt><dd>${m.cover}%</dd><dt>${zh ? '第一篇貼文起始位置' : 'First post starts at'}</dt><dd>${m.firstTop == null ? '—' : m.firstTop + ' / 844 px'}</dd><dt>${zh ? '首屏看得到第一篇貼文內容' : 'First post readable without scrolling'}</dt><dd class="${m.visible ? 'yes' : 'no'}">${m.firstTop == null ? '—' : (m.visible ? (zh ? '是' : 'Yes') : (zh ? '否' : 'No'))}</dd></dl>` : `<p class="hint">${zh ? '進入任一社團大廳，切換三種尺寸比較首屏差異。' : 'Open any group lobby and switch sizes to compare the first screen.'}</p>`}
-      <p class="ratio-note">${zh ? '背景圖越大，沉浸感越強，但第一篇貼文會被推到第二屏。我們最後選擇加大背景圖，讓用戶一進來就感覺回到自己的小家園，再用固定的分頁列和浮動發文鈕補回效率。' : 'A bigger cover feels more immersive but pushes the first post below the fold. We shipped the larger cover so the group feels like home on arrival, and kept things efficient with sticky tabs and a floating post button.'}</p>
+      <p class="ratio-note">${zh ? '背景圖越大，沉浸感越強，但第一篇貼文會被推到第二屏。我們最後選擇加大背景圖，讓用戶一進來就感覺回到自己的小家園，並用固定的分頁列補回效率。原型中的懸浮發文鈕是我的提案，上線版本只保留頂端發文框。' : 'A bigger cover feels more immersive but pushes the first post below the fold. We shipped the larger cover so the group feels like home on arrival, with sticky tabs to keep things efficient. The floating post button here is my proposal; the shipped version kept only the composer at the top.'}</p>
     </div>
     <div class="p-sec"><h2 class="p-h">${zh ? '這個畫面的規格' : 'Spec for this screen'}</h2>
       <ul class="notes">${notes.map(n => `<li>${n[i]}</li>`).join('')}</ul>
