@@ -99,7 +99,7 @@ html.embedded .stage{top:0;height:100vh}
 .av.sm{width:32px;height:32px;font-size:13px}
 .av.xs{width:24px;height:24px;font-size:11px;border:2px solid #fff}
 .av img,.gav img{width:100%;height:100%;object-fit:cover;display:block}
-.gav{width:52px;height:52px;border-radius:16px;overflow:hidden;flex:none;background:var(--feed)}
+.gav{display:block;width:52px;height:52px;border-radius:16px;overflow:hidden;flex:none;background:var(--feed)}
 /* explore */
 .ex-head{flex:none;padding-top:44px;padding-left:20px;padding-right:12px;display:flex;align-items:center;justify-content:space-between;height:100px}
 .ex-head .brand{font-size:12px;color:var(--ink-3);letter-spacing:.06em}
@@ -742,7 +742,7 @@ function memberBtn(g){
 }
 function membersRow(g){
   if (g.priv && !g.joined) return '';
-  const us = ['mimi','che','yuzu','bear','aoi'];
+  const us = g.members < 5 ? ['me'] : ['mimi','che','yuzu','bear','aoi'];
   return `<div class="members"><span class="stack">${us.map(u => av(u,'xs')).join('')}</span><span>${t('members', fmtN(g.members))}</span></div>`;
 }
 SCREENS.lobby = c => {
@@ -1061,17 +1061,7 @@ function renderPanel(){
     </div>
     <div class="p-sec"><h2 class="p-h">${zh ? '流程' : 'Flows'}</h2>
       <ol class="flows">${FLOWS.map(([k,l],n) => `<li><button data-a="flow" data-v="${k}" aria-current="${af===k}"><span class="n">${String(n+1).padStart(2,'0')}</span><span>${l[i]}</span></button></li>`).join('')}</ol></div>
-    <div class="p-sec"><h2 class="p-h">${zh ? '大廳背景圖尺寸' : 'Lobby cover size'}</h2>
-      <div class="ratios">${ratios.map(([k,l,r,h]) => `<button class="ratio" aria-pressed="${S.ratio===k}" data-a="ratio" data-v="${k}">${k==='imm' ? `<span class="final">${zh ? '最終採用' : 'Shipped'}</span>` : ''}<span class="shape" style="height:${h}px"></span><span class="lab">${l[i]}</span><span class="rt">${r}</span></button>`).join('')}</div>
-      ${showMetric ? `<dl class="metric"><dt>${zh ? '背景圖佔首屏' : 'Cover share of first screen'}</dt><dd>${m.cover}%</dd><dt>${zh ? '第一篇貼文起始位置' : 'First post starts at'}</dt><dd>${m.firstTop == null ? '—' : m.firstTop + ' / 844 px'}</dd><dt>${zh ? '首屏看得到第一篇貼文內容' : 'First post readable without scrolling'}</dt><dd class="${m.visible ? 'yes' : 'no'}">${m.firstTop == null ? '—' : (m.visible ? (zh ? '是' : 'Yes') : (zh ? '否' : 'No'))}</dd></dl>` : `<p class="hint">${zh ? '進入任一社團大廳，切換三種尺寸比較首屏差異。' : 'Open any group lobby and switch sizes to compare the first screen.'}</p>`}
-      <p class="ratio-note">${zh ? '背景圖越大，沉浸感越強，但第一篇貼文會被推到第二屏。我們最後選擇加大背景圖，讓用戶一進來就感覺回到自己的小家園，並用固定的分頁列補回效率。原型中的懸浮發文鈕是我的提案，上線版本只保留頂端發文框。' : 'A bigger cover feels more immersive but pushes the first post below the fold. We shipped the larger cover so the group feels like home on arrival, with sticky tabs to keep things efficient. The floating post button here is my proposal; the shipped version kept only the composer at the top.'}</p>
-    </div>
-    <div class="p-sec"><h2 class="p-h">${zh ? '這個畫面的規格' : 'Spec for this screen'}</h2>
-      <ul class="notes">${notes.map(n => `<li>${n[i]}</li>`).join('')}</ul>
-      ${pendG ? `<button class="demo-btn" data-a="approve" data-gid="${pendG.id}">${zh ? '模擬：管理員核准申請' : 'Simulate: admin approves request'}</button>` : ''}
-      <p class="hint">${zh ? '原型裡的按讚按鈕可以長按（滑鼠按住）叫出表情選單。' : 'Press and hold any Like button (or hold the mouse) to open the reaction picker.'}</p>
-    </div>
-    <div class="p-foot">Bella Chen</div>`;
+`;
 }
 
 /* ================= overlays ================= */
