@@ -136,7 +136,7 @@ html[lang="zh-Hant"] .case-permission .callout{font-size:19px;font-weight:500}
 .flow-name{margin:0 0 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
 .flow-block+.flow-block{margin-top:24px}
 .case-permission .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.case-permission .step{font-size:13px;padding:6px 12px;border-radius:var(--radius-pill);background:var(--surface-raised);border:1px solid var(--border-strong);color:var(--ink);font-weight:400}
+.case-permission .step{font-size:13px;padding:6px 10px;border-radius:var(--radius-sm);background:var(--surface-raised);border:0;color:var(--ink);font-weight:400}
 .case-permission .arrow{color:var(--brand)}
 .screen{margin:28px 0;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:none}
 .screen img{display:block;width:100%;height:auto}
