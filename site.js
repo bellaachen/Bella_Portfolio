@@ -70,7 +70,7 @@
   // ---- Static text dictionary (English → 繁體中文) ------------------------------------
   var ZH = {
     'Case studies': '案例研究', 'Writing': '文章', 'Capabilities': '能力地圖', 'Experience': '工作經歷', 'Lab': '實驗室', 'Home': '首頁',
-    'Systems Product Manager · FinTech & Platforms': '系統型產品經理 · 金融科技與平台',
+    'Product Manager · FinTech & Platforms': '產品經理 · 金融科技與平台',
     'Making complex systems': '讓複雜的系統', 'feel simple.': '變得簡單。',
     'Trading platforms': '交易平台', 'FIX API & connectivity': 'FIX API 與連線介接', 'Permissions / RBAC': '權限管理 / RBAC', 'AI-built prototypes': '用 AI 打造的原型',
     "Hi, I'm Bella. 10+ years across trading systems, API management, financial data and global mobile apps — turning complex requirements into clear, scalable products.": '你好，我是 Bella。十年以上橫跨交易系統、API 管理、金融資料與全球化行動 App 的產品經驗，擅長把複雜需求轉化為清晰、可擴展的產品。',
