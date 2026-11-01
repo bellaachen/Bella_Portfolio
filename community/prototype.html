@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="../favicon.ico" sizes="32x32"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<title>Chiikawa Group Prototype</title>
+<title>Group Prototype | Bella Chen</title>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,14 @@ body{background:var(--paper);color:var(--ink);font-family:var(--f-panel);-webkit
 *{box-sizing:border-box}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 button:focus-visible,[tabindex]:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.page{min-height:100%;display:grid;grid-template-columns:minmax(300px,380px) 1fr}
+.ph-head{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px;padding-left:max(28px, env(safe-area-inset-left, 0px));padding-right:max(28px, env(safe-area-inset-right, 0px));background:rgba(243,244,241,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.ph-brand{font-size:16px;font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:.01em}
+.ph-lang{display:flex;border:1px solid #8F8D84;border-radius:999px;padding:2px}
+.ph-lang button{font-size:12px;padding:4px 10px;min-height:28px;border-radius:999px;color:var(--ink)}
+.ph-lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+html.embedded .ph-head{display:none}
+.page{min-height:calc(100% - 69px);display:grid;grid-template-columns:minmax(300px,380px) 1fr}
+html.embedded .page{min-height:100%}
 /* ---------- panel ---------- */
 .panel{padding-block:32px;padding-left:max(28px, env(safe-area-inset-left, 0px));padding-right:28px;display:flex;flex-direction:column;gap:28px;border-right:1px solid var(--line);min-width:0}
 .eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
@@ -65,7 +72,8 @@ button:focus-visible,[tabindex]:focus-visible,input:focus-visible,textarea:focus
 .hint{font-size:12px;color:var(--ink-3);line-height:1.6;margin:0}
 .p-foot{margin-top:auto;font-size:12px;color:var(--ink-3);letter-spacing:.04em}
 /* ---------- stage ---------- */
-.stage{display:flex;align-items:center;justify-content:center;padding-block:24px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));background:var(--stage);min-width:0;position:sticky;top:0;height:100vh}
+.stage{display:flex;align-items:center;justify-content:center;padding-block:24px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));background:var(--stage);min-width:0;position:sticky;top:69px;height:calc(100vh - 69px)}
+html.embedded .stage{top:0;height:100vh}
 .fit{position:relative;flex:none}
 .phone{width:390px;height:844px;border-radius:50px;background:var(--card);position:absolute;top:9px;left:9px;transform-origin:0 0;overflow:hidden;box-shadow:0 0 0 9px #D5D8D2,0 0 0 10px #C7CBC4,0 30px 60px -20px rgba(36,40,44,.35);font-family:var(--f-app);color:var(--ink);isolation:isolate}
 /* ---------- app ---------- */
@@ -350,6 +358,7 @@ button:focus-visible,[tabindex]:focus-visible,input:focus-visible,textarea:focus
 
 </head>
 <body>
+<header class="ph-head" id="phHead"><a class="ph-brand" href="../index.html"><img src="../assets/logo.svg" alt="" width="26" height="26" style="vertical-align:-7px;margin-right:8px">Bella Chen</a><div class="ph-lang" role="group" aria-label="Website language"><button type="button" data-a="lang" data-v="en" aria-pressed="true">EN</button><button type="button" data-a="lang" data-v="zh" aria-pressed="false">中文</button></div></header>
 <div class="page">
   <aside class="panel" id="panel" aria-label="Prototype controls"></aside>
   <main class="stage" id="stage">
@@ -472,7 +481,6 @@ const CV_PRESETS = [
 
 /* ================= i18n ================= */
 const L = {
-  app:['吉伊卡哇社團','Chiikawa Group'],
   groups:['社團','Groups'], create:['建立','Create'],
   myGroups:['我的社團','Your groups'], suggested:['推薦社團','Suggested for you'],
   public:['公開社團','Public group'], private:['私密社團','Private group'],
@@ -1045,10 +1053,9 @@ function renderPanel(){
   $('#panel').innerHTML = `
     <div>
       <div class="eyebrow">${zh ? '0→1 社群產品 · 手機 App 原型' : '0→1 community product · mobile prototype'}</div>
-      <h1 class="p-title">Chiikawa Group</h1><span class="ai-badge">AI prototype · Claude</span>
+      <h1 class="p-title">Group</h1><span class="ai-badge">AI prototype · Claude</span>
       <p class="p-sub">${zh ? '對標 Facebook 社團的手機版社群功能：發文、留言、表情、轉發，以及管理員建立社團、用戶加入社團的完整流程。' : 'A mobile community feature modelled on Facebook Groups: posts, comments, reactions and shares, plus the full flows for creating and joining a group.'}</p>
     </div>
-    <div class="seg" role="group" aria-label="Language"><button aria-pressed="${zh}" data-a="lang" data-v="zh">中文</button><button aria-pressed="${!zh}" data-a="lang" data-v="en">English</button></div>
     <div class="p-sec"><h2 class="p-h">${zh ? '流程' : 'Flows'}</h2>
       <ol class="flows">${FLOWS.map(([k,l],n) => `<li><button data-a="flow" data-v="${k}" aria-current="${af===k}"><span class="n">${String(n+1).padStart(2,'0')}</span><span>${l[i]}</span></button></li>`).join('')}</ol></div>
     <div class="p-sec"><h2 class="p-h">${zh ? '大廳背景圖尺寸' : 'Lobby cover size'}</h2>
@@ -1061,7 +1068,7 @@ function renderPanel(){
       ${pendG ? `<button class="demo-btn" data-a="approve" data-gid="${pendG.id}">${zh ? '模擬：管理員核准申請' : 'Simulate: admin approves request'}</button>` : ''}
       <p class="hint">${zh ? '原型裡的按讚按鈕可以長按（滑鼠按住）叫出表情選單。' : 'Press and hold any Like button (or hold the mouse) to open the reaction picker.'}</p>
     </div>
-    <div class="p-foot"><a href="../index.html" style="color:inherit">← Bella Chen · Portfolio</a></div>`;
+    <div class="p-foot">Bella Chen</div>`;
 }
 
 /* ================= overlays ================= */
@@ -1123,7 +1130,7 @@ pickerLayer.addEventListener('click', e => { if (e.target === pickerLayer) close
 
 /* ================= actions ================= */
 const A = {
-  back, lang:d => { S.lang = d.v; try { localStorage.setItem(SITE_LANG_KEY, d.v); } catch(e){} document.documentElement.lang = d.v === 'zh' ? 'zh-Hant' : 'en'; render(); },
+  back, lang:d => { setLang(d.v, true); },
   ratio:d => { S.ratio = d.v; render(); },
   flow:d => {
     closeSheet(); closePicker(); S.replying = null;
@@ -1366,7 +1373,8 @@ function readFiles(files){
 
 /* ================= fit phone to stage ================= */
 function fit(){
-  const w = innerWidth, h = innerHeight, F = 18;
+  const head = document.documentElement.classList.contains('embedded') ? 0 : ($('#phHead') ? $('#phHead').offsetHeight : 0);
+  const w = innerWidth, h = innerHeight - head, F = 18;
   let s;
   if (w <= 900) s = Math.min(1, (w - 40) / (390 + F), (h * 0.92) / (844 + F));
   else s = Math.min(1, (h - 48) / (844 + F));
@@ -1375,9 +1383,19 @@ function fit(){
   const ph = $('#phone'); ph.style.transform = `scale(${s})`; ph.style.top = 9*s + 'px'; ph.style.left = 9*s + 'px';
   const f = $('#fit'); f.style.width = (390 + F) * s + 'px'; f.style.height = (844 + F) * s + 'px';
 }
+function setLang(v, save){
+  S.lang = v === 'zh' ? 'zh' : 'en';
+  if (save){ try { localStorage.setItem(SITE_LANG_KEY, S.lang); } catch(e){} }
+  document.documentElement.lang = S.lang === 'zh' ? 'zh-Hant' : 'en';
+  document.querySelectorAll('.ph-lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === S.lang)));
+  render();
+}
+/* inside the case study page the site header is already there, so hide ours and follow its language */
+try { if (window.self !== window.parent) document.documentElement.classList.add('embedded'); } catch(e){ document.documentElement.classList.add('embedded'); }
+addEventListener('storage', e => { if (e.key === SITE_LANG_KEY && e.newValue) setLang(e.newValue, false); });
 addEventListener('resize', fit);
 fit();
-render();
+setLang(S.lang, false);
 </script>
 
 </body>
