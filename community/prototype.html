@@ -1,0 +1,1384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="../favicon.ico" sizes="32x32"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<title>Chiikawa Group Prototype</title>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: quiet spec panel on the left (stacks below on phones), one device frame on a washi-grey stage. Single light look by choice. */
+:root{
+  color-scheme: light;
+  --paper:#F3F4F1; --stage:#E9EBE6; --ink:#24282C; --ink-2:#5D646A; --ink-3:#8E959A;
+  --line:#DFE2DC; --card:#FFFFFF; --feed:#F1F2EE;
+  --accent:#D4627A; --accent-ink:#B44C64; --accent-soft:#FBEAEE;
+  --ok:#4F8A6B;
+  --r-like:#4F79A8; --r-love:#D4627A; --r-haha:#C99A2E; --r-wow:#C99A2E; --r-angry:#CF6E3A;
+  --f-panel:"Zen Kaku Gothic New", "Hiragino Sans", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+  --f-app:"Zen Maru Gothic", "Hiragino Maru Gothic ProN", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-panel);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page{min-height:100%;display:grid;grid-template-columns:minmax(300px,380px) 1fr}
+/* ---------- panel ---------- */
+.panel{padding-block:32px;padding-left:max(28px, env(safe-area-inset-left, 0px));padding-right:28px;display:flex;flex-direction:column;gap:28px;border-right:1px solid var(--line);min-width:0}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.p-title{font-size:30px;font-weight:700;letter-spacing:-.01em;margin:6px 0 4px;text-wrap:balance}
+.ai-badge{display:inline-block;font-size:11.5px;color:var(--ink-2);background:var(--stage);border-radius:999px;padding:3px 10px;margin:2px 0 10px}
+.p-sub{color:var(--ink-2);font-size:14px;line-height:1.7;margin:0}
+.seg{display:inline-flex;background:var(--stage);border-radius:999px;padding:3px;gap:2px}
+.seg button{padding:6px 14px;border-radius:999px;font-size:13px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(36,40,44,.12);font-weight:500}
+.p-sec{display:flex;flex-direction:column;gap:10px}
+.p-h{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;margin:0}
+.flows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;counter-reset:f}
+.flows button{width:100%;text-align:left;display:flex;gap:12px;align-items:baseline;padding:8px 10px;border-radius:10px;font-size:14px;color:var(--ink-2)}
+.flows button:hover{background:var(--stage)}
+.flows button[aria-current="true"]{background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 0 0 1px var(--line)}
+.flows .n{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);min-width:18px}
+.ratios{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ratio{border:1px solid var(--line);border-radius:12px;padding:10px 8px 9px;display:flex;flex-direction:column;align-items:center;gap:7px;background:var(--card);position:relative}
+.ratio[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.ratio .shape{width:44px;background:linear-gradient(160deg,#E7C7CF,#BFD3E6);border-radius:4px}
+.ratio .lab{font-size:12px;font-weight:500}
+.ratio .rt{font-family:var(--f-mono);font-size:10.5px;color:var(--ink-3)}
+.ratio .final{position:absolute;top:-8px;right:-6px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.02em}
+.metric{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.metric dt{color:var(--ink-2)}
+.metric dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.metric dd.yes{color:var(--ok)} .metric dd.no{color:var(--accent-ink)}
+.ratio-note{font-size:13px;color:var(--ink-2);line-height:1.65;margin:0}
+.notes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.notes li{font-size:13.5px;line-height:1.65;color:var(--ink-2);padding-left:14px;position:relative}
+.notes li::before{content:"";position:absolute;left:0;top:.72em;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.demo-btn{align-self:flex-start;border:1px dashed var(--ink-3);border-radius:10px;padding:8px 12px;font-size:13px;color:var(--ink-2)}
+.demo-btn:hover{border-color:var(--ink);color:var(--ink)}
+.hint{font-size:12px;color:var(--ink-3);line-height:1.6;margin:0}
+.p-foot{margin-top:auto;font-size:12px;color:var(--ink-3);letter-spacing:.04em}
+/* ---------- stage ---------- */
+.stage{display:flex;align-items:center;justify-content:center;padding-block:24px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));background:var(--stage);min-width:0;position:sticky;top:0;height:100vh}
+.fit{position:relative;flex:none}
+.phone{width:390px;height:844px;border-radius:50px;background:var(--card);position:absolute;top:9px;left:9px;transform-origin:0 0;overflow:hidden;box-shadow:0 0 0 9px #D5D8D2,0 0 0 10px #C7CBC4,0 30px 60px -20px rgba(36,40,44,.35);font-family:var(--f-app);color:var(--ink);isolation:isolate}
+/* ---------- app ---------- */
+.status{position:absolute;top:0;left:0;right:0;height:44px;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 34px;font-size:15px;font-weight:700;pointer-events:none;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;transition:color .2s}
+.status.light{color:#fff}
+.status .ic{display:flex;gap:6px;align-items:center}
+.home-ind{position:absolute;bottom:8px;left:50%;width:134px;height:5px;border-radius:3px;background:var(--ink);transform:translateX(-50%);z-index:60;opacity:.85;pointer-events:none}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--card)}
+.screen.enter{animation:enter .22s ease-out}
+@keyframes enter{from{opacity:.4;transform:translateX(14px)}to{opacity:1;transform:none}}
+.scr{flex:1;overflow-y:auto;position:relative;overscroll-behavior:contain;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.topbar{flex:none;padding-top:44px;height:96px;display:flex;align-items:center;gap:6px;padding-left:8px;padding-right:8px;border-bottom:1px solid var(--line);background:var(--card)}
+.topbar h1{font-size:17px;font-weight:700;margin:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar.center h1{text-align:center}
+.topbar.plain{border-bottom:0}
+.ib{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ib:hover{background:var(--feed)}
+.ib svg{width:22px;height:22px}
+.txtbtn{padding:8px 10px;font-size:15px;font-weight:700;color:var(--accent-ink)}
+.txtbtn[disabled]{color:var(--ink-3);cursor:default}
+.av{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:15px;color:#3a3f44;overflow:hidden}
+.av.sm{width:32px;height:32px;font-size:13px}
+.av.xs{width:24px;height:24px;font-size:11px;border:2px solid #fff}
+.av img,.gav img{width:100%;height:100%;object-fit:cover;display:block}
+.gav{width:52px;height:52px;border-radius:16px;overflow:hidden;flex:none;background:var(--feed)}
+/* explore */
+.ex-head{flex:none;padding-top:44px;padding-left:20px;padding-right:12px;display:flex;align-items:center;justify-content:space-between;height:100px}
+.ex-head .brand{font-size:12px;color:var(--ink-3);letter-spacing:.06em}
+.ex-head h1{font-size:26px;margin:2px 0 0;font-weight:700}
+.ex-create{display:flex;align-items:center;gap:4px;background:var(--ink);color:#fff;border-radius:999px;padding:8px 14px 8px 10px;font-size:14px;font-weight:700}
+.ex-create svg{width:18px;height:18px}
+.sec{padding:14px 20px 6px}
+.sec h2{font-size:15px;margin:0 0 12px;font-weight:700}
+.mine{display:flex;gap:12px;overflow-x:auto;margin:0 -20px;padding:0 20px 8px;scrollbar-width:none}
+.mine::-webkit-scrollbar{display:none}
+.gcard{flex:none;width:200px;border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 0 0 1px var(--line);text-align:left}
+.gcard .cv{aspect-ratio:16/9;overflow:hidden;background:var(--feed)}
+.gcard .cv img{width:100%;height:100%;object-fit:cover;display:block}
+.gcard .gb{display:flex;gap:10px;align-items:center;padding:10px 12px 12px}
+.gcard .gav{width:36px;height:36px;border-radius:11px;margin-top:-26px;box-shadow:0 0 0 3px #fff}
+.gname{font-weight:700;font-size:14px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gmeta{font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.gmeta svg{width:13px;height:13px}
+.grow{display:flex;align-items:center;gap:12px;padding:10px 0;width:100%;text-align:left}
+.grow + .grow{border-top:1px solid var(--line)}
+.grow .gi{flex:1;min-width:0}
+.chip-btn{flex:none;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;background:var(--accent-soft);color:var(--accent-ink)}
+.chip-btn.ghost{background:var(--feed);color:var(--ink-2)}
+.empty{padding:28px 20px;text-align:center;color:var(--ink-3);font-size:14px}
+/* lobby */
+.lob-bar{position:absolute;top:0;left:0;right:0;z-index:20;padding-top:44px;height:92px;display:flex;align-items:center;padding-left:6px;padding-right:6px;gap:4px;transition:background .2s, box-shadow .2s}
+.lob-bar.solid{background:var(--card);box-shadow:0 1px 0 var(--line)}
+.lob-bar .t{flex:1;font-weight:700;font-size:16px;opacity:0;transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lob-bar.show-t .t{opacity:1}
+.lob-bar.over .ib{background:rgba(255,255,255,.88);width:36px;height:36px;margin:0 2px}
+.lob-bar.over .ib svg{width:20px;height:20px}
+.cover{position:relative;overflow:hidden;background:var(--feed)}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover.imm::after{content:"";position:absolute;inset:auto 0 0 0;height:56%;background:linear-gradient(to top,rgba(20,22,26,.62),rgba(20,22,26,0))}
+.imm-info{position:absolute;left:20px;right:20px;bottom:20px;z-index:2;color:#fff;display:flex;flex-direction:column;gap:6px}
+.imm-info .gav{width:60px;height:60px;border-radius:18px;box-shadow:0 0 0 3px rgba(255,255,255,.9)}
+.imm-info h2{font-size:24px;margin:6px 0 0;line-height:1.3;text-wrap:balance}
+.imm-info .gmeta{color:rgba(255,255,255,.88);font-size:13px}
+.info{padding:0 20px 16px;background:var(--card)}
+.info.std .gav{width:72px;height:72px;border-radius:20px;margin-top:-36px;position:relative;box-shadow:0 0 0 4px #fff}
+.info.std h2{font-size:22px;margin:10px 0 4px;line-height:1.3}
+.info .gmeta{font-size:13px}
+.info .row{display:flex;gap:8px;margin-top:14px;align-items:center}
+.mbtn{flex:1;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:14.5px}
+.mbtn svg{width:18px;height:18px}
+.mbtn.fill{background:var(--accent);color:#fff}
+.mbtn.out{background:var(--feed);color:var(--ink)}
+.mbtn.pend{background:var(--feed);color:var(--ink-2)}
+.mbtn.inv{flex:none;padding:0 16px;background:var(--feed)}
+.members{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12.5px;color:var(--ink-2)}
+.members .stack{display:flex}
+.members .stack .av + .av{margin-left:-8px}
+.tabs{position:sticky;top:92px;z-index:10;background:var(--card);display:flex;border-bottom:1px solid var(--line);padding:0 12px}
+.tabs button{flex:1;padding:12px 0 11px;font-size:14px;color:var(--ink-3);font-weight:500;border-bottom:2px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--ink);font-weight:700}
+.feed{background:var(--feed);padding-bottom:40px;display:flex;flex-direction:column;gap:8px;padding-top:8px;min-height:420px}
+.composer{background:var(--card);display:flex;align-items:center;gap:10px;padding:12px 16px}
+.composer .fake{flex:1;height:38px;border-radius:999px;border:1px solid var(--line);display:flex;align-items:center;padding:0 14px;color:var(--ink-3);font-size:14px;text-align:left}
+.composer .ib svg{color:var(--ok)}
+.upbar{background:var(--card);padding:12px 16px;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:10px}
+.upbar .bar{flex:1;height:4px;border-radius:2px;background:var(--feed);overflow:hidden}
+.upbar .bar i{display:block;height:100%;width:40%;background:var(--accent);animation:load 1.4s ease-in-out infinite}
+@keyframes load{from{transform:translateX(-100%)}to{transform:translateX(260%)}}
+.lockbox{background:var(--card);padding:36px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.lockbox svg{width:34px;height:34px;color:var(--ink-3)}
+.lockbox h3{margin:6px 0 0;font-size:16px}
+.lockbox p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.7}
+.fab{position:absolute;right:18px;bottom:34px;z-index:15;width:54px;height:54px;border-radius:18px;background:var(--ink);color:#fff;display:grid;place-items:center;box-shadow:0 8px 20px -6px rgba(36,40,44,.45);transition:transform .2s, opacity .2s}
+.fab svg{width:24px;height:24px}
+.fab.off{opacity:0;transform:translateY(16px) scale(.9);pointer-events:none}
+/* post */
+.post{background:var(--card);padding-top:14px}
+.ph{display:flex;align-items:center;gap:10px;padding:0 12px 0 16px}
+.ph .pm{flex:1;min-width:0}
+.pn{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:6px}
+.badge{font-size:10.5px;font-weight:700;color:var(--ok);background:#E5F0EA;border-radius:5px;padding:1px 6px}
+.pt{font-size:12px;color:var(--ink-3)}
+.ptext{padding:10px 16px 12px;font-size:15px;line-height:1.7;white-space:pre-wrap;word-break:break-word;text-align:left;width:100%;display:block}
+.clamp4{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;padding-bottom:0}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.morel{display:block;padding:2px 16px 12px;font-size:14px;color:var(--ink-2);font-weight:700}
+.imgs{display:grid;gap:3px;cursor:pointer}
+.imgs img{width:100%;height:100%;object-fit:cover;display:block;background:var(--feed)}
+.imgs .c{position:relative;overflow:hidden}
+.imgs.n1 .c{aspect-ratio:4/3}
+.imgs.n2{grid-template-columns:1fr 1fr}.imgs.n2 .c{aspect-ratio:1}
+.imgs.n3{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}.imgs.n3 .c:first-child{grid-column:1/3;aspect-ratio:16/9}.imgs.n3 .c{aspect-ratio:1}
+.imgs.n4{grid-template-columns:1fr 1fr}.imgs.n4 .c{aspect-ratio:1}
+.imgs .plus{position:absolute;inset:0;background:rgba(20,22,26,.45);color:#fff;font-size:26px;font-weight:700;display:grid;place-items:center}
+.embed{margin:0 16px 12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-align:left;display:block;width:calc(100% - 32px)}
+.embed .eh{display:flex;gap:8px;align-items:center;padding:10px 12px 0}
+.embed .et{padding:6px 12px 10px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.embed img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.embed .src{font-size:11.5px;color:var(--ink-3);padding:8px 12px;border-top:1px solid var(--line);display:flex;gap:6px;align-items:center}
+.psum{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;font-size:13px;color:var(--ink-2);gap:8px}
+.psum .rx{display:flex;align-items:center;gap:6px;min-width:0}
+.emo{display:flex}
+.emo span{width:20px;height:20px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:13px;box-shadow:0 0 0 2px var(--card)}
+.emo span + span{margin-left:-4px}
+.pact{display:flex;border-top:1px solid var(--line);margin:0 12px;padding:2px 0 4px}
+.act{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:42px;border-radius:10px;font-size:14px;color:var(--ink-2);font-weight:500;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.act:hover{background:var(--feed)}
+.act svg{width:20px;height:20px}
+.act .e{font-size:18px;line-height:1}
+.act.on{font-weight:700}
+/* detail & comments */
+.cmts{padding:6px 16px 24px;background:var(--card);border-top:8px solid var(--feed)}
+.cmts h3{font-size:14px;margin:12px 0 10px;color:var(--ink-2);font-weight:700}
+.cm{display:flex;gap:8px;padding:6px 0}
+.cm.reply{margin-left:40px}
+.cb{flex:1;min-width:0}
+.bubble{background:var(--feed);border-radius:16px;padding:8px 12px;display:inline-block;max-width:100%;transition:box-shadow .2s}
+.cm.focus .bubble{box-shadow:0 0 0 2px var(--accent)}
+.cn{font-size:13px;font-weight:700}
+.ct{font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.mention{color:var(--r-like);font-weight:700}
+.cmeta{display:flex;align-items:center;gap:14px;padding:4px 4px 0;font-size:12px;color:var(--ink-3)}
+.lnk{font-weight:700;color:var(--ink-2);font-size:12px;padding:2px 0;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.lnk.on{color:var(--accent-ink)}
+.cr{margin-left:auto;display:flex;align-items:center;gap:4px;color:var(--ink-2)}
+.cr .emo span{width:17px;height:17px;font-size:11px}
+.more-in{font-weight:700;color:var(--ink-2);font-size:13px;display:block;padding-top:2px}
+.ibar{flex:none;border-top:1px solid var(--line);background:var(--card);padding:8px 12px 34px}
+.ibar .replying{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-2);padding:2px 4px 8px}
+.ibar .replying b{color:var(--ink)}
+.ibar .row{display:flex;gap:8px;align-items:center}
+.ibar input{flex:1;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--feed);padding:0 16px;font:inherit;font-size:14.5px;color:var(--ink)}
+.ibar .send{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--accent)}
+.ibar .send[disabled]{color:var(--ink-3)}
+.ibar .send svg{width:22px;height:22px}
+/* compose */
+.cmp-who{display:flex;align-items:center;gap:10px;padding:14px 16px 4px}
+.cmp-to{font-size:12px;color:var(--ink-3)}
+.cmp textarea{width:100%;border:0;resize:none;padding:10px 16px;font:inherit;font-size:16px;line-height:1.7;min-height:180px;color:var(--ink);background:transparent}
+.cmp textarea::placeholder{color:var(--ink-3)}
+.cmp textarea:focus{outline:none}
+.media{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 16px 12px}
+.media .m{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden}
+.media img{width:100%;height:100%;object-fit:cover}
+.media .x{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;background:rgba(20,22,26,.6);color:#fff;display:grid;place-items:center}
+.media .x svg{width:14px;height:14px}
+.cnt{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3);padding:0 16px 10px;display:flex;justify-content:space-between}
+.tool{flex:none;border-top:1px solid var(--line);padding:8px 10px 34px;display:flex;gap:4px;background:var(--card)}
+.tool button{display:flex;align-items:center;gap:6px;padding:9px 12px;border-radius:10px;font-size:13.5px;color:var(--ink-2)}
+.tool button:hover{background:var(--feed)}
+.tool svg{width:20px;height:20px}
+.tool .g{color:var(--ok)}
+/* create */
+.cr-body{padding:8px 20px 20px;display:flex;flex-direction:column;gap:18px}
+.step{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.06em}
+.cr-h{font-size:22px;font-weight:700;margin:0;line-height:1.4;text-wrap:balance}
+.cr-p{margin:-8px 0 0;color:var(--ink-2);font-size:14px;line-height:1.7}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}
+.field .box{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;height:50px;background:var(--card)}
+.field .box:focus-within{border-color:var(--ink)}
+.field .box.err{border-color:var(--accent)}
+.field input{flex:1;border:0;font:inherit;font-size:16px;background:transparent;color:var(--ink);min-width:0}
+.field input:focus{outline:none}
+.field .c{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3)}
+.errt{color:var(--accent-ink);font-size:12.5px;margin-top:6px;min-height:18px}
+.cats{display:flex;flex-wrap:wrap;gap:8px}
+.cats button{padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);font-size:14px}
+.cats button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff;font-weight:700}
+.fixed-cta{flex:none;padding:12px 20px 38px;background:var(--card);display:flex;flex-direction:column;gap:8px}
+.cta{height:50px;border-radius:14px;background:var(--accent);color:#fff;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta[disabled]{background:#E6E8E3;color:var(--ink-3);cursor:default}
+.cta.sec{background:var(--feed);color:var(--ink)}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.done-art{display:grid;place-items:center;padding:40px 0 10px;position:relative}
+.done-art .gav{width:112px;height:112px;border-radius:32px;box-shadow:0 0 0 6px #fff,0 16px 30px -12px rgba(36,40,44,.3)}
+.done-art i{position:absolute;width:10px;height:10px;border-radius:3px}
+.pv-av{display:grid;place-items:center;padding:6px 0 4px}
+.pv-av .wrap{position:relative}
+.pv-av .gav{width:128px;height:128px;border-radius:36px}
+.cam{position:absolute;right:-6px;bottom:-6px;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 4px #fff}
+.cam svg{width:20px;height:20px}
+.presets{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.presets.cv{grid-template-columns:repeat(4,1fr)}
+.presets button{aspect-ratio:1;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--line);position:relative}
+.presets.cv button{aspect-ratio:4/3;border-radius:12px}
+.presets button img{width:100%;height:100%;object-fit:cover;display:block}
+.presets button[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--ink)}
+.presets .camb{display:grid;place-items:center;background:var(--feed);color:var(--ink-2)}
+.presets .camb svg{width:22px;height:22px}
+.pv-cv{border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px var(--line);position:relative}
+.pv-cv .cover{width:100%}
+.pv-cv .meta{display:flex;gap:10px;align-items:center;padding:0 14px 14px}
+.pv-cv .meta .gav{width:48px;height:48px;border-radius:14px;margin-top:-20px;box-shadow:0 0 0 3px #fff;position:relative}
+.pv-tag{position:absolute;top:10px;left:10px;font-family:var(--f-mono);font-size:10.5px;background:rgba(255,255,255,.9);border-radius:6px;padding:2px 7px;color:var(--ink-2);z-index:3}
+.intro-ta{width:100%;min-height:240px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:15px;line-height:1.7;resize:none;color:var(--ink);background:var(--card)}
+.intro-ta:focus{outline:none;border-color:var(--ink)}
+/* about / members / photos */
+.about{background:var(--card);padding:18px 20px 24px;display:flex;flex-direction:column;gap:16px}
+.about p{margin:0;font-size:14.5px;line-height:1.8;white-space:pre-wrap}
+.facts{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:16px}
+.fact{display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.fact svg{width:20px;height:20px;flex:none;color:var(--ink-2);margin-top:1px}
+.fact small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:2px}
+.mlist{background:var(--card);padding:6px 20px 24px}
+.mlist h4{font-size:13px;color:var(--ink-3);margin:14px 0 6px}
+.mrow{display:flex;gap:12px;align-items:center;padding:8px 0;font-size:14.5px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--card)}
+.pgrid img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+/* overlay / sheet / picker / toast */
+.overlay{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;justify-content:flex-end}
+.overlay[hidden]{display:none}
+.backdrop{position:absolute;inset:0;background:rgba(20,22,26,.4);animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.sheet{position:relative;background:var(--card);border-radius:22px 22px 0 0;padding:8px 0 38px;max-height:82%;display:flex;flex-direction:column;animation:up .24s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(40%);opacity:.5}}
+.sheet .grab{width:38px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
+.sheet h3{font-size:16px;margin:2px 20px 4px;text-align:center}
+.sheet .sub{font-size:12.5px;color:var(--ink-3);text-align:center;margin:0 20px 10px}
+.sheet .list{overflow-y:auto;padding:4px 0}
+.srow{display:flex;align-items:center;gap:14px;padding:12px 20px;width:100%;text-align:left;font-size:15px}
+.srow:hover{background:var(--feed)}
+.srow .si{width:40px;height:40px;border-radius:12px;background:var(--feed);display:grid;place-items:center;flex:none}
+.srow .si svg{width:20px;height:20px}
+.srow .grow-1{flex:1;min-width:0}
+.srow small{display:block;font-size:12px;color:var(--ink-3)}
+.srow.danger{color:var(--accent-ink)}
+.srow.cancel{justify-content:center;color:var(--ink-2);border-top:1px solid var(--line);margin-top:4px}
+.mini{margin:4px 20px 10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:center}
+.mini img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex:none}
+.mini .tx{font-size:13px;color:var(--ink-2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sheet .note{display:flex;gap:8px;align-items:center;margin:0 20px 6px;font-size:12.5px;color:var(--ink-2);background:var(--feed);padding:8px 12px;border-radius:10px}
+.sheet .note svg{width:16px;height:16px;flex:none}
+.rtabs{display:flex;gap:6px;padding:0 20px 8px;overflow-x:auto}
+.rtabs button{padding:6px 12px;border-radius:999px;font-size:13px;background:var(--feed);display:flex;gap:4px;align-items:center;flex:none}
+.rtabs button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.dialog{position:relative;margin:auto 36px;background:var(--card);border-radius:18px;text-align:center;padding:22px 20px 0;animation:fade .2s}
+.dialog h3{margin:0 0 6px;font-size:16px}
+.dialog p{margin:0 0 18px;font-size:14px;color:var(--ink-2);line-height:1.6}
+.dialog .btns{display:flex;border-top:1px solid var(--line);margin:0 -20px}
+.dialog .btns button{flex:1;padding:14px;font-size:15px}
+.dialog .btns button + button{border-left:1px solid var(--line)}
+.dialog .btns .d{color:var(--accent-ink);font-weight:700}
+.picker-layer{position:absolute;inset:0;z-index:55}
+.picker-layer[hidden]{display:none}
+.picker{position:absolute;display:flex;gap:2px;background:var(--card);border-radius:999px;padding:5px 7px;box-shadow:0 10px 30px -8px rgba(36,40,44,.35),0 0 0 1px var(--line);animation:pop .18s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{from{transform:scale(.7) translateY(10px);opacity:0}}
+.picker button{width:44px;height:44px;border-radius:50%;font-size:28px;line-height:1;display:grid;place-items:center;position:relative;transition:transform .12s}
+.picker button:hover,.picker button:focus-visible{transform:translateY(-6px) scale(1.18)}
+.picker button .tip{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:10.5px;background:var(--ink);color:#fff;padding:2px 6px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;font-family:var(--f-app)}
+.picker button:hover .tip,.picker button:focus-visible .tip{opacity:1}
+.toast{position:absolute;left:50%;bottom:110px;transform:translate(-50%,10px);z-index:70;background:rgba(36,40,44,.92);color:#fff;font-size:14px;line-height:1.5;padding:10px 18px;border-radius:12px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;max-width:300px;width:max-content}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width: 900px){
+  .page{grid-template-columns:1fr}
+  .stage{position:static;height:auto;order:-1;padding-block:20px}
+  .panel{border-right:0;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="page">
+  <aside class="panel" id="panel" aria-label="Prototype controls"></aside>
+  <main class="stage" id="stage">
+    <div class="fit" id="fit">
+      <div class="phone" id="phone">
+        <div class="status" id="status"><span>9:41</span><span class="ic"><svg width="18" height="11" viewBox="0 0 18 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg><svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 2.2c2.3 0 4.4.9 5.9 2.4l1.1-1.1A9.8 9.8 0 0 0 8 .6 9.8 9.8 0 0 0 1 3.5l1.1 1.1A8.3 8.3 0 0 1 8 2.2Zm0 3.2c1.4 0 2.7.5 3.6 1.4l1.1-1.1A6.7 6.7 0 0 0 8 3.8c-1.8 0-3.5.7-4.7 1.9l1.1 1.1c.9-.9 2.2-1.4 3.6-1.4Zm0 3.2c-.6 0-1.1.2-1.5.6L8 10.7l1.5-1.5c-.4-.4-.9-.6-1.5-.6Z"/></svg><svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="17" height="8" rx="1.8" fill="currentColor"/><rect x="24" y="4" width="1.5" height="4" rx=".7" fill="currentColor" opacity=".5"/></svg></span></div>
+        <div class="screen" id="screen"></div>
+        <div class="picker-layer" id="pickerLayer" hidden></div>
+        <div class="overlay" id="overlay" hidden></div>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        <div class="home-ind"></div>
+      </div>
+    </div>
+  </main>
+</div>
+<input type="file" id="fileIn" accept="image/jpeg,image/png,image/gif" multiple hidden>
+<input type="file" id="camIn" accept="image/*" capture="environment" hidden>
+
+<script>
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uri = svg => 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+const SV = (vb, inner) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${inner}</svg>`;
+
+/* ---------- icons ---------- */
+const I = {
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  more:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  like:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M7 10v10H4.5A1.5 1.5 0 0 1 3 18.5v-7A1.5 1.5 0 0 1 4.5 10H7zm0 0 4-7c1.7 0 2.8 1.4 2.4 3L12.8 9H19a2 2 0 0 1 2 2.3l-1.2 7A2 2 0 0 1 17.8 20H7"/></svg>',
+  comment:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4l7 7-7 7v-4c-5 0-8.5 1.5-11 5 1-5 4-10 11-11z"/></svg>',
+  image:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>',
+  camera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.3l1.5-2h5.4l1.5 2h1.3A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg>',
+  send:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12 2-12 2z"/></svg>',
+  pen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.5 3.2-5.5 6.5-5.5s5.9 2 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .8 3.2 2.6 3.5 5.2"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20.5c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg>',
+  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M9 8l-4 4 4 4M5 12h11"/></svg>',
+  tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.5"/></svg>'
+};
+
+/* ---------- generated artwork (original, no characters) ---------- */
+const motif = (kind, x, y, s, f) => {
+  const g = inner => `<g transform="translate(${x} ${y}) scale(${s})" fill="${f}">${inner}</g>`;
+  switch(kind){
+    case 'box': return g('<rect x="-28" y="-18" width="56" height="44" rx="9"/><rect x="-33" y="-30" width="66" height="16" rx="6"/>');
+    case 'bread': return g('<ellipse cx="0" cy="0" rx="36" ry="22"/>');
+    case 'paw': return g('<ellipse cx="0" cy="10" rx="18" ry="15"/><circle cx="-20" cy="-10" r="7"/><circle cx="-7" cy="-20" r="7"/><circle cx="7" cy="-20" r="7"/><circle cx="20" cy="-10" r="7"/>');
+    case 'tv': return g('<rect x="-30" y="-18" width="60" height="42" rx="10"/><rect x="-3" y="-34" width="6" height="18" rx="3" transform="rotate(-30)"/><rect x="-3" y="-34" width="6" height="18" rx="3" transform="rotate(30)"/>');
+    case 'star': return g('<path d="M0-26 7-8 26-8 11 3 17 22 0 11-17 22-11 3-26-8-7-8Z"/>');
+    case 'lantern': return g('<rect x="-18" y="-20" width="36" height="44" rx="10"/><rect x="-10" y="-32" width="20" height="10" rx="4"/><circle cx="0" cy="2" r="9" fill="#fff" opacity=".7"/>');
+    case 'plane': return g('<path d="M-30 4 30-4 34 0 30 4ZM-4 0 8-24 14-24 10 0ZM-4 0 8 24 14 24 10 0ZM-28 0-34-12-28-12-20 0Z"/>');
+    case 'bubble': return g('<rect x="-32" y="-26" width="42" height="30" rx="12"/><path d="M-22 2-26 14-12 4Z"/><rect x="-6" y="-6" width="40" height="28" rx="12" opacity=".75"/><path d="M24 20 28 32 14 22Z" opacity=".75"/>');
+    default: return g('<circle r="14"/>');
+  }
+};
+function coverArt(p, kind){
+  const [a,b,c,d] = p;
+  const dots = [[120,140,1],[640,110,.8],[520,240,.6],[230,300,.7],[700,330,.9],[380,120,.5]];
+  return uri(SV('0 0 800 800',
+    `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>
+     <rect width="800" height="800" fill="url(#g)"/>
+     <circle cx="640" cy="200" r="90" fill="#fff" opacity=".55"/>
+     ${dots.map(([x,y,s])=>motif(kind,x,y,s*1.1,'#fff')).join('').replace(/fill="#fff"/g,'fill="#fff" opacity=".6"')}
+     <ellipse cx="160" cy="760" rx="420" ry="250" fill="${c}"/>
+     <ellipse cx="700" cy="800" rx="420" ry="230" fill="${d}"/>
+     ${motif(kind,250,600,1.6,'#fff')}${motif(kind,560,640,1.3,'#fff')}`));
+}
+function avatarArt(bg, kind, fg){ return uri(SV('0 0 200 200', `<rect width="200" height="200" fill="${bg}"/>${motif(kind,100,104,1.8,fg)}`)); }
+function scene(kind){
+  const W = (inner, bg) => uri(SV('0 0 800 600', `<rect width="800" height="600" fill="${bg}"/>${inner}`));
+  switch(kind){
+    case 'boxes': { let s=''; const cols=['#9DBBD6','#F2B8C0','#F4D58D','#B7D7C2'];
+      [260,500].forEach((row,ri)=>{ s+=`<rect x="0" y="${row}" width="800" height="18" fill="#D9CDBF"/>`;
+        for(let i=0;i<5;i++){ const x=36+i*152, h=120+((i+ri)%3)*26, col=cols[(i+ri*2)%4];
+          s+=`<rect x="${x}" y="${row-h}" width="124" height="${h}" rx="18" fill="${col}"/><rect x="${x}" y="${row-h+20}" width="124" height="7" fill="#fff" opacity=".5"/><text x="${x+62}" y="${row-h/2+22}" font-size="58" font-family="sans-serif" font-weight="700" text-anchor="middle" fill="#fff" opacity=".9">?</text>`; } });
+      return W(s,'#F1EEE8'); }
+    case 'gold': return W(`<circle cx="400" cy="300" r="220" fill="#fff" opacity=".6"/><rect x="290" y="250" width="220" height="190" rx="26" fill="#E9C46A"/><rect x="270" y="190" width="260" height="60" rx="18" fill="#F1D48A" transform="rotate(-12 400 220)"/><text x="400" y="380" font-size="96" font-family="sans-serif" font-weight="700" text-anchor="middle" fill="#fff">★</text>${[[200,160],[600,140],[640,420],[170,430],[400,90]].map(([x,y])=>`<path d="M${x} ${y-18}l5 13 13 5-13 5-5 13-5-13-13-5 13-5z" fill="#E9B949"/>`).join('')}`,'#EFE7F6');
+    case 'crowd': { let s=`<rect x="80" y="380" width="640" height="40" rx="20" fill="#D9CDBF"/>`; const cs=['#F2B8C0','#9DBBD6','#F4D58D','#B7D7C2','#D6C3E8','#F4C5A8','#BFE0DA'];
+      for(let i=0;i<7;i++){ const x=120+i*94, y=250+(i%2)*24; s+=`<rect x="${x-34}" y="${y+30}" width="68" height="110" rx="30" fill="${cs[i]}"/><circle cx="${x}" cy="${y}" r="32" fill="#F5DCC8"/><path d="M${x-32} ${y-4}a32 32 0 0 1 64 0z" fill="#5D5048" opacity=".75"/>`; }
+      return W(s+`<rect x="150" y="400" width="80" height="60" rx="10" fill="#9DBBD6"/><rect x="560" y="396" width="70" height="64" rx="10" fill="#F2B8C0"/>`,'#E6F0EA'); }
+    case 'park': return W(`<rect width="800" height="380" fill="#DCEBF5"/><circle cx="640" cy="110" r="56" fill="#F8E3A3"/><ellipse cx="400" cy="600" rx="600" ry="260" fill="#BFDDB5"/><rect x="170" y="230" width="18" height="140" fill="#9C8571"/><circle cx="180" cy="210" r="80" fill="#8FC08A"/><rect x="590" y="260" width="16" height="120" fill="#9C8571"/><circle cx="598" cy="240" r="64" fill="#A3CC98"/><path d="M300 470h220l40 80H260z" fill="#F2B8C0"/><path d="M340 470h30l-10 80h-40zM420 470h30l10 80h-40zM500 470h20l40 80h-30z" fill="#fff" opacity=".6"/>`,'#DCEBF5');
+    case 'cake': return W(`<ellipse cx="400" cy="470" rx="250" ry="50" fill="#fff"/><rect x="230" y="270" width="340" height="190" rx="20" fill="#FFF7F0"/><rect x="230" y="350" width="340" height="22" fill="#F2B8C0"/><ellipse cx="400" cy="272" rx="170" ry="26" fill="#FFFDF9"/>${[290,345,400,455,510].map(x=>`<circle cx="${x}" cy="252" r="20" fill="#E26D7A"/><path d="M${x-8} ${235}l8 -8 8 8z" fill="#7DB37A"/>`).join('')}`,'#F7E4D6');
+    case 'bread': return W(`<rect x="90" y="330" width="620" height="140" rx="30" fill="#C9A27E"/>${[220,400,580].map((x,i)=>`<ellipse cx="${x}" cy="${300-i%2*12}" rx="${100-i*6}" ry="70" fill="${['#D9A066','#C98E52','#DDAA74'][i]}"/><path d="M${x-50} ${280}q50 -30 100 0" stroke="#F3D7AE" stroke-width="9" fill="none" stroke-linecap="round"/>`).join('')}`,'#F2E9DD');
+    case 'cat': return W(`<rect x="460" y="70" width="250" height="300" rx="16" fill="#DCEBF5"/><path d="M585 70v300M460 220h250" stroke="#fff" stroke-width="10"/><rect x="0" y="470" width="800" height="130" fill="#E8DCCB"/><ellipse cx="300" cy="400" rx="120" ry="100" fill="#E9A15A"/><circle cx="300" cy="260" r="78" fill="#E9A15A"/><path d="M238 214l-6-72 54 44zM362 214l6-72-54 44z" fill="#E9A15A"/><path d="M410 440q90 10 80-90" stroke="#E9A15A" stroke-width="26" fill="none" stroke-linecap="round"/><path d="M262 240q10-8 20 0M318 240q10-8 20 0" stroke="#5D4A3A" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M292 268q8 8 16 0" stroke="#5D4A3A" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="420" y="330" width="120" height="120" rx="8" fill="#C9B6E0"/><rect x="420" y="330" width="120" height="30" rx="8" fill="#B5A0D0"/>`,'#F6F0DC');
+    case 'shelf': { let s=''; for(let r=0;r<3;r++){ s+=`<rect x="60" y="${180+r*150}" width="680" height="14" rx="4" fill="#C9D6E2"/>`; for(let i=0;i<8;i++){ s+=`<rect x="${82+i*82}" y="${120+r*150}" width="58" height="60" rx="12" fill="${['#F2B8C0','#9DBBD6','#F4D58D','#B7D7C2','#D6C3E8'][(i+r)%5]}"/>`; } }
+      return W(`<rect x="40" y="60" width="720" height="500" rx="14" fill="#fff" opacity=".7"/>`+s,'#EEF2F5'); }
+  }
+}
+const IMG = { boxes:scene('boxes'), gold:scene('gold'), crowd:scene('crowd'), park:scene('park'), cake:scene('cake'), bread:scene('bread'), cat:scene('cat'), shelf:scene('shelf') };
+const SAMPLES = ['park','cake','crowd','shelf','bread','boxes'];
+
+/* presets from spec: 5 avatar styles, one cover style in several colours */
+const AV_PRESETS = [
+  {k:'lantern', bg:'#F7E7C4', fg:'#D58A3A', zh:'遊戲', en:'Games'},
+  {k:'tv', bg:'#DCE7F3', fg:'#5B7FA6', zh:'動漫', en:'Anime'},
+  {k:'plane', bg:'#D9EDE1', fg:'#4F8A6B', zh:'旅遊', en:'Travel'},
+  {k:'paw', bg:'#F8DDE2', fg:'#D4627A', zh:'寵物', en:'Pets'},
+  {k:'bubble', bg:'#E7E0F2', fg:'#8A72B5', zh:'閒聊', en:'Chat'}
+].map(p => ({...p, src: avatarArt(p.bg, p.k, p.fg)}));
+const CV_PRESETS = [
+  {zh:'白', en:'White',  p:['#FFFFFF','#EEF0EC','#E1E5DE','#D5DBD1']},
+  {zh:'墨', en:'Ink',    p:['#7D8590','#5C636C','#4A5058','#3E444B']},
+  {zh:'藍', en:'Blue',   p:['#E3EEF8','#C9DCEE','#A9C6E2','#93B6D8']},
+  {zh:'綠', en:'Green',  p:['#E6F3E8','#CDE6D2','#A9D3B3','#93C5A0']},
+  {zh:'黃', en:'Yellow', p:['#FBF3D6','#F5E5AE','#EDD285','#E5C46B']},
+  {zh:'橙', en:'Orange', p:['#FCEBDD','#F8D6BC','#F2BC95','#EBA97A']},
+  {zh:'紅', en:'Red',    p:['#FCE8EB','#F7CED5','#EEAAB6','#E494A3']}
+].map(p => ({...p, src: coverArt(p.p, 'star')}));
+
+/* ================= i18n ================= */
+const L = {
+  app:['吉伊卡哇社團','Chiikawa Group'],
+  groups:['社團','Groups'], create:['建立','Create'],
+  myGroups:['我的社團','Your groups'], suggested:['推薦社團','Suggested for you'],
+  public:['公開社團','Public group'], private:['私密社團','Private group'],
+  members:n=>[`${n} 位成員`,`${n} members`],
+  join:['加入社團','Join group'], joined:['已加入','Joined'], request:['申請加入','Request to join'], pending:['審核中','Request sent'],
+  invite:['邀請','Invite'], view:['查看','View'],
+  tabs:[['討論','簡介','成員','相片'],['Discussion','About','Members','Photos']],
+  whatsNew:['想分享什麼呢？','Write something…'],
+  admin:['管理員','Admin'],
+  like:['讚','Like'], comment:['留言','Comment'], share:['分享','Share'],
+  nComments:n=>[`${n} 則留言`,`${n} comments`], nShares:n=>[`${n} 次分享`,`${n} shares`],
+  youAnd:n=> n>0 ? [`你和其他 ${n} 人`,`You and ${n} others`] : ['你','You'],
+  showMore:['⋯⋯ 顯示更多','… See more'],
+  reply:['回覆','Reply'], replyingTo:n=>[`正在回覆 <b>${n}</b>`,`Replying to <b>${n}</b>`], replyingSelf:['正在回覆自己','Replying to yourself'],
+  writeComment:['留言⋯','Write a comment…'], membersOnlyComment:['只有社團成員才可以留言喔','Only members can comment'], membersOnlyReply:['只有社團成員才可以回覆喔','Only members can reply'], membersOnlyReact:['只有社團成員才可以按讚喔','Only members can react'],
+  commentsH:n=>[`留言 ${n}`,`Comments ${n}`],
+  post:['貼文','Post'], newPost:['建立貼文','Create post'], publish:['發佈','Post'], cancel:['取消','Cancel'],
+  postTo:g=>[`發佈到 ${g}`,`Posting to ${g}`],
+  composePh:['分享你的想法、開盒心得或活動消息⋯','Share a thought, an unboxing or an event…'],
+  photo:['相片','Photo'], camera:['拍照','Camera'], sample:['範例相片','Sample photo'],
+  limitText:['嘿！字數達到上限囉','Hey! You\'ve reached the character limit'], limitMedia:['嘿！媒體上傳達到上限','Hey! You\'ve reached the media limit'],
+  draftQ:['要保留這篇貼文嗎？','Keep this post?'], draftSave:['儲存為草稿','Save as draft'], draftDiscard:['不保存','Discard'],
+  draftSaved:['草稿將在下次發文時自動帶入','Your draft will open next time you post'], draftLoaded:['已帶入上次儲存的草稿','Your saved draft is back'],
+  uploading:['貼文上傳中⋯','Uploading post…'], uploadingLeave:['貼文上傳中\n晚點再離開喔','Uploading your post\nPlease wait a moment'],
+  shareTitle:['分享貼文','Share post'], shareNote:['將直接分享原貼文，無法加上文字','The original post is shared as is, with no added text'],
+  toGroup:['分享至社團','Share to a group'], toGroupSub:['選擇你加入的社團','Pick one of your groups'],
+  toProfile:['分享到個人動態','Share to your profile'], toProfileSub:['好友會在動態上看到','Your friends see it in their feed'],
+  copyLink:['複製連結','Copy link'], copyLinkSub:['貼到其他地方','Paste it anywhere'],
+  copied:['已複製','Link copied'], shared:['分享成功','Shared'], sharedProfile:['已分享到你的個人動態','Shared to your profile'],
+  pickGroup:['分享到哪個社團？','Share to which group?'], noGroups:['你還沒有加入任何社團','You haven\'t joined any groups yet'],
+  sharedPost:['分享了一則貼文','shared a post'], from:g=>[`來自 ${g}`,`From ${g}`],
+  joinedToast:['已加入社團','You joined the group'], reqToast:['已送出申請，等待管理員審核','Request sent. An admin will review it.'],
+  cancelReq:['取消申請','Cancel request'], cancelReqToast:['已取消申請','Request cancelled'],
+  approved:g=>[`你已成為「${g}」的成員`,`You're now a member of ${g}`],
+  lockedH:['這是私密社團','This group is private'], lockedP:['加入後才能看到成員與貼文','Join to see members and posts'],
+  inviteFriends:['邀請好友','Invite friends'], inviteSub:['邀請好友一起來佈置社團','Invite friends to build the group with you'], invited:['已邀請','Invited'], copyGroupLink:['複製社團連結','Copy group link'],
+  leave:['退出社團','Leave group'], leaveQ:g=>[`確定要退出「${g}」嗎？`,`Leave ${g}?`], leaveP:['退出後就看不到社團貼文了','You will no longer see this group\'s posts'], left:['已退出社團','You left the group'], leaveBtn:['退出','Leave'],
+  reactions:['心情','Reactions'], all:['全部','All'], people:n=>[`${n} 人`,`${n} people`],
+  /* create */
+  createGroup:['建立社團','Create group'], cName:['社團名稱','Group name'], cNamePh:['例如：週末烘焙研究室','e.g. Weekend Baking Lab'],
+  cCat:['社團分類','Category'], cCreate:['建立','Create'], errTrim:['哎呀 名字的前後不要留空白喔','Oops, no spaces at the start or end'], errDup:['嗚嗚 名稱已經被取走了','Sorry, that name is taken'],
+  cIntroH:['幫你的社團取個名字','Name your group'], cIntroP:['名稱和分類之後都能在社團設定中修改','You can change the name and category later in settings'],
+  doneH:['社團建立好了！','Your group is ready!'], doneP:['接下來幫社團換上頭像和背景，再寫一段簡介吧','Next, add a picture, a cover and a short description'],
+  startSetup:['開始設定','Start setting up'], later:['稍後繼續','Do it later'],
+  stepOf:(a,b)=>[`步驟 ${a} / ${b}`,`STEP ${a} OF ${b}`],
+  avH:['選一個社團頭像','Choose a group picture'], avP:['頭像會出現在社團列表和大廳','It shows in group lists and the lobby'],
+  cvH:['換上社團背景','Add a cover image'], cvP:['背景是成員進入大廳時第一眼看到的畫面','It\'s the first thing members see in the lobby'],
+  inH:['寫一段社團簡介','Describe your group'], inP:['讓新成員知道這裡在聊什麼、有哪些規則','Tell new members what it\'s about and the house rules'],
+  inPh:['例如：這裡是分享週末烘焙作品的地方，歡迎新手提問！','e.g. A place to share weekend bakes. Beginners welcome!'],
+  next:['下一步','Next'], done:['完成','Done'], skip:['略過','Skip'],
+  pickPhoto:['選擇相片','Choose photo'], takePhoto:['拍攝相片','Take photo'],
+  introLimit:['哇，到達字數上限啦，內容已經超豐富了','Wow, you\'ve hit the limit. That\'s a lot of detail!'],
+  preview:['預覽','Preview'], ownPhoto:['自訂','Custom'],
+  /* about */
+  aboutCreated:y=>[`建立於 ${y} 年`,`Created in ${y}`], aboutCat:['分類','Category'],
+  aboutPub:['任何人都能看到成員與貼文','Anyone can see members and posts'], aboutPriv:['只有成員能看到成員與貼文','Only members can see members and posts'],
+  adminsH:['管理員','Admins'], membersH:['成員','Members'], noIntro:['管理員還沒有寫簡介','The admin hasn\'t written a description yet'],
+  noPosts:['還沒有貼文，來發第一篇吧！','No posts yet. Be the first to post!'], noPhotos:['還沒有相片','No photos yet'],
+  justNow:['剛剛','Just now'], you:['你','You']
+};
+const t = (k, ...a) => { let v = L[k]; if (typeof v === 'function') v = v(...a); return v[S.lang === 'zh' ? 0 : 1]; };
+const loc = o => o == null ? '' : (typeof o === 'string' ? o : o[S.lang]);
+const fmtN = n => S.lang === 'zh'
+  ? (n < 10000 ? n.toLocaleString('en-US') : (Math.floor(n/1000)/10) + '萬')
+  : (n < 10000 ? n.toLocaleString('en-US') : (Math.floor(n/100)/10) + 'K');
+function fmtT(m){
+  const zh = S.lang === 'zh';
+  if (m < 1) return t('justNow');
+  if (m < 60) return zh ? `${m} 分鐘前` : `${m}m`;
+  if (m < 1440) return zh ? `${Math.floor(m/60)} 小時前` : `${Math.floor(m/60)}h`;
+  if (m < 10080) return zh ? `${Math.floor(m/1440)} 天前` : `${Math.floor(m/1440)}d`;
+  if (m < 43200) return zh ? `${Math.floor(m/10080)} 週前` : `${Math.floor(m/10080)}w`;
+  if (m < 525600) return zh ? `${Math.floor(m/43200)} 個月前` : `${Math.floor(m/43200)}mo`;
+  return zh ? `${Math.floor(m/525600)} 年前` : `${Math.floor(m/525600)}y`;
+}
+const CATS = { game:['遊戲','Games'], anime:['動漫','Anime'], novel:['小說','Fiction'], tech:['3C','Tech'], food:['美食','Food'], blindbox:['盲盒','Blind boxes'], movie:['電影','Movies'], event:['活動','Events'], pet:['寵物','Pets'], chat:['閒聊','Chit-chat'] };
+const cat = k => CATS[k][S.lang==='zh'?0:1];
+const RX = [
+  {k:'like', e:'👍', zh:'讚', en:'Like', c:'var(--r-like)'},
+  {k:'love', e:'❤️', zh:'愛心', en:'Love', c:'var(--r-love)'},
+  {k:'haha', e:'😆', zh:'大笑', en:'Haha', c:'var(--r-haha)'},
+  {k:'angry', e:'😡', zh:'生氣', en:'Angry', c:'var(--r-angry)'},
+  {k:'wow', e:'😮', zh:'驚訝', en:'Wow', c:'var(--r-wow)'}
+];
+const RXM = Object.fromEntries(RX.map(r => [r.k, r]));
+
+/* ================= data ================= */
+const U = {
+  me:{zh:'小蘭',en:'Lan',c:'#F2C9D0'}, mimi:{zh:'米米',en:'Mimi',c:'#C6DAEB'}, che:{zh:'阿哲',en:'Che',c:'#CFE3C2'},
+  yuzu:{zh:'柚子',en:'Yuzu',c:'#F4DCA6'}, bear:{zh:'大熊',en:'Bear',c:'#DCCDEB'}, aoi:{zh:'小葵',en:'Aoi',c:'#F6CFB6'},
+  dou:{zh:'豆花',en:'Douhua',c:'#C8E5DF'}, momo:{zh:'桃桃',en:'Momo',c:'#F6D0DA'}, kai:{zh:'阿凱',en:'Kai',c:'#D5DDE6'}
+};
+const R = (like=0,love=0,haha=0,angry=0,wow=0) => ({like,love,haha,angry,wow});
+let _id = 100; const nid = p => p + (++_id);
+const C = (id, author, mins, zh, en, r, replies=[], to) => ({id, author, mins, text:{zh,en}, r, mine:null, replies, to});
+
+const SITE_LANG_KEY = 'bella-portfolio-language';
+const S = {
+  lang:(() => { try { return localStorage.getItem(SITE_LANG_KEY) === 'zh' ? 'zh' : 'en'; } catch(e){ return 'en'; } })(), ratio:'imm', stack:[{s:'explore'}], tab:'feed', drafts:{}, replying:null, expanded:new Set(),
+  uploading:null, compose:null, create:null, metric:null, fileTarget:null,
+  groups:[
+    { id:'g1', name:{zh:'盲盒交換所',en:'Blind Box Swap'}, cat:'blindbox', priv:false, members:3284, joined:true, pending:false, admin:'mimi', year:2021,
+      cover:coverArt(['#FCE8EB','#E9D9EE','#C9DCEE','#F2C3CC'],'box'), avatar:avatarArt('#F8DDE2','box','#D4627A'),
+      intro:{zh:'歡迎來到盲盒交換所！這裡是大家交換盒玩、分享開盒心得的地方。\n\n・每月第二個週六舉辦實體交換日\n・交換請在貼文中標明系列與款式\n・請友善留言，謝絕代購廣告',
+             en:'Welcome to Blind Box Swap! Trade figures and share your unboxings here.\n\n• In-person swap day on the second Saturday of every month\n• Name the series and figure when you post a trade\n• Be kind in the comments. No reseller ads, please.'},
+      posts:[
+        { id:'p1', author:'mimi', mins:95, imgs:[IMG.boxes, IMG.crowd], r:R(182,96,12,0,8), mine:null, shares:14,
+          text:{zh:'【本週交換日】週六下午兩點在老地方集合，記得帶上想交換的盒子！\n這次也有新系列的拼團，想參加的在底下留言 +1 🙌',
+                en:'[Swap day this week] Meet at the usual spot on Saturday at 2 pm and bring the boxes you want to trade!\nWe\'re also running a group order for the new series. Comment +1 if you\'re in 🙌'},
+          comments:[
+            C('c1','che',80,'+1！想換藍色那款','+1! I\'m after the blue one',R(6),[
+              C('r1','mimi',70,'有喔，我這邊多一盒，週六帶給你','I have a spare, I\'ll bring it on Saturday',R(3,1),[], 'che'),
+              C('r2','che',65,'太好了！先謝謝 🙏','Amazing, thank you 🙏',R(2),[], 'mimi')
+            ]),
+            C('c2','aoi',50,'第一次參加，請問需要先報名嗎？大概會有多少人呢？想說要帶多少盒子比較剛好，怕帶太多換不完，帶太少又覺得可惜','First time joining! Do I need to sign up? Roughly how many people come? I\'m trying to work out how many boxes to bring so I don\'t bring too many or too few.',R(2),[
+              C('r3','yuzu',40,'不用報名，直接來就好！通常二、三十人','No sign-up needed, just come! Usually 20 to 30 people.',R(4),[], 'aoi')
+            ])
+          ]},
+        { id:'p2', author:'che', mins:300, imgs:[IMG.gold], r:R(130,241,20,0,77), mine:null, shares:9,
+          text:{zh:'終於抽到隱藏款了！！開盒的瞬間手都在抖 😭', en:'Finally pulled the secret figure!! My hands were shaking when I opened it 😭'},
+          comments:[ C('c3','bear',240,'恭喜！！這款機率超低的','Congrats!! The odds on that one are tiny',R(12)), C('c4','dou',200,'羨慕到睡不著','So jealous I can\'t sleep',R(1,0,5)) ]},
+        { id:'p3', author:'yuzu', mins:1500, imgs:[], r:R(40,0,33,0,0), mine:null, shares:1,
+          text:{zh:'想問大家都怎麼收納盒玩？房間已經快被盒子佔領了，層架買了兩個還是不夠放。有沒有推薦的展示櫃或收納方式？拜託大家分享一下自己的收納角落，我需要靈感！',
+                en:'How does everyone store their figures? Boxes have taken over my room and two shelves still aren\'t enough. Any display cases or storage ideas you\'d recommend? Please share your setups, I need inspiration!'},
+          comments:[ C('c5','bear',1400,'我是用透明壓克力階梯架，一層可以放十幾隻','I use clear acrylic step risers. Each tier holds a dozen or more.',R(9)) ]},
+        { id:'p4', author:'bear', mins:12000, imgs:[IMG.crowd, IMG.park, IMG.shelf, IMG.cake, IMG.boxes], r:R(300,88,0,0,0), mine:null, shares:3,
+          text:{zh:'上個月交換日的合照～謝謝大家來玩！',en:'Photos from last month\'s swap day. Thanks for coming, everyone!'}, comments:[] }
+      ]},
+    { id:'g2', name:{zh:'週末烘焙研究室',en:'Weekend Baking Lab'}, cat:'food', priv:false, members:12580, joined:true, pending:false, admin:'aoi', year:2021,
+      cover:coverArt(['#FCEBDD','#F8E3CF','#EFC9A7','#E5B58C'],'bread'), avatar:avatarArt('#FCEBDD','bread','#C98E52'),
+      intro:{zh:'分享週末烘焙作品的地方，新手提問也很歡迎！',en:'Share your weekend bakes here. Beginner questions welcome!'},
+      posts:[
+        { id:'p5', author:'aoi', mins:180, imgs:[IMG.cake], r:R(220,512,0,0,31), mine:null, shares:22,
+          text:{zh:'今天的草莓鮮奶油蛋糕，第一次挑戰抹面！',en:'Strawberry cream cake today. My first try at a smooth finish!'},
+          comments:[ C('c6','dou',150,'抹面超平！教學在哪裡看的？','So smooth! Where did you learn?',R(8)) ]},
+        { id:'p6', author:'dou', mins:2900, imgs:[IMG.bread], r:R(98,40,0,0,6), mine:null, shares:2,
+          text:{zh:'酸種麵包第三次嘗試，終於有漂亮的開口了',en:'Third sourdough attempt and I finally got a nice ear'}, comments:[] }
+      ]},
+    { id:'g3', name:{zh:'台北貓咪互助會',en:'Taipei Cat Circle'}, cat:'pet', priv:false, members:8420, joined:false, pending:false, admin:'dou', year:2021,
+      cover:coverArt(['#FBF3D6','#F5E8C2','#E9D39A','#DEC47F'],'paw'), avatar:avatarArt('#FBF3D6','paw','#C99A2E'),
+      intro:{zh:'台北貓奴的互助社團：認養資訊、看診推薦、日常分享。',en:'Mutual help for Taipei cat people: adoptions, vet tips and daily cat life.'},
+      posts:[
+        { id:'p7', author:'dou', mins:420, imgs:[IMG.cat], r:R(120,98,340,0,0), mine:null, shares:31,
+          text:{zh:'家裡的橘貓今天學會開抽屜了⋯⋯有人知道怎麼防嗎',en:'My orange cat learned to open drawers today… any tips to stop this?'},
+          comments:[ C('c7','aoi',400,'牠接下來就會學會開冰箱了','The fridge is next',R(3,0,21)) ]}
+      ]},
+    { id:'g4', name:{zh:'收藏家私人俱樂部',en:'Collectors\' Room'}, cat:'blindbox', priv:true, members:642, joined:false, pending:false, admin:'bear', year:2022,
+      cover:coverArt(['#D9E6F3','#B9CFE6','#8FB0D3','#7B9FC6'],'star'), avatar:avatarArt('#DCE7F3','star','#5B7FA6'),
+      intro:{zh:'稀有款與限定款收藏家的小天地。需經管理員審核後加入。',en:'A small room for collectors of rare and limited figures. Admin approval required.'},
+      posts:[
+        { id:'p8', author:'bear', mins:60, imgs:[IMG.shelf], r:R(44,30,0,0,12), mine:null, shares:0,
+          text:{zh:'新入手的展示櫃，終於把限定款都排好了',en:'New display cabinet. All the limited editions are finally lined up.'}, comments:[] }
+      ]},
+    { id:'g5', name:{zh:'動畫討論',en:'Anime Talk'}, cat:'anime', priv:false, members:25031, joined:false, pending:false, admin:'che', year:2021,
+      cover:coverArt(['#E7E0F2','#D7CCEB','#B9A9DA','#A592CF'],'tv'), avatar:avatarArt('#E7E0F2','tv','#8A72B5'),
+      intro:{zh:'追番、心得、角色閒聊。請勿劇透！',en:'What we\'re watching, reviews and chats. No spoilers!'},
+      posts:[
+        { id:'p9', author:'che', mins:90, imgs:[], r:R(66,10,4,0,0), mine:null, shares:5,
+          text:{zh:'這季大家追哪幾部？我先推兩部治癒系，下班看剛剛好',en:'What is everyone watching this season? I\'ll start with two cozy ones, perfect after work'},
+          comments:[ C('c8','momo',60,'我在追料理番，每集都看到餓','I\'m on a cooking show. Hungry every episode.',R(7)) ]}
+      ]}
+  ]
+};
+const G = id => S.groups.find(g => g.id === id);
+const myName = () => loc(U.me);
+function findPost(pid){ for (const g of S.groups) for (const p of g.posts) if (p.id === pid) return {g, p}; return null; }
+function findTarget(key){
+  const [type, id] = key.split('|');
+  if (type === 'p') return findPost(id)?.p;
+  for (const g of S.groups) for (const p of g.posts) for (const c of p.comments){
+    if (c.id === id) return c;
+    for (const r of c.replies) if (r.id === id) return r;
+  }
+}
+const isMember = g => g.joined;
+const cmtCount = p => p.comments.reduce((n,c) => n + 1 + c.replies.length, 0);
+const rxTotal = r => Object.values(r).reduce((a,b) => a+b, 0);
+const rxTop = r => Object.entries(r).filter(([,n]) => n > 0).sort((a,b) => b[1]-a[1]).slice(0,3).map(([k]) => k);
+
+/* ================= rendering ================= */
+const screen = $('#screen'), overlay = $('#overlay'), pickerLayer = $('#pickerLayer');
+const cur = () => S.stack[S.stack.length - 1];
+const av = (u, cls='') => `<span class="av ${cls}" style="background:${U[u].c}" aria-hidden="true">${esc(loc(U[u]).slice(0,1))}</span>`;
+const gAvatar = (g, cls='gav') => `<span class="${cls}"><img src="${g.avatar}" alt=""></span>`;
+const privMeta = g => `${g.priv ? I.lock : I.globe}<span>${t(g.priv ? 'private' : 'public')}</span>`;
+
+function render(opts = {}){
+  const sc = screen.querySelector('.scr');
+  const prev = sc ? sc.scrollTop : 0;
+  const c = cur();
+  const html = SCREENS[c.s](c);
+  screen.className = 'screen' + (opts.anim ? ' enter' : '');
+  screen.innerHTML = html;
+  const ns = screen.querySelector('.scr');
+  if (ns){
+    if (opts.anim) ns.scrollTop = c.scroll || 0; else ns.scrollTop = prev;
+    if (c.s === 'lobby'){ ns.addEventListener('scroll', onLobbyScroll, {passive:true}); onLobbyScroll(); }
+  }
+  setStatus();
+  if (opts.after) opts.after();
+  if (c.s === 'lobby') measure();
+  renderPanel();
+}
+function setStatus(){
+  const c = cur(); const st = $('#status');
+  let light = false;
+  if (c.s === 'lobby' && S.ratio === 'imm'){ const sc = screen.querySelector('.scr'); light = !(sc && sc.scrollTop > coverH() - 100); }
+  st.classList.toggle('light', light);
+}
+const coverH = () => S.ratio === 'imm' ? 470 : S.ratio === 'large' ? 292 : 219;
+
+function go(s, params = {}){
+  const sc = screen.querySelector('.scr'); if (sc) cur().scroll = sc.scrollTop;
+  S.stack.push({s, ...params}); closePicker(); render({anim:true});
+}
+function back(){
+  if (S.stack.length > 1){ S.stack.pop(); S.replying = null; closePicker(); render({anim:true}); }
+}
+function replaceTop(s, params = {}){ S.stack[S.stack.length-1] = {s, ...params}; render({anim:true}); }
+
+const SCREENS = {};
+
+/* ---- explore ---- */
+SCREENS.explore = () => {
+  const mine = S.groups.filter(g => g.joined);
+  const sug = S.groups.filter(g => !g.joined);
+  return `
+  <div class="ex-head"><div><h1>${t('groups')}</h1></div>
+    <button class="ex-create" data-a="startCreate">${I.plus}${t('createGroup')}</button></div>
+  <div class="scr">
+    <section class="sec"><h2>${t('myGroups')}</h2>
+      ${mine.length ? `<div class="mine">${mine.map(g => `
+        <button class="gcard" data-a="open" data-gid="${g.id}">
+          <div class="cv"><img src="${g.cover}" alt=""></div>
+          <div class="gb">${gAvatar(g)}<div style="min-width:0"><div class="gname">${esc(loc(g.name))}</div><div class="gmeta">${privMeta(g)}</div></div></div>
+        </button>`).join('')}</div>` : `<div class="empty">${t('noGroups')}</div>`}
+    </section>
+    <section class="sec"><h2>${t('suggested')}</h2>
+      ${sug.map(g => `
+        <div class="grow" role="button" tabindex="0" data-a="open" data-gid="${g.id}">
+          ${gAvatar(g)}
+          <div class="gi"><div class="gname">${esc(loc(g.name))}</div>
+            <div class="gmeta">${privMeta(g)}<span>·</span><span>${t('members', fmtN(g.members))}</span></div>
+            <div class="gmeta">${cat(g.cat)}</div></div>
+          ${g.pending ? `<span class="chip-btn ghost">${t('pending')}</span>`
+            : `<button class="chip-btn" data-a="join" data-gid="${g.id}">${t(g.priv ? 'request' : 'join')}</button>`}
+        </div>`).join('') || `<div class="empty">—</div>`}
+    </section>
+    <div style="height:40px"></div>
+  </div>`;
+};
+
+/* ---- lobby ---- */
+function memberBtn(g){
+  if (g.joined) return `<button class="mbtn out" data-a="groupMore" data-gid="${g.id}">${I.check}${t('joined')}</button><button class="mbtn inv" data-a="invite" data-gid="${g.id}">${I.plus}${t('invite')}</button>`;
+  if (g.pending) return `<button class="mbtn pend" data-a="pendingMenu" data-gid="${g.id}">${I.clock}${t('pending')}</button>`;
+  return `<button class="mbtn fill" data-a="join" data-gid="${g.id}">${g.priv ? I.lock : I.plus}${t(g.priv ? 'request' : 'join')}</button>`;
+}
+function membersRow(g){
+  if (g.priv && !g.joined) return '';
+  const us = ['mimi','che','yuzu','bear','aoi'];
+  return `<div class="members"><span class="stack">${us.map(u => av(u,'xs')).join('')}</span><span>${t('members', fmtN(g.members))}</span></div>`;
+}
+SCREENS.lobby = c => {
+  const g = G(c.gid);
+  const imm = S.ratio === 'imm';
+  const aspect = S.ratio === 'large' ? '4/3' : '16/9';
+  const locked = g.priv && !g.joined;
+  const tab = c.tab || 'feed';
+  const head = imm ? `
+    <div class="cover imm" style="height:470px"><img src="${g.cover}" alt="">
+      <div class="imm-info">${gAvatar(g)}<h2>${esc(loc(g.name))}</h2><div class="gmeta">${privMeta(g)}<span>·</span><span>${cat(g.cat)}</span></div></div>
+    </div>
+    <div class="info" style="padding-top:14px"><div class="row" style="margin-top:0">${memberBtn(g)}</div>${membersRow(g)}</div>`
+  : `<div style="height:92px"></div>
+    <div class="cover" style="aspect-ratio:${aspect}"><img src="${g.cover}" alt=""></div>
+    <div class="info std">${gAvatar(g)}<h2>${esc(loc(g.name))}</h2><div class="gmeta">${privMeta(g)}<span>·</span><span>${cat(g.cat)}</span></div>
+      <div class="row">${memberBtn(g)}</div>${membersRow(g)}</div>`;
+  const tabs = ['feed','about','members','photos'];
+  const tl = L.tabs[S.lang === 'zh' ? 0 : 1];
+  let body = '';
+  if (tab === 'feed'){
+    if (locked) body = `<div class="lockbox">${I.lock}<h3>${t('lockedH')}</h3><p>${t('lockedP')}</p></div>`;
+    else {
+      body = (g.joined ? `<div class="composer" id="composerRow">${av('me','sm')}<button class="fake" data-a="compose" data-gid="${g.id}">${t('whatsNew')}</button><button class="ib" data-a="compose" data-gid="${g.id}" data-photo="1" aria-label="${t('photo')}">${I.image}</button></div>` : '')
+        + (S.uploading === g.id ? `<div class="upbar"><span>${t('uploading')}</span><span class="bar"><i></i></span></div>` : '')
+        + (g.posts.length ? g.posts.map(p => postCard(g, p, 'lobby')).join('') : `<div class="empty" style="background:var(--card)">${t('noPosts')}</div>`);
+    }
+  } else if (tab === 'about') body = aboutTab(g);
+  else if (tab === 'members') body = locked ? `<div class="lockbox">${I.lock}<h3>${t('lockedH')}</h3><p>${t('lockedP')}</p></div>` : membersTab(g);
+  else body = locked ? `<div class="lockbox">${I.lock}<h3>${t('lockedH')}</h3><p>${t('lockedP')}</p></div>` : photosTab(g);
+  return `
+  <div class="lob-bar ${imm ? 'over' : 'solid'}" id="lobBar">
+    <button class="ib" data-a="back" aria-label="Back">${I.back}</button>
+    <span class="t">${esc(loc(g.name))}</span>
+    <button class="ib" data-a="groupMore" data-gid="${g.id}" aria-label="More">${I.more}</button>
+  </div>
+  <div class="scr">
+    ${head}
+    <div class="tabs" role="tablist">${tabs.map((k,i) => `<button role="tab" aria-selected="${tab===k}" data-a="tab" data-v="${k}">${tl[i]}</button>`).join('')}</div>
+    <div class="feed">${body}</div>
+  </div>
+  ${g.joined && tab === 'feed' ? `<button class="fab off" id="fab" data-a="compose" data-gid="${g.id}" aria-label="${t('newPost')}">${I.pen}</button>` : ''}`;
+};
+function onLobbyScroll(){
+  const sc = screen.querySelector('.scr'); const bar = $('#lobBar'); if (!sc || !bar) return;
+  const y = sc.scrollTop, imm = S.ratio === 'imm';
+  if (imm){ const solid = y > coverH() - 100; bar.classList.toggle('solid', solid); bar.classList.toggle('over', !solid); bar.classList.toggle('show-t', solid); }
+  else bar.classList.toggle('show-t', y > coverH() + 40);
+  const fab = $('#fab'), comp = $('#composerRow');
+  if (fab && comp) fab.classList.toggle('off', y < comp.offsetTop + comp.offsetHeight - 92);
+  setStatus();
+}
+function measure(){
+  const sc = screen.querySelector('.scr'); const first = sc && sc.querySelector('.post');
+  const vh = 844;
+  const coverPx = coverH() + (S.ratio === 'imm' ? 0 : 92);
+  S.metric = { cover: Math.round(coverH() / vh * 100), firstTop: first ? Math.round(first.offsetTop) : null, visible: first ? first.offsetTop + 180 < vh : false, ratio:S.ratio };
+}
+
+/* ---- post card ---- */
+function rxSummary(target, key){
+  const total = rxTotal(target.r);
+  if (!total) return `<span></span>`;
+  const top = rxTop(target.r);
+  const label = target.mine ? t('youAnd', total - 1) : fmtN(total);
+  return `<button class="rx" data-a="reactList" data-k="${key}"><span class="emo">${top.map(k => `<span>${RXM[k].e}</span>`).join('')}</span><span>${label}</span></button>`;
+}
+function reactBtn(target, key, cls = 'act'){
+  const m = target.mine ? RXM[target.mine] : null;
+  const label = m ? m[S.lang] : t('like');
+  const inner = cls === 'act' ? (m ? `<span class="e">${m.e}</span>` : I.like) + `<span>${label}</span>` : label;
+  return `<button class="${cls} ${m ? 'on' : ''}" data-rk="${key}" ${m ? `style="color:${m.c}"` : ''} aria-label="${label}" title="${S.lang==='zh'?'長按可選擇心情':'Press and hold for more reactions'}">${inner}</button>`;
+}
+function imgGrid(p, g, where){
+  const n = p.imgs.length; if (!n) return '';
+  const shown = p.imgs.slice(0, 4); const cls = n >= 4 ? 'n4' : 'n' + n;
+  return `<div class="imgs ${cls}" data-a="openPost" data-gid="${g.id}" data-pid="${p.id}">${shown.map((src,i) => `<div class="c"><img src="${src}" alt="">${i === 3 && n > 4 ? `<span class="plus">+${n-4}</span>` : ''}</div>`).join('')}</div>`;
+}
+function embedCard(ref){
+  const f = findPost(ref.pid); if (!f) return '';
+  const {g, p} = f;
+  return `<button class="embed" data-a="openPost" data-gid="${g.id}" data-pid="${p.id}">
+    ${p.imgs[0] ? `<img src="${p.imgs[0]}" alt="">` : ''}
+    <div class="eh">${av(p.author,'xs')}<span class="pn" style="font-size:13px">${esc(loc(U[p.author]))}</span></div>
+    <div class="et clamp2">${esc(loc(p.text))}</div>
+    <div class="src">${gAvatar(g,'av xs')}<span>${t('from', esc(loc(g.name)))}</span></div></button>`;
+}
+function postCard(g, p, where){
+  const key = 'p|' + p.id;
+  const txt = loc(p.text);
+  const long = where === 'lobby' && txt.length > (S.lang === 'zh' ? 70 : 160) && !S.expanded.has(p.id);
+  const cc = cmtCount(p);
+  return `<article class="post" id="post-${p.id}">
+    <header class="ph">${av(p.author)}<div class="pm"><div class="pn">${esc(loc(U[p.author]))}${p.author === g.admin ? `<span class="badge">${t('admin')}</span>` : ''}${p.shared ? `<span style="font-weight:400;color:var(--ink-3);font-size:13px">${t('sharedPost')}</span>` : ''}</div><div class="pt">${fmtT(p.mins)}</div></div><button class="ib" aria-label="More">${I.more}</button></header>
+    ${txt ? `<button class="ptext ${long ? 'clamp4' : ''}" ${where === 'lobby' ? `data-a="openPost" data-gid="${g.id}" data-pid="${p.id}"` : 'tabindex="-1"'}>${esc(txt)}</button>${long ? `<button class="morel" data-a="expand" data-id="${p.id}">${t('showMore')}</button>` : ''}` : '<div style="height:10px"></div>'}
+    ${p.shared ? embedCard(p.shared) : imgGrid(p, g, where)}
+    <div class="psum">${rxSummary(p, key)}<span>${cc ? (where === 'lobby' ? `<button data-a="openPost" data-gid="${g.id}" data-pid="${p.id}">${t('nComments', cc)}</button>` : t('nComments', cc)) : ''}${cc && p.shares ? ' · ' : ''}${p.shares ? t('nShares', p.shares) : ''}</span></div>
+    <div class="pact">${reactBtn(p, key)}<button class="act" data-a="commentBtn" data-gid="${g.id}" data-pid="${p.id}">${I.comment}<span>${t('comment')}</span></button><button class="act" data-a="share" data-pid="${p.id}">${I.share}<span>${t('share')}</span></button></div>
+  </article>`;
+}
+
+/* ---- detail ---- */
+function commentEl(c, top, g){
+  const key = 'c|' + c.id;
+  const txt = loc(c.text);
+  const long = txt.length > (S.lang === 'zh' ? 44 : 90) && !S.expanded.has(c.id);
+  const total = rxTotal(c.r);
+  const focus = S.replying && S.replying.focus === c.id;
+  return `<div class="cm ${top ? '' : 'reply'} ${focus ? 'focus' : ''}" id="cm-${c.id}">
+    ${av(c.author, 'sm')}
+    <div class="cb">
+      <div class="bubble"><div class="cn">${esc(loc(U[c.author]))}${c.author === g.admin ? ` <span class="badge">${t('admin')}</span>` : ''}</div>
+        <div class="ct ${long ? 'clamp2' : ''}">${c.to ? `<span class="mention">@${esc(loc(U[c.to]))}</span> ` : ''}${esc(txt)}</div>
+        ${long ? `<button class="more-in" data-a="expand" data-id="${c.id}">${t('showMore')}</button>` : ''}</div>
+      <div class="cmeta"><span>${fmtT(c.mins)}</span>${reactBtn(c, key, 'lnk')}<button class="lnk" data-a="reply" data-top="${top ? c.id : top_of(c.id)}" data-cid="${c.id}" data-u="${c.author}">${t('reply')}</button>
+        ${total ? `<span class="cr"><span class="emo">${rxTop(c.r).map(k => `<span>${RXM[k].e}</span>`).join('')}</span>${fmtN(total)}</span>` : ''}</div>
+    </div></div>`;
+}
+function top_of(rid){ for (const g of S.groups) for (const p of g.posts) for (const c of p.comments) if (c.replies.some(r => r.id === rid)) return c.id; return rid; }
+SCREENS.detail = c => {
+  const {g, p} = findPost(c.pid);
+  const cc = cmtCount(p);
+  const rp = S.replying;
+  return `
+  <div class="topbar"><button class="ib" data-a="back" aria-label="Back">${I.back}</button><h1>${esc(loc(g.name))}</h1><button class="ib" aria-label="More">${I.more}</button></div>
+  <div class="scr">
+    ${postCard(g, p, 'detail')}
+    <section class="cmts"><h3>${t('commentsH', cc)}</h3>
+      ${p.comments.map(cm => commentEl(cm, true, g) + cm.replies.map(r => commentEl(r, false, g)).join('')).join('') || `<div class="empty" style="padding:16px 0">—</div>`}
+    </section>
+  </div>
+  <div class="ibar">
+    ${rp ? `<div class="replying"><span>${rp.u === 'me' ? t('replyingSelf') : t('replyingTo', esc(loc(U[rp.u])))}</span><button class="lnk" data-a="cancelReply">${t('cancel')}</button></div>` : ''}
+    <div class="row">${av('me','sm')}<input id="cmtIn" type="text" maxlength="5000" autocomplete="off" placeholder="${t('writeComment')}" ${g.joined ? '' : 'readonly data-a="membersOnly"'}><button class="send" id="sendBtn" data-a="sendComment" disabled aria-label="Send">${I.send}</button></div>
+  </div>`;
+};
+
+/* ---- about / members / photos ---- */
+function aboutTab(g){
+  return `<div class="about">
+    <p>${loc(g.intro) ? esc(loc(g.intro)) : `<span style="color:var(--ink-3)">${t('noIntro')}</span>`}</p>
+    <div class="facts">
+      <div class="fact">${g.priv ? I.lock : I.globe}<div>${t(g.priv ? 'private' : 'public')}<small>${t(g.priv ? 'aboutPriv' : 'aboutPub')}</small></div></div>
+      <div class="fact">${I.tag}<div>${t('aboutCat')}<small>${cat(g.cat)}</small></div></div>
+      <div class="fact">${I.users}<div>${t('members', fmtN(g.members))}</div></div>
+      <div class="fact">${I.cal}<div>${t('aboutCreated', g.year)}</div></div>
+    </div></div>`;
+}
+function membersTab(g){
+  const ms = ['mimi','che','yuzu','bear','aoi','dou','momo','kai'].filter(u => u !== g.admin);
+  return `<div class="mlist"><h4>${t('adminsH')}</h4><div class="mrow">${av(g.admin)}<span>${esc(loc(U[g.admin]))}</span><span class="badge">${t('admin')}</span></div>
+    <h4>${t('membersH')} · ${fmtN(g.members)}</h4>${(g.joined ? ['me', ...ms] : ms).map(u => `<div class="mrow">${av(u)}<span>${esc(loc(U[u]))}</span></div>`).join('')}</div>`;
+}
+function photosTab(g){
+  const all = g.posts.flatMap(p => p.imgs.map(src => ({src, p})));
+  return all.length ? `<div class="pgrid">${all.map(x => `<button data-a="openPost" data-gid="${g.id}" data-pid="${x.p.id}"><img src="${x.src}" alt=""></button>`).join('')}</div>` : `<div class="empty" style="background:var(--card)">${t('noPhotos')}</div>`;
+}
+
+/* ---- compose ---- */
+SCREENS.compose = () => {
+  const cp = S.compose; const g = G(cp.gid);
+  const can = cp.text.trim().length > 0 || cp.media.length > 0;
+  return `
+  <div class="topbar center"><button class="ib" data-a="composeBack" aria-label="${t('cancel')}">${I.x}</button><h1>${t('newPost')}</h1><button class="txtbtn" id="pubBtn" data-a="publish" ${can ? '' : 'disabled'}>${t('publish')}</button></div>
+  <div class="scr cmp">
+    <div class="cmp-who">${av('me')}<div><div class="pn">${esc(myName())}</div><div class="cmp-to">${t('postTo', esc(loc(g.name)))}</div></div></div>
+    <textarea id="cmpTa" maxlength="5000" placeholder="${t('composePh')}">${esc(cp.text)}</textarea>
+    ${cp.media.length ? `<div class="media">${cp.media.map((m,i) => `<div class="m"><img src="${m}" alt=""><button class="x" data-a="rmMedia" data-i="${i}" aria-label="Remove">${I.x}</button></div>`).join('')}</div>` : ''}
+    <div class="cnt"><span id="cmpCnt">${cp.text.length.toLocaleString('en-US')} / 5,000</span><span>${cp.media.length} / 20</span></div>
+  </div>
+  <div class="tool"><button data-a="pickMedia" data-src="file">${I.image.replace('<svg','<svg class="g"')}${t('photo')}</button><button data-a="pickMedia" data-src="cam">${I.camera}${t('camera')}</button><button data-a="sampleMedia">${I.plus}${t('sample')}</button></div>`;
+};
+
+/* ---- create flow ---- */
+SCREENS.createName = () => {
+  const cr = S.create;
+  const ok = cr.name.length > 0 && !cr.err && cr.cat;
+  return `
+  <div class="topbar plain"><button class="ib" data-a="createClose" aria-label="Close">${I.x}</button><h1></h1></div>
+  <div class="scr"><div class="cr-body">
+    <h2 class="cr-h">${t('cIntroH')}</h2><p class="cr-p">${t('cIntroP')}</p>
+    <div class="field"><label for="cName">${t('cName')}</label>
+      <div class="box ${cr.err ? 'err' : ''}"><input id="cName" maxlength="15" autocomplete="off" placeholder="${t('cNamePh')}" value="${esc(cr.name)}"><span class="c" id="cNameC">${cr.name.length}/15</span></div>
+      <div class="errt" id="cErr">${cr.err ? t(cr.err) : ''}</div></div>
+    <div class="field"><label>${t('cCat')}</label><div class="cats">${Object.keys(CATS).map(k => `<button aria-pressed="${cr.cat===k}" data-a="cat" data-v="${k}">${cat(k)}</button>`).join('')}</div></div>
+  </div></div>
+  <div class="fixed-cta"><button class="cta" id="cBtn" data-a="createSubmit" ${ok && !cr.loading ? '' : 'disabled'}>${cr.loading ? '<span class="spin"></span>' : t('cCreate')}</button></div>`;
+};
+SCREENS.createDone = () => {
+  const cr = S.create; const conf = [['#F2B8C0',-120,-40,20],['#9DBBD6',110,-60,-15],['#F4D58D',-90,60,40],['#B7D7C2',130,40,10],['#D6C3E8',-30,-90,-30],['#F4C5A8',40,90,25]];
+  return `
+  <div class="topbar plain"><button class="ib" data-a="createClose" aria-label="Close">${I.x}</button><h1></h1></div>
+  <div class="scr"><div class="cr-body" style="text-align:center">
+    <div class="done-art">${conf.map(([c,x,y,r]) => `<i style="background:${c};transform:translate(${x}px,${y}px) rotate(${r}deg)"></i>`).join('')}<span class="gav"><img src="${createAvatar()}" alt=""></span></div>
+    <h2 class="cr-h">${t('doneH')}</h2><p class="cr-p" style="margin:0">${t('doneP')}</p>
+    <div class="gname" style="font-size:16px">${esc(cr.name)}</div><div class="gmeta" style="justify-content:center">${privMeta({priv:false})}<span>·</span><span>${cat(cr.cat)}</span></div>
+  </div></div>
+  <div class="fixed-cta"><button class="cta" data-a="createStart">${t('startSetup')}</button><button class="cta sec" data-a="createLater">${t('later')}</button></div>`;
+};
+const createAvatar = () => S.create.avatarCustom || AV_PRESETS[S.create.av].src;
+const createCover = () => S.create.coverCustom || CV_PRESETS[S.create.cv].src;
+SCREENS.createAvatar = () => {
+  const cr = S.create;
+  return `
+  <div class="topbar plain"><button class="ib" data-a="back" aria-label="Back">${I.back}</button><h1></h1></div>
+  <div class="scr"><div class="cr-body">
+    <div class="step">${t('stepOf',1,3)}</div><h2 class="cr-h" style="margin-top:-10px">${t('avH')}</h2><p class="cr-p">${t('avP')}</p>
+    <div class="pv-av"><div class="wrap"><span class="gav"><img src="${createAvatar()}" alt=""></span><button class="cam" data-a="camSheet" data-target="avatar" aria-label="${t('camera')}">${I.camera}</button></div></div>
+    <div class="presets">${AV_PRESETS.map((p,i) => `<button aria-pressed="${!cr.avatarCustom && cr.av===i}" data-a="avPreset" data-i="${i}" title="${p[S.lang]}"><img src="${p.src}" alt="${p[S.lang]}"></button>`).join('')}</div>
+  </div></div>
+  <div class="fixed-cta"><button class="cta" data-a="createGo" data-to="createCover">${t('next')}</button></div>`;
+};
+SCREENS.createCover = () => {
+  const cr = S.create; const imm = S.ratio === 'imm';
+  return `
+  <div class="topbar plain"><button class="ib" data-a="back" aria-label="Back">${I.back}</button><h1></h1></div>
+  <div class="scr"><div class="cr-body">
+    <div class="step">${t('stepOf',2,3)}</div><h2 class="cr-h" style="margin-top:-10px">${t('cvH')}</h2><p class="cr-p">${t('cvP')}</p>
+    <div class="pv-cv"><span class="pv-tag">${t('preview')} · ${S.ratio === 'imm' ? '1:1.2' : S.ratio === 'large' ? '4:3' : '16:9'}</span>
+      <div class="cover ${imm ? 'imm' : ''}" style="aspect-ratio:${imm ? '390/470' : S.ratio === 'large' ? '4/3' : '16/9'}"><img src="${createCover()}" alt="">
+        ${imm ? `<div class="imm-info" style="left:14px;bottom:14px"><span class="gav" style="width:44px;height:44px;border-radius:13px"><img src="${createAvatar()}" alt=""></span><h2 style="font-size:18px;margin:2px 0 0">${esc(cr.name)}</h2></div>` : ''}</div>
+      ${imm ? '' : `<div class="meta"><span class="gav"><img src="${createAvatar()}" alt=""></span><div class="gname">${esc(cr.name)}</div></div>`}
+      <button class="cam" style="right:12px;bottom:auto;top:12px;box-shadow:none" data-a="camSheet" data-target="cover" aria-label="${t('camera')}">${I.camera}</button>
+    </div>
+    <div class="presets cv">${CV_PRESETS.map((p,i) => `<button aria-pressed="${!cr.coverCustom && cr.cv===i}" data-a="cvPreset" data-i="${i}" title="${p[S.lang]}"><img src="${p.src}" alt="${p[S.lang]}"></button>`).join('')}<button class="camb" data-a="camSheet" data-target="cover" aria-pressed="${!!cr.coverCustom}" aria-label="${t('ownPhoto')}">${cr.coverCustom ? `<img src="${cr.coverCustom}" alt="">` : I.camera}</button></div>
+  </div></div>
+  <div class="fixed-cta"><button class="cta" data-a="createGo" data-to="createIntro">${t('next')}</button></div>`;
+};
+SCREENS.createIntro = () => {
+  const cr = S.create;
+  return `
+  <div class="topbar plain"><button class="ib" data-a="back" aria-label="Back">${I.back}</button><h1></h1></div>
+  <div class="scr"><div class="cr-body">
+    <div class="step">${t('stepOf',3,3)}</div><h2 class="cr-h" style="margin-top:-10px">${t('inH')}</h2><p class="cr-p">${t('inP')}</p>
+    <div><textarea class="intro-ta" id="introTa" maxlength="5000" placeholder="${t('inPh')}">${esc(cr.intro)}</textarea>
+    <div class="cnt" style="padding:6px 2px 0"><span></span><span id="introCnt">${cr.intro.length.toLocaleString('en-US')} / 5,000</span></div></div>
+  </div></div>
+  <div class="fixed-cta"><button class="cta" data-a="createFinish">${cr.loading ? '<span class="spin"></span>' : t('done')}</button></div>`;
+};
+
+/* ================= panel ================= */
+const NOTES = {
+  explore:[['「我的社團」與「推薦社團」分開呈現，回訪用戶第一眼找到自己的社團','"Your groups" and "Suggested" are separate, so returning users find their groups first'],
+           ['公開／私密直接標示在列表上，私密社團的按鈕是「申請加入」','Public or private is labelled in the list. Private groups show "Request to join"'],
+           ['右上角「建立社團」進入建立流程','"Create group" at the top right starts the creation flow']],
+  lobby:[['大廳目標：讓用戶一進來就有「回到小家園」的沉浸感，最後採用加大的背景圖','Lobby goal: members should feel they have come home. The final design uses the larger cover image'],
+         ['公開／私密、加入／未加入都要一眼看出來','Public vs private and joined vs not joined must be obvious at a glance'],
+         ['發文入口安靜不打擾：往下捲過發文框後才出現浮動發文鈕','A quiet way to post: the floating post button only appears after you scroll past the composer'],
+         ['按讚資訊顯示數量最多的三種表情，以及「你和其他 N 人」','Reaction summary shows the top three reactions and "You and N others"'],
+         ['點「讚」直接按讚，長按叫出五種表情，一次只能選一個','Tap Like to like. Press and hold for five reactions. One reaction per person']],
+  lobbyPriv:[['私密社團未加入時看不到貼文與成員，只能看簡介','Non-members of a private group only see the About tab'],
+             ['MVP 只需按「申請加入」，沒有入社問題與規範勾選','MVP: one tap to request. No entry questions or rules checkbox'],
+             ['送出後按鈕變成「審核中」，點擊可以取消申請','After sending, the button changes to "Request sent". Tap it to cancel']],
+  detail:[['留言共兩層：回覆的回覆齊頭顯示在同一則留言下，並自動標記對方','Two comment levels. A reply to a reply sits at the same level and tags the person automatically'],
+          ['留言預設顯示兩行，超過顯示「⋯⋯ 顯示更多」','Comments show two lines, then "… See more"'],
+          ['留言數 = 留言 + 回覆','Comment count = comments + replies'],
+          ['留言也能按讚和表情','Comments take reactions too'],
+          ['非成員看得到留言，但點輸入框會提示「只有社團成員才可以留言喔」','Non-members can read comments. Tapping the field shows "Only members can comment"']],
+  share:[['轉發不能加上文字，直接分享原貼文，讓分享夠快','Shares carry no added text. The original post goes out as is, so sharing stays quick'],
+         ['可以分享到自己加入的社團、個人動態，或複製連結','Share to one of your groups, your profile, or copy the link']],
+  compose:[['文字上限 5,000 字，媒體最多 20 筆','Up to 5,000 characters and 20 photos'],
+           ['至少一個字或一張相片才能發佈','Needs at least one character or one photo to post'],
+           ['有內容時返回：儲存為草稿／不保存／取消，每個社團保留一篇草稿','Leaving with content asks: save draft, discard or cancel. One draft per group'],
+           ['發佈後大廳顯示「貼文上傳中⋯」狀態列','After posting, the lobby shows an "Uploading post…" bar']],
+  createName:[['社團名稱最多 15 字，前後不能有空白','Names are up to 15 characters, with no leading or trailing spaces'],
+              ['名稱重複由後端檢查，顯示「嗚嗚 名稱已經被取走了」（試試輸入現有社團名稱）','The backend checks for duplicates. Try typing an existing group\'s name'],
+              ['分類必選，共 10 種','A category is required. There are 10'],
+              ['第一階段沒有隱私設定，預設為公開','Phase 1 has no privacy setting. New groups are public']],
+  createDone:[['建立後引導佈置社團：「開始設定」或「稍後繼續」','After creation we guide setup: "Start setting up" or "Do it later"'],
+              ['稍後繼續會直接進大廳，並開啟邀請好友','"Do it later" opens the lobby with the invite sheet']],
+  createAvatar:[['5 張預設頭像，預選第一張','Five preset pictures. The first is preselected'],
+                ['相機：選擇相片／拍攝相片，支援 JPG、PNG、GIF','Camera: choose or take a photo. JPG, PNG and GIF']],
+  createCover:[['預設背景同一個樣式、不同顏色','Preset covers share one style in different colours'],
+               ['預覽會跟著左邊的背景圖方案變化','The preview follows the cover option on the left']],
+  createIntro:[['簡介上限 5,000 字，預留給管理員把簡介當社團 wiki','Descriptions allow 5,000 characters so admins can use them as a group wiki'],
+               ['按完成時一次上傳頭像、背景與簡介','"Done" uploads the picture, cover and description together'],
+               ['完成後進大廳並開啟邀請好友','Then the lobby opens with the invite sheet']]
+};
+const FLOWS = [
+  ['explore', ['社團首頁','Groups home']],
+  ['lobby', ['社團大廳','Group lobby']],
+  ['detail', ['貼文、表情與留言','Posts, reactions and comments']],
+  ['compose', ['發文','Create a post']],
+  ['create', ['管理員建立社團','Admin creates a group']],
+  ['join', ['加入私密社團','Join a private group']]
+];
+function activeFlow(){
+  const c = cur();
+  if (c.s.startsWith('create')) return 'create';
+  if (c.s === 'lobby' && G(c.gid).priv) return 'join';
+  return c.s;
+}
+function renderPanel(){
+  const zh = S.lang === 'zh'; const i = zh ? 0 : 1;
+  const c = cur();
+  let key = c.s;
+  if (c.s === 'lobby' && G(c.gid).priv && !G(c.gid).joined) key = 'lobbyPriv';
+  let notes = NOTES[key] || [];
+  if (c.s === 'lobby' || c.s === 'detail') notes = notes.concat(NOTES.share.slice(0,1));
+  const af = activeFlow();
+  const m = S.metric;
+  const showMetric = c.s === 'lobby' && m;
+  const pendG = S.groups.find(g => g.pending);
+  const ratios = [
+    ['std', ['標準','Standard'], '16:9', 26],
+    ['large', ['加大','Larger'], '4:3', 33],
+    ['imm', ['沉浸式','Immersive'], '1:1.2', 53]
+  ];
+  $('#panel').innerHTML = `
+    <div>
+      <div class="eyebrow">${zh ? '0→1 社群產品 · 手機 App 原型' : '0→1 community product · mobile prototype'}</div>
+      <h1 class="p-title">Chiikawa Group</h1><span class="ai-badge">AI prototype · Claude</span>
+      <p class="p-sub">${zh ? '對標 Facebook 社團的手機版社群功能：發文、留言、表情、轉發，以及管理員建立社團、用戶加入社團的完整流程。' : 'A mobile community feature modelled on Facebook Groups: posts, comments, reactions and shares, plus the full flows for creating and joining a group.'}</p>
+    </div>
+    <div class="seg" role="group" aria-label="Language"><button aria-pressed="${zh}" data-a="lang" data-v="zh">中文</button><button aria-pressed="${!zh}" data-a="lang" data-v="en">English</button></div>
+    <div class="p-sec"><h2 class="p-h">${zh ? '流程' : 'Flows'}</h2>
+      <ol class="flows">${FLOWS.map(([k,l],n) => `<li><button data-a="flow" data-v="${k}" aria-current="${af===k}"><span class="n">${String(n+1).padStart(2,'0')}</span><span>${l[i]}</span></button></li>`).join('')}</ol></div>
+    <div class="p-sec"><h2 class="p-h">${zh ? '大廳背景圖尺寸' : 'Lobby cover size'}</h2>
+      <div class="ratios">${ratios.map(([k,l,r,h]) => `<button class="ratio" aria-pressed="${S.ratio===k}" data-a="ratio" data-v="${k}">${k==='imm' ? `<span class="final">${zh ? '最終採用' : 'Shipped'}</span>` : ''}<span class="shape" style="height:${h}px"></span><span class="lab">${l[i]}</span><span class="rt">${r}</span></button>`).join('')}</div>
+      ${showMetric ? `<dl class="metric"><dt>${zh ? '背景圖佔首屏' : 'Cover share of first screen'}</dt><dd>${m.cover}%</dd><dt>${zh ? '第一篇貼文起始位置' : 'First post starts at'}</dt><dd>${m.firstTop == null ? '—' : m.firstTop + ' / 844 px'}</dd><dt>${zh ? '首屏看得到第一篇貼文內容' : 'First post readable without scrolling'}</dt><dd class="${m.visible ? 'yes' : 'no'}">${m.firstTop == null ? '—' : (m.visible ? (zh ? '是' : 'Yes') : (zh ? '否' : 'No'))}</dd></dl>` : `<p class="hint">${zh ? '進入任一社團大廳，切換三種尺寸比較首屏差異。' : 'Open any group lobby and switch sizes to compare the first screen.'}</p>`}
+      <p class="ratio-note">${zh ? '背景圖越大，沉浸感越強，但第一篇貼文會被推到第二屏。我們最後選擇加大背景圖，讓用戶一進來就感覺回到自己的小家園，再用固定的分頁列和浮動發文鈕補回效率。' : 'A bigger cover feels more immersive but pushes the first post below the fold. We shipped the larger cover so the group feels like home on arrival, and kept things efficient with sticky tabs and a floating post button.'}</p>
+    </div>
+    <div class="p-sec"><h2 class="p-h">${zh ? '這個畫面的規格' : 'Spec for this screen'}</h2>
+      <ul class="notes">${notes.map(n => `<li>${n[i]}</li>`).join('')}</ul>
+      ${pendG ? `<button class="demo-btn" data-a="approve" data-gid="${pendG.id}">${zh ? '模擬：管理員核准申請' : 'Simulate: admin approves request'}</button>` : ''}
+      <p class="hint">${zh ? '原型裡的按讚按鈕可以長按（滑鼠按住）叫出表情選單。' : 'Press and hold any Like button (or hold the mouse) to open the reaction picker.'}</p>
+    </div>
+    <div class="p-foot"><a href="../index.html" style="color:inherit">← Bella Chen · Portfolio</a></div>`;
+}
+
+/* ================= overlays ================= */
+function openSheet(html, cls = 'sheet'){
+  overlay.innerHTML = `<div class="backdrop" data-a="closeSheet"></div>${cls === 'dialog' ? `<div class="dialog" role="dialog" aria-modal="true">${html}</div>` : `<div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div>`}`;
+  overlay.hidden = false;
+}
+function closeSheet(){ overlay.hidden = true; overlay.innerHTML = ''; }
+let toastT;
+function toast(msg){ const el = $('#toast'); el.innerHTML = esc(msg).replace(/\n/g,'<br>'); el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2200); }
+
+/* reactions */
+function canReact(key){
+  const [type,id] = key.split('|');
+  let g;
+  if (type === 'p') g = findPost(id).g;
+  else for (const gg of S.groups) for (const p of gg.posts) for (const c of p.comments) if (c.id === id || c.replies.some(r => r.id === id)) g = gg;
+  return g && g.joined;
+}
+function setReaction(key, type){
+  const tg = findTarget(key);
+  if (tg.mine) tg.r[tg.mine]--;
+  if (type && tg.mine !== type){ tg.mine = type; tg.r[type]++; }
+  else if (type && tg.mine === type){ tg.mine = type; tg.r[type]++; }
+  else tg.mine = null;
+  render();
+}
+function tapReact(key){
+  if (!canReact(key)) return toast(t('membersOnlyReact'));
+  const tg = findTarget(key);
+  setReaction(key, tg.mine ? null : 'like');
+}
+function openPicker(key, btn){
+  if (!canReact(key)) return toast(t('membersOnlyReact'));
+  const ph = $('#phone').getBoundingClientRect(), r = btn.getBoundingClientRect(), s = S.scale || 1;
+  const w = 5*44 + 4*2 + 14;
+  let x = (r.left - ph.left)/s - 8; x = Math.max(8, Math.min(390 - w - 8, x));
+  let y = (r.top - ph.top)/s - 62; if (y < 50) y = (r.bottom - ph.top)/s + 8;
+  pickerLayer.innerHTML = `<div class="picker" style="left:${x}px;top:${y}px" role="menu">${RX.map(rx => `<button role="menuitem" data-a="pick" data-k="${key}" data-t="${rx.k}" aria-label="${rx[S.lang]}">${rx.e}<span class="tip">${rx[S.lang]}</span></button>`).join('')}</div>`;
+  pickerLayer.hidden = false;
+  pickerLayer.querySelector('button').focus({preventScroll:true});
+}
+function closePicker(){ pickerLayer.hidden = true; pickerLayer.innerHTML = ''; }
+
+let lp = null;
+screen.addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-rk]'); if (!b) return;
+  lp = { b, x:e.clientX, y:e.clientY, fired:false, t:setTimeout(() => { if (lp){ lp.fired = true; openPicker(b.dataset.rk, b); } }, 420) };
+});
+document.addEventListener('pointermove', e => { if (lp && Math.hypot(e.clientX - lp.x, e.clientY - lp.y) > 10){ clearTimeout(lp.t); lp = null; } });
+document.addEventListener('pointerup', e => {
+  if (!lp) return; clearTimeout(lp.t);
+  const {b, fired} = lp; lp = null;
+  if (!fired && e.target.closest('[data-rk]') === b) tapReact(b.dataset.rk);
+});
+document.addEventListener('pointercancel', () => { if (lp){ clearTimeout(lp.t); lp = null; } });
+screen.addEventListener('contextmenu', e => { if (e.target.closest('[data-rk]')) e.preventDefault(); });
+pickerLayer.addEventListener('click', e => { if (e.target === pickerLayer) closePicker(); });
+
+/* ================= actions ================= */
+const A = {
+  back, lang:d => { S.lang = d.v; try { localStorage.setItem(SITE_LANG_KEY, d.v); } catch(e){} document.documentElement.lang = d.v === 'zh' ? 'zh-Hant' : 'en'; render(); },
+  ratio:d => { S.ratio = d.v; render(); },
+  flow:d => {
+    closeSheet(); closePicker(); S.replying = null;
+    if (d.v === 'explore') S.stack = [{s:'explore'}];
+    else if (d.v === 'lobby') S.stack = [{s:'explore'}, {s:'lobby', gid:'g1'}];
+    else if (d.v === 'detail') S.stack = [{s:'explore'}, {s:'lobby', gid:'g1'}, {s:'detail', gid:'g1', pid:'p1'}];
+    else if (d.v === 'compose'){ S.stack = [{s:'explore'}, {s:'lobby', gid:'g1'}]; return A.compose({gid:'g1'}); }
+    else if (d.v === 'create'){ S.stack = [{s:'explore'}]; return A.startCreate(); }
+    else if (d.v === 'join'){ S.stack = [{s:'explore'}, {s:'lobby', gid:'g4'}]; }
+    render({anim:true});
+  },
+  open:d => go('lobby', {gid:d.gid}),
+  openPost:d => go('detail', {gid:d.gid, pid:d.pid}),
+  commentBtn:d => {
+    const g = G(d.gid);
+    if (cur().s === 'detail'){ if (!g.joined) return toast(t('membersOnlyComment')); $('#cmtIn').focus(); return; }
+    go('detail', {gid:d.gid, pid:d.pid});
+    if (g.joined) setTimeout(() => $('#cmtIn') && $('#cmtIn').focus({preventScroll:true}), 260);
+  },
+  expand:d => { S.expanded.add(d.id); render(); },
+  tab:d => { cur().tab = d.v; render(); },
+  join:d => {
+    const g = G(d.gid);
+    if (g.priv){ g.pending = true; toast(t('reqToast')); }
+    else { g.joined = true; g.members++; toast(t('joinedToast')); }
+    render();
+  },
+  pendingMenu:d => openSheet(`<div class="list"><button class="srow danger" data-a="cancelReq" data-gid="${d.gid}"><span class="si">${I.x}</span><span class="grow-1">${t('cancelReq')}</span></button><button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`),
+  cancelReq:d => { G(d.gid).pending = false; closeSheet(); toast(t('cancelReqToast')); render(); },
+  approve:d => { const g = G(d.gid); g.pending = false; g.joined = true; g.members++; toast(t('approved', loc(g.name))); render(); },
+  groupMore:d => {
+    const g = G(d.gid);
+    openSheet(`<div class="list">
+      ${g.joined ? `<button class="srow" data-a="invite" data-gid="${g.id}"><span class="si">${I.users}</span><span class="grow-1">${t('inviteFriends')}</span></button>` : ''}
+      <button class="srow" data-a="copy"><span class="si">${I.link}</span><span class="grow-1">${t('copyGroupLink')}</span></button>
+      ${g.joined && g.admin !== 'me' ? `<button class="srow danger" data-a="leaveAsk" data-gid="${g.id}"><span class="si">${I.out}</span><span class="grow-1">${t('leave')}</span></button>` : ''}
+      <button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`);
+  },
+  leaveAsk:d => { const g = G(d.gid); openSheet(`<h3>${t('leaveQ', esc(loc(g.name)))}</h3><p>${t('leaveP')}</p><div class="btns"><button data-a="closeSheet">${t('cancel')}</button><button class="d" data-a="leave" data-gid="${g.id}">${t('leaveBtn')}</button></div>`, 'dialog'); },
+  leave:d => { const g = G(d.gid); g.joined = false; g.members--; closeSheet(); toast(t('left')); render(); },
+  invite:d => {
+    const friends = ['che','aoi','dou','momo','kai','yuzu'];
+    S.invited = S.invited || new Set();
+    openSheet(`<h3>${t('inviteFriends')}</h3><p class="sub">${t('inviteSub')}</p><div class="list">
+      ${friends.map(u => `<div class="srow">${av(u)}<span class="grow-1">${esc(loc(U[u]))}</span><button class="chip-btn ${S.invited.has(u) ? 'ghost' : ''}" data-a="inviteOne" data-u="${u}" data-gid="${d.gid}">${t(S.invited.has(u) ? 'invited' : 'invite')}</button></div>`).join('')}
+      <button class="srow" data-a="copy"><span class="si">${I.link}</span><span class="grow-1">${t('copyGroupLink')}</span></button></div>`);
+  },
+  inviteOne:d => { S.invited.add(d.u); A.invite(d); },
+  copy:() => { closeSheet(); toast(t('copied')); },
+  closeSheet,
+  pick:d => { closePicker(); setReaction(d.k, d.t); },
+  reactList:d => {
+    const tg = findTarget(d.k); const types = rxTop(tg.r).concat(Object.keys(tg.r).filter(k => tg.r[k] > 0 && !rxTop(tg.r).includes(k)));
+    const sel = d.sel || 'all';
+    const people = ['mimi','che','yuzu','bear','aoi','dou','momo','kai'];
+    const n = sel === 'all' ? rxTotal(tg.r) : tg.r[sel];
+    const list = (tg.mine && (sel === 'all' || sel === tg.mine) ? ['me'] : []).concat(people).slice(0, Math.min(8, n));
+    openSheet(`<h3>${t('reactions')}</h3><p class="sub">${t('people', fmtN(rxTotal(tg.r)))}</p>
+      <div class="rtabs"><button aria-pressed="${sel==='all'}" data-a="reactList" data-k="${d.k}" data-sel="all">${t('all')} ${fmtN(rxTotal(tg.r))}</button>${types.map(k => `<button aria-pressed="${sel===k}" data-a="reactList" data-k="${d.k}" data-sel="${k}">${RXM[k].e} ${fmtN(tg.r[k])}</button>`).join('')}</div>
+      <div class="list">${list.map((u, idx) => `<div class="srow">${av(u)}<span class="grow-1">${esc(loc(U[u]))}</span><span>${u === 'me' ? RXM[tg.mine].e : RXM[sel === 'all' ? types[idx % types.length] : sel].e}</span></div>`).join('')}</div>`);
+  },
+  /* share */
+  share:d => {
+    const {g, p} = findPost(d.pid);
+    S.sharePid = d.pid;
+    const thumb = p.imgs[0] || (p.shared && findPost(p.shared.pid)?.p.imgs[0]) || g.avatar;
+    openSheet(`<h3>${t('shareTitle')}</h3>
+      <div class="mini"><img src="${thumb}" alt=""><div><div class="pn" style="font-size:13px">${esc(loc(U[p.author]))}</div><div class="tx">${esc(loc(p.text))}</div></div></div>
+      <div class="note">${I.info}<span>${t('shareNote')}</span></div>
+      <div class="list">
+        <button class="srow" data-a="shareGroups"><span class="si">${I.users}</span><span class="grow-1">${t('toGroup')}<small>${t('toGroupSub')}</small></span></button>
+        <button class="srow" data-a="shareProfile"><span class="si">${I.user}</span><span class="grow-1">${t('toProfile')}<small>${t('toProfileSub')}</small></span></button>
+        <button class="srow" data-a="shareCopy"><span class="si">${I.link}</span><span class="grow-1">${t('copyLink')}<small>${t('copyLinkSub')}</small></span></button>
+        <button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`);
+  },
+  shareGroups:() => {
+    const mine = S.groups.filter(g => g.joined);
+    openSheet(`<h3>${t('pickGroup')}</h3><div class="note" style="margin-top:6px">${I.info}<span>${t('shareNote')}</span></div><div class="list">
+      ${mine.length ? mine.map(g => `<button class="srow" data-a="shareTo" data-gid="${g.id}">${gAvatar(g,'si')}<span class="grow-1">${esc(loc(g.name))}<small>${t('members', fmtN(g.members))}</small></span></button>`).join('') : `<div class="empty">${t('noGroups')}</div>`}
+      <button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`);
+  },
+  shareTo:d => {
+    const src = findPost(S.sharePid); const orig = src.p.shared ? src.p.shared.pid : src.p.id;
+    const tg = G(d.gid);
+    tg.posts.unshift({ id:nid('p'), author:'me', mins:0, imgs:[], r:R(), mine:null, shares:0, text:{zh:'',en:''}, shared:{pid:orig}, comments:[] });
+    src.p.shares++; closeSheet(); toast(t('shared')); render();
+  },
+  shareProfile:() => { findPost(S.sharePid).p.shares++; closeSheet(); toast(t('sharedProfile')); render(); },
+  shareCopy:() => { closeSheet(); toast(t('copied')); },
+  /* comments */
+  membersOnly:() => toast(t('membersOnlyComment')),
+  reply:d => {
+    const g = G(cur().gid);
+    if (!g.joined) return toast(t('membersOnlyReply'));
+    S.replying = { top:d.top, focus:d.cid, u:d.u };
+    render({ after:() => { const i = $('#cmtIn'); i.focus({preventScroll:true}); syncSend(); } });
+  },
+  cancelReply:() => { S.replying = null; render(); },
+  sendComment:() => {
+    const inp = $('#cmtIn'); const v = inp.value.trim(); if (!v) return;
+    const {p} = findPost(cur().pid);
+    const rp = S.replying; let newId = nid('c');
+    if (rp){
+      const top = p.comments.find(c => c.id === rp.top);
+      top.replies.push({ id:newId, author:'me', mins:0, text:{zh:v,en:v}, r:R(), mine:null, replies:[], to: rp.u !== 'me' ? rp.u : null });
+    } else p.comments.push({ id:newId, author:'me', mins:0, text:{zh:v,en:v}, r:R(), mine:null, replies:[] });
+    S.replying = null;
+    render({ after:() => { const el = $('#cm-' + newId); el && el.scrollIntoView({block:'center'}); } });
+  },
+  /* compose */
+  compose:d => {
+    const draft = S.drafts[d.gid];
+    S.compose = draft ? {...draft, media:[...draft.media]} : { gid:d.gid, text:'', media:[] };
+    go('compose');
+    if (draft) toast(t('draftLoaded'));
+    else if (d.photo) setTimeout(() => A.pickMedia({src:'file'}), 50);
+    else setTimeout(() => $('#cmpTa') && $('#cmpTa').focus({preventScroll:true}), 240);
+  },
+  composeBack:() => {
+    const cp = S.compose;
+    if (!cp.text.trim() && !cp.media.length) return back();
+    openSheet(`<h3>${t('draftQ')}</h3><div class="list" style="margin-top:6px">
+      <button class="srow" data-a="draftSave"><span class="si">${I.pen}</span><span class="grow-1">${t('draftSave')}</span></button>
+      <button class="srow danger" data-a="draftDiscard"><span class="si">${I.x}</span><span class="grow-1">${t('draftDiscard')}</span></button>
+      <button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`);
+  },
+  draftSave:() => { S.drafts[S.compose.gid] = {...S.compose, media:[...S.compose.media]}; closeSheet(); back(); toast(t('draftSaved')); },
+  draftDiscard:() => { delete S.drafts[S.compose.gid]; closeSheet(); back(); },
+  pickMedia:d => {
+    if (S.compose && S.compose.media.length >= 20) return toast(t('limitMedia'));
+    S.fileTarget = 'compose'; (d.src === 'cam' ? $('#camIn') : $('#fileIn')).click();
+  },
+  sampleMedia:() => {
+    const cp = S.compose; if (cp.media.length >= 20) return toast(t('limitMedia'));
+    cp.media.push(IMG[SAMPLES[cp.media.length % SAMPLES.length]]); render();
+  },
+  rmMedia:d => { S.compose.media.splice(+d.i, 1); render(); },
+  publish:() => {
+    const cp = S.compose; if (!cp.text.trim() && !cp.media.length) return;
+    const gid = cp.gid;
+    delete S.drafts[gid];
+    const post = { id:nid('p'), author:'me', mins:0, imgs:[...cp.media], r:R(), mine:null, shares:0, text:{zh:cp.text.trim(),en:cp.text.trim()}, comments:[] };
+    S.uploading = gid; S.compose = null; back();
+    const sc = screen.querySelector('.scr'); if (sc) sc.scrollTo({top: coverH(), behavior:'smooth'});
+    setTimeout(() => { G(gid).posts.unshift(post); S.uploading = null; if (cur().s === 'lobby') render(); }, 1500);
+  },
+  /* create */
+  startCreate:() => { S.create = { name:'', cat:null, err:null, av:0, cv:0, avatarCustom:null, coverCustom:null, intro:'', loading:false }; go('createName'); setTimeout(() => $('#cName') && $('#cName').focus({preventScroll:true}), 240); },
+  createClose:() => { S.stack = S.stack.filter(x => !x.s.startsWith('create')); if (!S.stack.length) S.stack = [{s:'explore'}]; render({anim:true}); },
+  cat:d => { S.create.cat = d.v; render(); },
+  createSubmit:() => {
+    const cr = S.create; const name = cr.name;
+    if (/^[\s　]|[\s　]$/.test(name)){ cr.err = 'errTrim'; return render(); }
+    cr.loading = true; render();
+    setTimeout(() => {
+      cr.loading = false;
+      const taken = S.groups.some(g => g.name.zh === name || g.name.en.toLowerCase() === name.toLowerCase());
+      if (taken){ cr.err = 'errDup'; render(); return; }
+      replaceTop('createDone');
+    }, 800);
+  },
+  createStart:() => go('createAvatar'),
+  createLater:() => finishCreate(true),
+  createGo:d => go(d.to),
+  avPreset:d => { S.create.av = +d.i; S.create.avatarCustom = null; render(); },
+  cvPreset:d => { S.create.cv = +d.i; S.create.coverCustom = null; render(); },
+  camSheet:d => {
+    S.fileTarget = d.target;
+    openSheet(`<div class="list"><button class="srow" data-a="filePick" data-src="file"><span class="si">${I.image}</span><span class="grow-1">${t('pickPhoto')}</span></button>
+      <button class="srow" data-a="filePick" data-src="cam"><span class="si">${I.camera}</span><span class="grow-1">${t('takePhoto')}</span></button>
+      <button class="srow cancel" data-a="closeSheet">${t('cancel')}</button></div>`);
+  },
+  filePick:d => { closeSheet(); const el = d.src === 'cam' ? $('#camIn') : $('#fileIn'); el.multiple = false; el.click(); },
+  createFinish:() => { S.create.loading = true; render(); setTimeout(() => finishCreate(false), 700); }
+};
+function finishCreate(later){
+  const cr = S.create;
+  const g = { id:nid('g'), name:{zh:cr.name, en:cr.name}, cat:cr.cat, priv:false, members:1, joined:true, pending:false, admin:'me', year:new Date().getFullYear(),
+    cover: later ? CV_PRESETS[0].src : createCover(), avatar: later ? AV_PRESETS[0].src : createAvatar(), intro: later ? '' : {zh:cr.intro, en:cr.intro}, posts:[] };
+  S.groups.unshift(g); S.create = null;
+  S.stack = [{s:'explore'}, {s:'lobby', gid:g.id}];
+  render({anim:true});
+  setTimeout(() => A.invite({gid:g.id}), 260);
+}
+
+/* delegation */
+document.addEventListener('click', e => {
+  const rk = e.target.closest('[data-rk]');
+  if (rk && e.detail === 0){ tapReact(rk.dataset.rk); return; }
+  if (rk) return;
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  const fn = A[el.dataset.a]; if (fn){ e.preventDefault(); fn({...el.dataset}); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ closePicker(); closeSheet(); }
+  const el = e.target.closest && e.target.closest('[role="button"][data-a]');
+  if (el && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); A[el.dataset.a]({...el.dataset}); }
+  if (e.target.id === 'cmtIn' && e.key === 'Enter' && !e.isComposing){ e.preventDefault(); A.sendComment(); }
+});
+function syncSend(){ const i = $('#cmtIn'), b = $('#sendBtn'); if (i && b) b.disabled = !i.value.trim(); }
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id === 'cmtIn'){ syncSend(); if (el.value.length >= 5000) toast(t('limitText')); }
+  if (el.id === 'cmpTa'){
+    S.compose.text = el.value;
+    $('#cmpCnt').textContent = el.value.length.toLocaleString('en-US') + ' / 5,000';
+    $('#pubBtn').disabled = !(el.value.trim() || S.compose.media.length);
+    if (el.value.length >= 5000) toast(t('limitText'));
+  }
+  if (el.id === 'introTa'){ S.create.intro = el.value; $('#introCnt').textContent = el.value.length.toLocaleString('en-US') + ' / 5,000'; if (el.value.length >= 5000) toast(t('introLimit')); }
+  if (el.id === 'cName'){
+    let v = el.value;
+    if (v.length && !v.replace(/[\s　]/g,'')){ v = ''; el.value = ''; }
+    const cr = S.create; cr.name = v;
+    cr.err = /^[\s　]|[\s　]$/.test(v) && v.length ? 'errTrim' : null;
+    $('#cNameC').textContent = v.length + '/15';
+    $('#cErr').textContent = cr.err ? t(cr.err) : '';
+    el.parentElement.classList.toggle('err', !!cr.err);
+    $('#cBtn').disabled = !(v.length && !cr.err && cr.cat);
+  }
+});
+document.addEventListener('beforeinput', e => {
+  const el = e.target;
+  if ((el.id === 'cmpTa' || el.id === 'cmtIn') && el.value.length >= 5000 && e.inputType && e.inputType.startsWith('insert')) toast(t('limitText'));
+});
+function readFiles(files){
+  const list = [...files].filter(f => /image\/(jpeg|png|gif)/.test(f.type) || f.type.startsWith('image/'));
+  return Promise.all(list.map(f => new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); })));
+}
+['#fileIn','#camIn'].forEach(sel => $(sel).addEventListener('change', async e => {
+  const urls = await readFiles(e.target.files); e.target.value = ''; e.target.multiple = true;
+  if (!urls.length) return;
+  if (S.fileTarget === 'compose' && S.compose){
+    const room = 20 - S.compose.media.length; S.compose.media.push(...urls.slice(0, room));
+    if (urls.length > room) toast(t('limitMedia'));
+  } else if (S.fileTarget === 'avatar') S.create.avatarCustom = urls[0];
+  else if (S.fileTarget === 'cover') S.create.coverCustom = urls[0];
+  render();
+}));
+
+/* ================= fit phone to stage ================= */
+function fit(){
+  const w = innerWidth, h = innerHeight, F = 18;
+  let s;
+  if (w <= 900) s = Math.min(1, (w - 40) / (390 + F), (h * 0.92) / (844 + F));
+  else s = Math.min(1, (h - 48) / (844 + F));
+  s = Math.max(.5, s);
+  S.scale = s;
+  const ph = $('#phone'); ph.style.transform = `scale(${s})`; ph.style.top = 9*s + 'px'; ph.style.left = 9*s + 'px';
+  const f = $('#fit'); f.style.width = (390 + F) * s + 'px'; f.style.height = (844 + F) * s + 'px';
+}
+addEventListener('resize', fit);
+fit();
+render();
+</script>
+
+</body>
+</html>

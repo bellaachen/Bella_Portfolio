@@ -25,6 +25,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 | **All case studies** | [case-studies.html](https://bellaachen.github.io/Bella_Portfolio/case-studies.html) |
 | Drag & Drop Pending Orders | [Case study](https://bellaachen.github.io/Bella_Portfolio/trading/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/trading/prototype.html) |
 | Enterprise Permission Studio | [Case study](https://bellaachen.github.io/Bella_Portfolio/permission/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/permission/demo.html) |
+| Community Groups (0→1 mobile) | [Prototype](https://bellaachen.github.io/Bella_Portfolio/community/prototype.html) · case study coming soon |
 | AI Chart — Chart Analysis Concept | [Prototype](https://bellaachen.github.io/Bella_Portfolio/ai-chart-lens/prototype.html) |
 | Product thinking | [Designing a Reliable Symbol Management System](https://bellaachen.github.io/Bella_Portfolio/product-thinking/symbol-management.html) |
 | Lab | [Career Bingo · 職場賓果](https://bellaachen.github.io/career-bingo/) · [Story Writer skill](ai-workflow/story-writer) · [Design system](design-system) |
@@ -60,6 +61,7 @@ A static site published with GitHub Pages from the `main` branch root. No build 
 | `case.css` | Styles for the case study and article pages |
 | `trading/` | Drag & Drop Pending Orders — case study and prototype |
 | `permission/` | Enterprise Permission Studio — case study, prototype and product specification |
+| `community/` | Community Groups — 0→1 mobile community prototype (case study in progress) |
 | `ai-chart-lens/` | AI Chart concept prototype |
 | `product-thinking/` | Product thinking articles |
 | `ai-workflow/story-writer/` | Story Writer — a Claude skill that turns a brief into dev-ready Jira stories |
