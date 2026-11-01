@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="spark" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#3F4E7A"/>
+      <stop offset="0.55" stop-color="#7D97E0"/>
+      <stop offset="1" stop-color="#D6E4FF"/>
+    </linearGradient>
+  </defs>
+  <path d="M38 5 H20 A15 15 0 0 0 5 20 V44 A15 15 0 0 0 20 59 H44 A15 15 0 0 0 59 44 V26" fill="none" stroke="#16273a" stroke-width="2.4" stroke-linecap="round"/>
+  <g transform="translate(9.5 10.5) scale(.72)">
+    <path fill="#16273a" fill-rule="evenodd" d="M14 11 H31 A11 11 0 0 1 40.177 28.066 A13.5 13.5 0 0 1 33 53 H14 Z M22 18 H31 A4 4 0 0 1 31 26 H27.1 V33 H33 A6.5 6.5 0 0 1 33 46 H22 Z"/>
+  </g>
+  <path fill="url(#spark)" d="M51 3.5 C51.805 10.7 53.3 12.195 60.5 13 C53.3 13.805 51.805 15.3 51 22.5 C50.195 15.3 48.7 13.805 41.5 13 C48.7 12.195 50.195 10.7 51 3.5 Z"/>
+</svg>
