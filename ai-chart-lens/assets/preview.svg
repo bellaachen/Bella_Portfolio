@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+<title id="title">AI Chart prototype preview</title>
+<desc id="desc">A price chart with candlesticks beside an AI assistant panel that answers a question about the chart with trend, key levels and a risk note. Simulated data.</desc>
+<defs>
+  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f4f6f9"/><stop offset="1" stop-color="#e6e9f0"/></linearGradient>
+  <linearGradient id="spark" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3F4E7A"/><stop offset=".55" stop-color="#7D97E0"/><stop offset="1" stop-color="#D6E4FF"/></linearGradient>
+  <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#1b2a4b" flood-opacity=".12"/></filter>
+</defs>
+<rect width="1200" height="750" fill="url(#bg)"/>
+
+<!-- window -->
+<g filter="url(#shadow)">
+  <rect x="60" y="60" width="1080" height="630" rx="14" fill="#fff" stroke="#dde2ea"/>
+</g>
+<path d="M60 112h1080" stroke="#e6e9ef"/>
+<circle cx="86" cy="86" r="5" fill="#c9cfd8"/><circle cx="104" cy="86" r="5" fill="#c9cfd8"/><circle cx="122" cy="86" r="5" fill="#c9cfd8"/>
+<text x="150" y="91" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#1f2a44">AI Chart</text>
+<rect x="226" y="76" width="74" height="22" rx="11" fill="#eceef3"/><text x="263" y="91" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" letter-spacing=".08em" fill="#3F4E7A">CONCEPT</text>
+<text x="1112" y="91" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#7a8494">Simulated data</text>
+
+<!-- chart panel -->
+<text x="92" y="150" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#1f2a44">XAUUSD</text>
+<text x="170" y="150" font-family="Arial,sans-serif" font-size="12" fill="#7a8494">Gold · 1H</text>
+<g font-family="Arial,sans-serif" font-size="11" font-weight="700">
+  <rect x="520" y="134" width="34" height="24" rx="6" fill="#eceef3"/><text x="537" y="150" text-anchor="middle" fill="#5b6475">15m</text>
+  <rect x="560" y="134" width="34" height="24" rx="6" fill="#3F4E7A"/><text x="577" y="150" text-anchor="middle" fill="#fff">1H</text>
+  <rect x="600" y="134" width="34" height="24" rx="6" fill="#eceef3"/><text x="617" y="150" text-anchor="middle" fill="#5b6475">4H</text>
+</g>
+<rect x="92" y="172" width="560" height="380" rx="8" fill="#fbfbfd" stroke="#e6e9ef"/>
+<g stroke="#eceff4"><path d="M92 248h560M92 324h560M92 400h560M92 476h560"/><path d="M204 172v380M316 172v380M428 172v380M540 172v380"/></g>
+<g fill="#8a93a3" font-family="Arial,sans-serif" font-size="10"><text x="610" y="244">2,352</text><text x="610" y="320">2,346</text><text x="610" y="396">2,340</text><text x="610" y="472">2,334</text></g>
+<!-- support / resistance -->
+<path d="M92 270h560" stroke="#3F4E7A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<path d="M92 452h560" stroke="#3F4E7A" stroke-width="1.5" stroke-dasharray="6 5"/>
+<rect x="100" y="258" width="78" height="20" rx="4" fill="#fff" stroke="#c9d0e2"/><text x="139" y="272" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#3F4E7A">Resistance</text>
+<rect x="100" y="440" width="66" height="20" rx="4" fill="#fff" stroke="#c9d0e2"/><text x="133" y="454" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#3F4E7A">Support</text>
+<!-- candles: up = slate blue, down = warm grey -->
+<g stroke-width="2">
+  <g stroke="#9a9488" fill="#bdb7ab"><path d="M120 420v62"/><rect x="113" y="430" width="14" height="38"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M150 404v66"/><rect x="143" y="418" width="14" height="40"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M180 380v62"/><rect x="173" y="392" width="14" height="36"/></g>
+  <g stroke="#9a9488" fill="#bdb7ab"><path d="M210 384v58"/><rect x="203" y="394" width="14" height="30"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M240 360v70"/><rect x="233" y="370" width="14" height="46"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M270 336v60"/><rect x="263" y="346" width="14" height="38"/></g>
+  <g stroke="#9a9488" fill="#bdb7ab"><path d="M300 342v56"/><rect x="293" y="352" width="14" height="30"/></g>
+  <g stroke="#9a9488" fill="#bdb7ab"><path d="M330 362v58"/><rect x="323" y="372" width="14" height="36"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M360 340v66"/><rect x="353" y="352" width="14" height="42"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M390 312v62"/><rect x="383" y="322" width="14" height="40"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M420 290v58"/><rect x="413" y="300" width="14" height="36"/></g>
+  <g stroke="#9a9488" fill="#bdb7ab"><path d="M450 280v56"/><rect x="443" y="290" width="14" height="32"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M480 286v58"/><rect x="473" y="296" width="14" height="38"/></g>
+  <g stroke="#9a9488" fill="#bdb7ab"><path d="M510 266v54"/><rect x="503" y="276" width="14" height="30"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M540 274v60"/><rect x="533" y="284" width="14" height="38"/></g>
+  <g stroke="#5d6f9e" fill="#7d8fbe"><path d="M570 252v58"/><rect x="563" y="262" width="14" height="36"/></g>
+</g>
+<!-- AI highlight zone -->
+<rect x="400" y="240" width="190" height="120" rx="10" fill="#3F4E7A" fill-opacity=".06" stroke="#7D97E0" stroke-width="1.5" stroke-dasharray="4 4"/>
+<g transform="translate(578 226)"><path fill="url(#spark)" d="M14 0 C15.1 9.9 18.1 12.9 28 14 C18.1 15.1 15.1 18.1 14 28 C12.9 18.1 9.9 15.1 0 14 C9.9 12.9 12.9 9.9 14 0 Z"/></g>
+<!-- volume -->
+<g fill="#d9dde6"><rect x="113" y="510" width="14" height="30"/><rect x="143" y="520" width="14" height="20"/><rect x="173" y="514" width="14" height="26"/><rect x="203" y="524" width="14" height="16"/><rect x="233" y="508" width="14" height="32"/><rect x="263" y="516" width="14" height="24"/><rect x="293" y="526" width="14" height="14"/><rect x="323" y="520" width="14" height="20"/><rect x="353" y="512" width="14" height="28"/><rect x="383" y="506" width="14" height="34"/><rect x="413" y="510" width="14" height="30"/><rect x="443" y="522" width="14" height="18"/><rect x="473" y="516" width="14" height="24"/><rect x="503" y="524" width="14" height="16"/><rect x="533" y="512" width="14" height="28"/><rect x="563" y="504" width="14" height="36"/></g>
+<!-- chips under chart -->
+<g font-family="Arial,sans-serif" font-size="12" fill="#3F4E7A">
+  <rect x="92" y="580" width="138" height="34" rx="17" fill="#fff" stroke="#c9d0e2"/><text x="161" y="602" text-anchor="middle">What's the trend?</text>
+  <rect x="240" y="580" width="122" height="34" rx="17" fill="#fff" stroke="#c9d0e2"/><text x="301" y="602" text-anchor="middle">Key levels</text>
+  <rect x="372" y="580" width="138" height="34" rx="17" fill="#fff" stroke="#c9d0e2"/><text x="441" y="602" text-anchor="middle">Explain this zone</text>
+</g>
+
+<!-- AI panel -->
+<rect x="684" y="132" width="424" height="526" rx="10" fill="#f7f8fb" stroke="#e6e9ef"/>
+<g transform="translate(704 150)"><path fill="url(#spark)" d="M11 0 C11.9 7.8 14.2 10.1 22 11 C14.2 11.9 11.9 14.2 11 22 C10.1 14.2 7.8 11.9 0 11 C7.8 10.1 10.1 7.8 11 0 Z"/></g>
+<text x="736" y="167" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#1f2a44">Chart assistant</text>
+<!-- user bubble -->
+<rect x="836" y="196" width="252" height="40" rx="14" fill="#3F4E7A"/>
+<text x="852" y="221" font-family="Arial,sans-serif" font-size="13" fill="#fff">What does this 1H chart show?</text>
+<!-- answer card -->
+<rect x="704" y="254" width="384" height="300" rx="12" fill="#fff" stroke="#e1e5ed"/>
+<g font-family="Arial,sans-serif">
+  <text x="724" y="284" font-size="11" font-weight="700" letter-spacing=".1em" fill="#3F4E7A">TREND</text>
+  <text x="724" y="306" font-size="14" fill="#1f2a44">Higher highs and higher lows —</text>
+  <text x="724" y="326" font-size="14" fill="#1f2a44">a short-term uptrend.</text>
+  <path d="M724 346h344" stroke="#eceff4"/>
+  <text x="724" y="372" font-size="11" font-weight="700" letter-spacing=".1em" fill="#3F4E7A">KEY LEVELS</text>
+  <rect x="724" y="384" width="160" height="30" rx="8" fill="#eceef3"/><text x="740" y="404" font-size="12" fill="#1f2a44">Resistance  2,350</text>
+  <rect x="894" y="384" width="160" height="30" rx="8" fill="#eceef3"/><text x="910" y="404" font-size="12" fill="#1f2a44">Support  2,336</text>
+  <path d="M724 434h344" stroke="#eceff4"/>
+  <text x="724" y="460" font-size="11" font-weight="700" letter-spacing=".1em" fill="#3F4E7A">RISK NOTE</text>
+  <text x="724" y="482" font-size="14" fill="#1f2a44">Price is near resistance; a rejection</text>
+  <text x="724" y="502" font-size="14" fill="#1f2a44">here could pull back toward support.</text>
+  <text x="724" y="534" font-size="11" fill="#8a93a3">Educational concept · not investment advice</text>
+</g>
+<!-- input -->
+<rect x="704" y="576" width="384" height="46" rx="23" fill="#fff" stroke="#d5dae4"/>
+<text x="726" y="604" font-family="Arial,sans-serif" font-size="13" fill="#8a93a3">Ask about this chart…</text>
+<circle cx="1064" cy="599" r="15" fill="#3F4E7A"/><path d="M1064 606v-14M1058 598l6-6 6 6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
