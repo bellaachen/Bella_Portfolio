@@ -105,6 +105,8 @@
     'Small things I build with AI.': '我用 AI 做的小東西。',
     'Side projects outside my day job — designed, built and shipped end-to-end.': '工作之外的個人專案，從設計、開發到上線都自己完成。',
     'Bilingual tech-workplace bingo, live on the web.': '中英雙語的科技職場賓果，已上線可玩。', 'Play it ↗': '來玩 ↗',
+    'Which Cat Are You?': '你是哪一種貓咪？',
+    '12 questions, 16 cats — a bilingual just-for-fun quiz.': '12 道情境題、16 種貓咪的雙語趣味測驗。', 'Take the quiz ↗': '來測驗 ↗',
     'Story Writer skill': 'Story Writer 技能', 'Claude skill: brief → dev-ready Jira stories.': 'Claude 技能：把需求簡述轉成可開發的 Jira Story。', 'View on GitHub ↗': '在 GitHub 查看 ↗',
     'This portfolio': '這個作品集網站', 'Design system': '設計系統', 'Tokens, rules and decisions behind this site.': '這個網站背後的 tokens、規則與設計決策。', 'Bilingual site built with AI, iterated in public.': '用 AI 打造的雙語網站，公開持續迭代。', 'Source ↗': '原始碼 ↗',
     "Let's build something good.": '一起做點好東西。',

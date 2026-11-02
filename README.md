@@ -28,7 +28,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 | Groups — From 0 to 1 | [Case study](https://bellaachen.github.io/Bella_Portfolio/community/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/community/prototype.html) |
 | AI Chart — Chart Analysis Concept | [Prototype](https://bellaachen.github.io/Bella_Portfolio/ai-chart-lens/prototype.html) |
 | Product thinking | [Designing a Reliable Symbol Management System](https://bellaachen.github.io/Bella_Portfolio/product-thinking/symbol-management.html) |
-| Lab | [Career Bingo · 職場賓果](https://bellaachen.github.io/career-bingo/) · [Story Writer skill](ai-workflow/story-writer) · [Design system](design-system) |
+| Lab | [Career Bingo · 職場賓果](https://bellaachen.github.io/career-bingo/) · [Which Cat Are You? · 你是哪一種貓咪](https://bellaachen.github.io/which-cat-are-you/) · [Story Writer skill](ai-workflow/story-writer) · [Design system](design-system) |
 
 **Contact:** [LinkedIn](https://www.linkedin.com/in/bella-chen-2ba68a141/) · [GitHub](https://github.com/bellaachen)
 
