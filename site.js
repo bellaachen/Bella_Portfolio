@@ -71,11 +71,11 @@
   // ---- Static text dictionary (English → 繁體中文) ------------------------------------
   var ZH = {
     'Case studies': '案例研究', 'Writing': '文章', 'Capabilities': '能力地圖', 'Experience': '工作經歷', 'Lab': '實驗室', 'Home': '首頁',
-    'Product Manager · FinTech & Platforms': '產品經理 · 金融科技與平台',
+    'Product Manager · B2B & B2C': '產品經理 · B2B 與 B2C',
     'Building is half of it.': '規劃產品，', 'The other half is asking why.': '也理解它背後的世界。',
-    'Trading platforms': '交易平台', 'FIX API & connectivity': 'FIX API 與連線介接', 'Permissions / RBAC': '權限管理 / RBAC', 'AI-built prototypes': '用 AI 打造的原型',
-    "Hi, I'm Bella. For 10+ years I've built products from trading systems and APIs to consumer mobile apps — and with each one, I want to know how it works, how it makes money, and who it's really for. Lately, I build my own prototypes with AI, too.": '你好，我是 Bella。十年來做過交易系統、API 平台，也做過面向一般使用者的行動 App。每個產品，我都想弄懂它怎麼運作、怎麼賺錢、真正為誰而做。現在，我也會用 AI 親手把想法做成原型。',
-    'years in product': '年產品經驗', 'domains — FinTech, Enterprise, Consumer, Data': '大領域：金融科技、企業、消費性產品、資料',
+    'Trading & fintech': '交易與金融科技', 'Enterprise platforms': '企業平台', 'Consumer products': '消費性產品', 'Built with AI': '用 AI 打造',
+    "Hi, I'm Bella — 10+ years in product across trading systems, enterprise platforms and consumer apps. Before launch, I write the PRDs and align the teams; after launch, I track the data to see how people actually use it, and decide what's next. When an idea is still early, I prototype it with AI first.": '你好，我是 Bella，十年以上產品經驗，橫跨交易系統、企業平台與消費性 App。上線前，我寫 PRD、對齊各團隊；上線後，我看數據、追蹤使用者實際怎麼用，再決定下一步。想法還早時，我會先用 AI 做出能點的原型。',
+    'years in product': '年產品經驗', 'domains — FinTech, Enterprise, Consumer': '大領域：金融科技、企業、消費性產品',
     'product case studies': '個產品案例', 'prototypes built with AI': '個用 AI 打造的原型',
     'Featured case studies': '精選案例', 'What I shipped, and why it mattered.': '我做了什麼，以及它為什麼重要。',
     'All case studies (8) →': '全部案例（8）→',
@@ -85,7 +85,7 @@
     'From symbol lifecycle and trading restrictions to reliable state synchronization across the trading platform.': '從商品生命週期、交易限制，到交易平台的狀態一致性。',
     'How I use AI across the product workflow': '我如何在產品工作流程中運用 AI',
     'Where AI helps, what I never hand over, and how I keep data safe.': 'AI 在哪些環節幫上忙、哪些決定我從不交出去，以及我如何守住資料安全。',
-    'Expertise & capability map': '專長與能力地圖', 'Three areas, eighteen capabilities.': '三大領域，十八項能力。',
+    'Expertise & capability map': '專長與能力地圖', 'Three areas, twenty-one capabilities.': '三大領域，二十一項能力。', 'Product analytics': '產品數據分析', 'Tracking plans & event design': '埋點規劃與事件定義', 'Product metrics & funnels': '產品指標與漏斗分析',
     'Trading & FinTech': '交易系統與金融科技', 'Enterprise Platforms': '企業級平台', 'Consumer & Data Products': '消費性產品與資料應用',
     'Trading platforms, order flows, FIX API governance and financial operations.': '交易平台、訂單流程、FIX API 管理與金融營運。',
     'Permissions, administration tools, back-office workflows and business rules.': '權限管理、管理工具、後台流程與商業規則。',
@@ -107,8 +107,8 @@
     'Bilingual tech-workplace bingo, live on the web.': '中英雙語的科技職場賓果，已上線可玩。', 'Play it ↗': '來玩 ↗',
     'Story Writer skill': 'Story Writer 技能', 'Claude skill: brief → dev-ready Jira stories.': 'Claude 技能：把需求簡述轉成可開發的 Jira Story。', 'View on GitHub ↗': '在 GitHub 查看 ↗',
     'This portfolio': '這個作品集網站', 'Design system': '設計系統', 'Tokens, rules and decisions behind this site.': '這個網站背後的 tokens、規則與設計決策。', 'Bilingual site built with AI, iterated in public.': '用 AI 打造的雙語網站，公開持續迭代。', 'Source ↗': '原始碼 ↗',
-    "Let's build systems that work better.": '一起打造更好用的系統。',
-    'Open to conversations about systems product management, financial technology, and platform products.': '歡迎交流系統型產品管理、金融科技與平台產品相關機會。',
+    "Let's build something good.": '一起做點好東西。',
+    'Happy to talk product — fintech, enterprise platforms, consumer apps, or how you use AI and data in your product work.': '歡迎聊聊產品：金融科技、企業平台、消費性 App，或是你怎麼在產品工作中運用 AI 與數據。',
     '© Bella Chen · Designed and built with AI-assisted development': '© Bella Chen · 以 AI 輔助開發設計與建置', 'Source on GitHub ↗': 'GitHub 原始碼 ↗',
     // case-studies.html
     '← Back to home': '← 回到首頁', 'All case studies': '全部案例', 'Eight product stories.': '八個產品故事。',
@@ -223,6 +223,10 @@
   function init(opts) {
     page = (opts && opts.page) || 'home';
     try { lang = localStorage.getItem(LANG_KEY) || 'en'; } catch (e) {}
+    try {
+      var q = new URLSearchParams(location.search).get('filter');
+      if (q && FILTERS.some(function (f) { return f.id === q; })) filter = q;
+    } catch (e) {}
     document.querySelectorAll('[data-site-lang]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.siteLang); }); });
     document.addEventListener('click', function (e) {
       var f = e.target.closest('[data-filter]');

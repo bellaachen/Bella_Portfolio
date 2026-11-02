@@ -113,7 +113,7 @@ Fonts load from Google Fonts: Newsreader (400, 500, 600, italic 400), Instrument
 | **Header** | Logo (`assets/logo.svg`, 30px) + "Bella Chen" in `--serif`; nav links; EN / 中文 switch as an outlined pill group. Same on every page. |
 | **Button** | Pill, min `--control-min`. Primary: `--brand` fill. Outline: 1px `--border-ink`. Social (LinkedIn, GitHub): outline, uppercase, 0.12em tracking. → for on-site links, ↗ for off-site. |
 | **Filter chip** | A real `<button aria-pressed>`, pill. Selected: `--ink` fill. Unselected: 1px `--border-strong`. Count at 70% opacity. |
-| **Focus chip** (hero) | `--brand` text on `--brand-tint`, pill, no border. Display only. |
+| **Focus chip** (hero) | `--brand` text on `--brand-tint`, pill, 1px brand border at 22%. Links to the case-study page pre-filtered (`case-studies.html?filter=<id>`); hover fills with `--brand`. |
 | **Capability chip** | `--surface-muted` fill, **no border**, `--radius-sm`, 14px `--ink-secondary`. Display only. |
 | **Case tag** | `--surface-muted` fill, **no border**, `--radius-xs`, 12px. Display only. |
 | **AI badge** | `--brand` pill with a small four-point spark; label is always **"AI prototype · &lt;tool&gt;"** (中文 "AI 原型 · &lt;tool&gt;"). Only on work AI really built. |
