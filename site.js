@@ -71,7 +71,7 @@
   // ---- Static text dictionary (English → 繁體中文) ------------------------------------
   var ZH = {
     'Case studies': '案例研究', 'Writing': '文章', 'Capabilities': '能力地圖', 'Experience': '工作經歷', 'Lab': '實驗室', 'Home': '首頁',
-    'Product Manager · FinTech & Platforms': '產品經理 · 金融科技與平台',
+    'Product Manager · B2B & B2C': '產品經理 · B2B 與 B2C',
     'Building is half of it.': '規劃產品，', 'The other half is asking why.': '也理解它背後的世界。',
     'Trading & fintech': '交易與金融科技', 'Enterprise platforms': '企業平台', 'Consumer products': '消費性產品', 'Built with AI': '用 AI 打造',
     "Hi, I'm Bella — 10+ years in product across trading systems, enterprise platforms and consumer apps. Before launch, I write the PRDs and align the teams; after launch, I track the data to see how people actually use it, and decide what's next. When an idea is still early, I prototype it with AI first.": '你好，我是 Bella，十年以上產品經驗，橫跨交易系統、企業平台與消費性 App。上線前，我寫 PRD、對齊各團隊；上線後，我看數據、追蹤使用者實際怎麼用，再決定下一步。想法還早時，我會先用 AI 做出能點的原型。',
@@ -107,8 +107,8 @@
     'Bilingual tech-workplace bingo, live on the web.': '中英雙語的科技職場賓果，已上線可玩。', 'Play it ↗': '來玩 ↗',
     'Story Writer skill': 'Story Writer 技能', 'Claude skill: brief → dev-ready Jira stories.': 'Claude 技能：把需求簡述轉成可開發的 Jira Story。', 'View on GitHub ↗': '在 GitHub 查看 ↗',
     'This portfolio': '這個作品集網站', 'Design system': '設計系統', 'Tokens, rules and decisions behind this site.': '這個網站背後的 tokens、規則與設計決策。', 'Bilingual site built with AI, iterated in public.': '用 AI 打造的雙語網站，公開持續迭代。', 'Source ↗': '原始碼 ↗',
-    "Let's build systems that work better.": '一起打造更好用的系統。',
-    'Open to conversations about systems product management, financial technology, and platform products.': '歡迎交流系統型產品管理、金融科技與平台產品相關機會。',
+    "Let's build the next one — and ask why together.": '下一個產品，一起做，也一起問為什麼。',
+    'Happy to talk product — fintech, enterprise platforms, consumer apps, or how you use AI and data in your product work.': '歡迎聊聊產品：金融科技、企業平台、消費性 App，或是你怎麼在產品工作中運用 AI 與數據。',
     '© Bella Chen · Designed and built with AI-assisted development': '© Bella Chen · 以 AI 輔助開發設計與建置', 'Source on GitHub ↗': 'GitHub 原始碼 ↗',
     // case-studies.html
     '← Back to home': '← 回到首頁', 'All case studies': '全部案例', 'Eight product stories.': '八個產品故事。',
