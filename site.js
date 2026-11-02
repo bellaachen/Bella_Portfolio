@@ -107,7 +107,7 @@
     'Bilingual tech-workplace bingo, live on the web.': '中英雙語的科技職場賓果，已上線可玩。', 'Play it ↗': '來玩 ↗',
     'Story Writer skill': 'Story Writer 技能', 'Claude skill: brief → dev-ready Jira stories.': 'Claude 技能：把需求簡述轉成可開發的 Jira Story。', 'View on GitHub ↗': '在 GitHub 查看 ↗',
     'This portfolio': '這個作品集網站', 'Design system': '設計系統', 'Tokens, rules and decisions behind this site.': '這個網站背後的 tokens、規則與設計決策。', 'Bilingual site built with AI, iterated in public.': '用 AI 打造的雙語網站，公開持續迭代。', 'Source ↗': '原始碼 ↗',
-    "Let's build the next one — and ask why together.": '下一個產品，一起做，也一起問為什麼。',
+    "Let's build something good.": '一起做點好東西。',
     'Happy to talk product — fintech, enterprise platforms, consumer apps, or how you use AI and data in your product work.': '歡迎聊聊產品：金融科技、企業平台、消費性 App，或是你怎麼在產品工作中運用 AI 與數據。',
     '© Bella Chen · Designed and built with AI-assisted development': '© Bella Chen · 以 AI 輔助開發設計與建置', 'Source on GitHub ↗': 'GitHub 原始碼 ↗',
     // case-studies.html
