@@ -47,11 +47,12 @@
       img: 'community/assets/preview.svg', link: 'community/case-study.html',
       ai: ['AI prototype · Claude', 'AI 原型 · Claude'], cta: ['Read case study', '閱讀案例'] },
     { id: 'credit', area: 'consumer',
-      title: ['Credit Card Reward Calculator', '信用卡回饋計算器'],
-      category: ['Financial Data', '金融資料'], company: ['invosdata', 'invosdata'],
-      summary: ['Reward calculation logic and integration of credit-card offer information into a consumer-facing tool.', '回饋計算邏輯，並將信用卡優惠資訊整合進消費者工具。'],
+      title: ['Credit Card Reward Recommender (Rebuild)', '信用卡回饋推薦器（重建版）'],
+      category: ['Financial Data', '金融資料'],
+      summary: ['Turning scattered card offers into the rewards people actually get on their own monthly spending, rebuilt in 2026 with public data.', '依照每月消費，把散落的信用卡優惠算成實際拿得到的回饋，2026 年用公開資料重建。'],
       tags: ['Calculation Logic', 'FinTech', 'Data'],
-      points: [['Calculation rules and edge cases', 'Financial data structure and updates', 'User-facing comparison experience'], ['計算規則與邊界情境', '金融資料結構與更新', '面向使用者的比較體驗']] },
+      img: 'credit/assets/preview.svg', link: 'credit/case-study.html',
+      ai: ['AI prototype · Claude', 'AI 原型 · Claude'], cta: ['Read case study', '閱讀案例'] },
     { id: 'crm', area: 'enterprise',
       title: ['Merchant CRM Platform', '商家 CRM 平台'],
       category: ['B2B Data Product', 'B2B 資料產品'], company: ['invosdata', 'invosdata'],
@@ -154,7 +155,7 @@
     var el = $('#featured'); if (!el) return;
     el.innerHTML = CASES.filter(function (c) { return c.featured; }).map(function (c) {
       return open(c, coverHTML(c) +
-        '<span class="case-body"><span class="case-meta">' + esc(t(c.company)) + ' · ' + esc(t(c.category)) + '</span>' +
+        '<span class="case-body"><span class="case-meta">' + (c.company ? esc(t(c.company)) + ' · ' : '') + esc(t(c.category)) + '</span>' +
         '<span class="case-title">' + esc(t(c.title)) + '</span>' +
         '<span class="case-sum">' + esc(t(c.summary)) + '</span>' +
         '<span class="case-go">' + esc(cta(c)) + ' →</span></span>', 'case-card');
@@ -171,7 +172,7 @@
     var shown = CASES.filter(active.test);
     grid.innerHTML = shown.length ? shown.map(function (c) {
       return open(c, coverHTML(c) +
-        '<span class="case-meta">' + esc(t(c.company)) + ' · ' + esc(t(c.category)) + '</span>' +
+        '<span class="case-meta">' + (c.company ? esc(t(c.company)) + ' · ' : '') + esc(t(c.category)) + '</span>' +
         '<span class="case-title">' + esc(t(c.title)) + '</span>' +
         '<span class="case-sum">' + esc(t(c.summary)) + '</span>' +
         '<span class="tags">' + c.tags.map(function (x) { return '<span class="tag">' + esc(x) + '</span>'; }).join('') + '</span>' +
@@ -183,7 +184,7 @@
   function openModal(id) {
     var c = CASES.filter(function (x) { return x.id === id; })[0]; if (!c) return;
     priorFocus = document.activeElement;
-    $('#modalMeta').textContent = t(c.company) + ' / ' + t(c.category);
+    $('#modalMeta').textContent = (c.company ? t(c.company) + ' / ' : '') + t(c.category);
     $('#modalTitle').textContent = t(c.title);
     $('#modalSummary').textContent = t(c.summary);
     $('#modalPointsLabel').textContent = t(UI.pointsLabel);
