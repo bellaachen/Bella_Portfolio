@@ -27,7 +27,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 | Enterprise Permission Studio | [Case study](https://bellaachen.github.io/Bella_Portfolio/permission/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/permission/demo.html) |
 | Groups — From 0 to 1 | [Case study](https://bellaachen.github.io/Bella_Portfolio/community/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/community/prototype.html) |
 | AI Chart — Chart Analysis Concept | [Prototype](https://bellaachen.github.io/Bella_Portfolio/ai-chart-lens/prototype.html) |
-| Product thinking | [Designing a Reliable Symbol Management System](https://bellaachen.github.io/Bella_Portfolio/product-thinking/symbol-management.html) |
+| Product thinking | [Designing a Reliable Symbol Management System](https://bellaachen.github.io/Bella_Portfolio/product-thinking/symbol-management.html) · [How I Use AI in My PM Work](https://bellaachen.github.io/Bella_Portfolio/product-thinking/ai-pm-workflow.html) ([Prototype](https://bellaachen.github.io/Bella_Portfolio/product-thinking/order-book-prototype.html)) |
 | Lab | [Career Bingo · 職場賓果](https://bellaachen.github.io/career-bingo/) · [Which Cat Are You? · 你是哪一種貓咪](https://bellaachen.github.io/which-cat-are-you/) · [Story Writer skill](ai-workflow/story-writer) · [Design system](design-system) |
 
 **Contact:** [LinkedIn](https://www.linkedin.com/in/bella-chen-2ba68a141/) · [GitHub](https://github.com/bellaachen)
@@ -36,7 +36,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 
 ## 中文
 
-你好，我是 Bella，一位專注**金融科技與平台**的產品經理。十年以上橫跨交易系統、API 管理、金融資料與全球化行動 App 的產品經驗，規劃產品，也理解它背後的世界：它怎麼運作、怎麼賺錢、真正為誰而做。
+你好，我是 Bella，十年以上產品經驗，橫跨交易系統、企業平台與 C 端 App。上線前，我寫 PRD、對齊各團隊；上線後，我看數據、追蹤使用者實際怎麼用，再決定下一步。想法還早時，我會先用 AI 做出能點的原型。
 
 **專長領域**
 - **交易系統與金融科技**：交易平台、訂單流程、FIX API 管理、交易設定與金融營運

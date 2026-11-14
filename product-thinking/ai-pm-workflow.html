@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link rel="icon" href="../favicon.ico" sizes="32x32"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><title>How I Use AI in My PM Work | Product Thinking</title>
+<meta name="theme-color" content="#FAF9F5"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap"><link rel="stylesheet" href="../design-system/tokens.css"><link rel="stylesheet" href="../case.css">
+<style>
+.article-page .figure .fig-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:6px}
+.article-page .figure .fig-head h4{margin:0}
+.article-page .figure img{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:var(--radius-md)}
+.article-page .figure .fig-actions{margin-top:16px}
+.flow-steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px;font-size:14px;line-height:1.4;color:var(--ink)}
+.flow-steps li{padding:7px 12px;border-radius:var(--radius-sm);background:var(--surface-muted)}
+.flow-steps li.last{background:var(--brand-tint);color:var(--brand)}
+.flow-steps .arrow{padding:0;background:none;color:var(--ink-subtle)}
+</style>
+</head>
+<body class="article-page" data-language="en"><header class="site-header"><div class="wrap"><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="" width="30" height="30"><span>Bella Chen</span></a><nav class="site-nav" aria-label="Main navigation"><a href="../index.html" data-en="Home" data-zh="首頁">Home</a><a href="../index.html#writing" data-en="Writing" data-zh="文章">Writing</a><div class="lang" role="group" aria-label="Website language"><button type="button" data-site-lang="en" aria-pressed="true">EN</button><button type="button" data-site-lang="zh" aria-pressed="false">中文</button></div></nav></div></header><main class="shell">
+
+<header class="hero lang-panel" data-lang="zh" hidden><div class="eyebrow">Product Thinking   /   How I Work</div><h1>我如何在 PM 工作中<br/>使用 AI</h1><div class="rule"></div><p class="subtitle">從看不懂的報價規則，到團隊可以一起討論的 prototype</p><div class="meta">AI × PM WORKFLOW · ORDER BOOK PRICING RULES</div><nav class="toc"><a href="#context">01 · 陌生的需求</a><a href="#understand">02 · 先弄懂規則</a><a href="#prototype">03 · 從規格到 prototype</a><a href="#closing">04 · AI 不替我做判斷</a></nav></header>
+<header class="hero lang-panel" data-lang="en"><div class="eyebrow">Product Thinking   /   How I Work</div><h1>How I Use AI<br/>in My PM Work</h1><div class="rule"></div><p class="subtitle">From pricing rules I didn't understand to a prototype the team could discuss</p><div class="meta">AI × PM WORKFLOW · ORDER BOOK PRICING RULES</div><nav class="toc"><a href="#en-context">01 · An unfamiliar requirement</a><a href="#en-understand">02 · Understand first</a><a href="#en-prototype">03 · From spec to prototype</a><a href="#en-closing">04 · AI doesn't decide for me</a></nav></header>
+
+<article class="body lang-panel" data-lang="zh" hidden>
+<section class="section" id="context"><h2><span class="num">01 / CONTEXT</span>一個陌生的需求</h2>
+<p class="lead">有一次，我接到一個需求：後台需要能設定 Order Book 的報價規則。</p>
+<p>客戶看到的價格不是直接取自流動性來源，而是系統依照管理員設定的規則重新計算。需求裡提到 Volume Band、Sweepable、Full Amount。這些詞都和報價有關，但我一開始還不太能把它們放在同一個脈絡裡理解。</p>
+<p>雖然我做了十年產品，但過往接觸的大多偏向 C 端產品，金融報價並不是我熟悉的領域。這種時候，如果我急著開始寫規格，很容易只是把需求裡的名詞換個方式寫一遍，卻沒有真正弄清楚系統要怎麼運作。</p>
+<p>所以，我透過市場研究和 AI 來建立理解。</p></section><div class="divider"></div>
+
+<section class="section" id="understand"><h2><span class="num">02 / UNDERSTAND</span>先弄懂規則，再開始寫規格</h2>
+<p>讀完市面上其他競品的說明之後，我會請 AI 再解釋一次這些名詞，同時請它用具體數字舉例，說明系統可能如何依照不同條件處理報價，確認我的理解是正確的。</p>
+<p>有了例子之後，我會再根據自己的理解繼續追問：某個條件改變時，結果會有什麼不同？這些設定之間有什麼關係？如果管理員選了不同的規則，系統需要怎麼反應？</p>
+<p>我不會把 AI 第一次給的回答直接當成正確答案。對我來說，它比較像一個可以隨時追問的起點。AI 先幫我把陌生概念拆開，讓我看見哪些地方已經理解、哪些地方還需要確認。</p>
+<p>接著，我把問題從「這些名詞是什麼意思」，慢慢轉成「系統需要怎麼運作」和「規格還缺少哪些資訊」。AI 可以協助我理解問題，但實際的業務邏輯，以及還不確定的地方，我會列出來，再和熟悉交易規則的同事或相關團隊確認。</p></section><div class="divider"></div>
+
+<section class="section" id="prototype"><h2><span class="num">03 / PROTOTYPE</span>從規格到 prototype</h2>
+<p>對需求有了比較清楚的理解之後，我把整理出的規則帶進 prototype，試著把抽象的設定放進一個看得見、可以討論的畫面裡。</p>
+<p>我做的第一個版本，幾乎把當時想得到的設定都放了進去：資料來源、深度、更新頻率、價差加成。現在回頭看，它比較像是我把「目前理解到的所有規則」攤在桌上。</p>
+<div class="figure"><div class="fig-head"><h4>Figure 01 · 第一版：完整構想</h4><span class="built-tool">AI 原型 · Claude</span></div><p class="desc">當時能想到的設定都放在同一頁，連報價要來自哪一家流動性提供者都可以選。</p><a href="order-book-prototype.html?v=1&amp;lang=zh" target="_blank" rel="noopener noreferrer"><img src="assets/order-book-v1-zh.png" alt="第一版 prototype：報價設定、資料來源、深度、更新頻率等欄位都放在同一頁" loading="lazy"></a></div>
+<p>拿去討論時，老闆的回饋很直接：太複雜了，簡單一點就可以。</p>
+<p>這句話讓我重新思考一件事：系統能做到的，不等於管理員每次都需要設定的。我在理解規則的過程中，把所有可能性都整理了出來，但真正放進介面的，應該是管理員日常需要做的判斷。</p>
+<p>後來的版本被簡化成一張分層設定表：每一層定義一個成交量區間，以及這個區間的價差和流動性撮合方式。旁邊並排顯示原始的流動性報價，讓管理員改設定時，可以直接看到結果的變化。</p>
+<p>下面的 prototype 是我事後依照當時的兩個版本重新整理的。重做時，我也加入了後來對這個需求的想法，例如價差只設定一次、Fixed Spread 超過門檻時自動切回 Dynamic。畫面中的報價數字都是虛構的。</p>
+<div class="figure"><div class="fig-head"><h4>Figure 02 · 第二版：簡化後</h4><span class="built-tool">AI 原型 · Claude</span></div><p class="desc">每一層只設定成交量區間和取價方式，設定結果和原始報價並排，價差標示為「原始 → 設定後」。</p><a href="order-book-prototype.html?v=2&amp;lang=zh" target="_blank" rel="noopener noreferrer"><img src="assets/order-book-v2-zh.png" alt="第二版 prototype：分層報價規則表，旁邊並排原始報價" loading="lazy"></a><div class="fig-actions"><a class="button primary" href="order-book-prototype.html?lang=zh" target="_blank" rel="noopener noreferrer">開啟互動 prototype ↗</a></div></div>
+<p>從第一版到第二版，畫面變少了，但我覺得它反而更接近需求真正要解決的問題：讓管理員理解「我設定了什麼，客戶會看到什麼」。</p>
+<p>如果沒有先把第一版做出來，這些過度設計可能會一直藏在文件裡，直到開發階段才被發現。</p></section><div class="divider"></div>
+
+<section class="section" id="closing"><h2><span class="num">04 / REFLECTION</span>AI 幫我加快思考，但不替我做判斷</h2>
+<p>回頭看這次經驗，我使用 AI 的過程大致是：</p>
+<div class="figure"><h4>Figure 03 · 這次的工作流程</h4><ol class="flow-steps"><li>理解陌生概念</li><li class="arrow" aria-hidden="true">→</li><li>用例子檢查理解</li><li class="arrow" aria-hidden="true">→</li><li>整理待確認問題</li><li class="arrow" aria-hidden="true">→</li><li>寫出需求</li><li class="arrow" aria-hidden="true">→</li><li>做成 prototype</li><li class="arrow" aria-hidden="true">→</li><li class="last">和團隊討論、再簡化</li></ol></div>
+<p>AI 幫我更快進入陌生領域，也讓我可以透過追問和整理，把模糊的需求一步步變得具體。但它沒有替我完成 PM 的判斷。需求的背景、系統的限制、哪些規則還沒定案、哪些設定其實不需要，這些仍然要靠我和團隊一起確認。</p>
+<p class="closing">對我來說，AI 最有價值的地方，不是替我寫出一份看起來完整的文件，而是幫助我更快找到理解問題的入口。</p>
+<p>當我對問題有了初步理解，才知道接下來該問誰、該確認什麼，以及該怎麼把想法轉成團隊看得懂、也能繼續討論的產品方案。</p>
+<div class="foot">文中的 prototype 以虛構資料重建，不含任何公司或客戶的機密資料。</div></section>
+</article>
+
+<article class="body lang-panel" data-lang="en">
+<section class="section" id="en-context"><h2><span class="num">01 / CONTEXT</span>An unfamiliar requirement</h2>
+<p class="lead">I once received a requirement: the back office needed a way to configure the pricing rules for the order book.</p>
+<p>The prices clients see are not taken directly from liquidity providers. The system recalculates them based on rules set by an administrator. The requirement mentioned Volume Band, Sweepable and Full Amount. All of them were about pricing, but at first I couldn't place them in the same picture.</p>
+<p>I had been building products for ten years, but most of them were consumer products. Financial pricing was not a domain I knew. In that situation, if I rushed into writing the spec, I would most likely just rephrase the terms in the requirement without really understanding how the system should work.</p>
+<p>So I built my understanding through market research and AI.</p></section><div class="divider"></div>
+
+<section class="section" id="en-understand"><h2><span class="num">02 / UNDERSTAND</span>Understand the rules before writing the spec</h2>
+<p>After reading how competing products describe these features, I asked AI to explain the terms again and to walk through concrete numbers: how the system might price a quote under different conditions. This let me check whether my understanding was right.</p>
+<p>With examples in hand, I kept asking follow-up questions based on what I thought I understood. If one condition changes, what happens to the result? How do these settings relate to each other? If an administrator picks a different rule, how should the system respond?</p>
+<p>I never take AI's first answer as the right one. To me, it's a starting point I can keep questioning. AI breaks an unfamiliar concept into pieces, so I can see what I already understand and what still needs checking.</p>
+<p>From there, my questions shifted from "what do these terms mean" to "how does the system need to work" and "what is the spec still missing". AI helps me understand the problem, but the actual business logic and anything still uncertain go on a list, which I confirm with colleagues who know the trading rules and with the teams involved.</p></section><div class="divider"></div>
+
+<section class="section" id="en-prototype"><h2><span class="num">03 / PROTOTYPE</span>From spec to prototype</h2>
+<p>Once I understood the requirement better, I took the rules into a prototype, turning abstract settings into a screen the team could see and discuss.</p>
+<p>My first version included almost every setting I could think of at the time: data sources, depth, update frequency, spread markups. Looking back, it was really me laying every rule I had learned out on the table.</p>
+<div class="figure"><div class="fig-head"><h4>Figure 01 · Version 1: the full concept</h4><span class="built-tool">AI prototype · Claude</span></div><p class="desc">Every setting I could think of on one page — admins could even choose which liquidity provider the quotes came from.</p><a href="order-book-prototype.html?v=1&amp;lang=en" target="_blank" rel="noopener noreferrer"><img src="assets/order-book-v1-en.png" alt="Version 1 prototype: pricing, data source, depth and update settings all on one page" loading="lazy"></a></div>
+<p>When I brought it to the discussion, my manager's feedback was direct: too complicated, keep it simple.</p>
+<p>That made me rethink one thing: what the system can do is not the same as what an administrator needs to set every time. While learning the rules, I had mapped out every possibility. What belongs in the interface is the decisions an administrator actually makes day to day.</p>
+<p>The next version was simplified into a single tier table: each tier defines a volume band, along with its spread and liquidity matching method. The raw liquidity quotes sat alongside it, so administrators could see the effect of their changes right away.</p>
+<p>The prototype below is my later rebuild of those two versions. While rebuilding it, I also added what I've thought about since, such as setting the spread only once and switching Fixed Spread back to Dynamic when the raw spread passes a threshold. All quotes shown are fictional.</p>
+<div class="figure"><div class="fig-head"><h4>Figure 02 · Version 2: simplified</h4><span class="built-tool">AI prototype · Claude</span></div><p class="desc">Each tier sets only its volume band and matching method. Results sit beside the raw quotes, with spreads shown as raw → configured.</p><a href="order-book-prototype.html?v=2&amp;lang=en" target="_blank" rel="noopener noreferrer"><img src="assets/order-book-v2-en.png" alt="Version 2 prototype: a tier table with the raw order book alongside" loading="lazy"></a><div class="fig-actions"><a class="button primary" href="order-book-prototype.html?lang=en" target="_blank" rel="noopener noreferrer">Open the interactive prototype ↗</a></div></div>
+<p>From version 1 to version 2, the screen got smaller, but I think it got closer to the problem the requirement was really trying to solve: helping administrators understand "what I set, and what clients will see".</p>
+<p>Without building the first version, that over-design might have stayed hidden in the documents until development.</p></section><div class="divider"></div>
+
+<section class="section" id="en-closing"><h2><span class="num">04 / REFLECTION</span>AI speeds up my thinking, but doesn't decide for me</h2>
+<p>Looking back, this is roughly how I used AI:</p>
+<div class="figure"><h4>Figure 03 · The workflow</h4><ol class="flow-steps"><li>Understand new concepts</li><li class="arrow" aria-hidden="true">→</li><li>Test my understanding with examples</li><li class="arrow" aria-hidden="true">→</li><li>List open questions</li><li class="arrow" aria-hidden="true">→</li><li>Write the requirement</li><li class="arrow" aria-hidden="true">→</li><li>Build a prototype</li><li class="arrow" aria-hidden="true">→</li><li class="last">Discuss with the team, then simplify</li></ol></div>
+<p>AI got me into an unfamiliar domain faster, and through questioning and organising, it helped me turn a vague requirement into something concrete. But it didn't make the PM's decisions for me. The background of the requirement, the system's constraints, which rules were still open, which settings weren't needed at all — those still had to be confirmed by me and the team.</p>
+<p class="closing">For me, AI is most valuable not when it writes a document that looks complete, but when it helps me find a way into the problem sooner.</p>
+<p>Once I have a first understanding, I know who to ask next, what to confirm, and how to turn my ideas into a product proposal the team can understand and keep discussing.</p>
+<div class="foot">The prototype in this article was rebuilt with fictional data. It contains no confidential company or customer data.</div></section>
+</article></main><script>(function(){const buttons=document.querySelectorAll('.site-header [data-site-lang]');const panels=document.querySelectorAll('.lang-panel');const navLinks=document.querySelectorAll('.site-header [data-en]');function setLang(lang){try{localStorage.setItem('bella-portfolio-language',lang)}catch(e){}document.body.dataset.language=lang;document.documentElement.lang=lang==='en'?'en':'zh-Hant';buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.siteLang===lang)));panels.forEach(p=>{p.hidden=p.dataset.lang!==lang});navLinks.forEach(a=>a.textContent=a.dataset[lang]);}buttons.forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.siteLang)));let saved='en';try{saved=localStorage.getItem('bella-portfolio-language')||'en'}catch(e){}setLang(saved==='zh'?'zh':'en');})();</script></body></html>

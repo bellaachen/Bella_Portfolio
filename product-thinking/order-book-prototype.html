@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Book Pricing Rules — Prototype</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#f6f5f2; --card:#ffffff; --line:#e7e4de; --line2:#efede8;
+    --ink:#2b2b2b; --sub:#6f6c66; --mute:#9a968f;
+    --accent:#3d6a9e; --accent-soft:#eaf0f7;
+    --bid:#2f8a57; --ask:#c4483f;
+    --note:#fbf6e9; --note-line:#e8d9ad; --warn:#b5651d;
+    --hl:#fff3cf;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Noto Sans TC","Hiragino Sans","PingFang TC",-apple-system,"Segoe UI",sans-serif;
+    font-size:13px;line-height:1.5}
+  button,input,select{font:inherit;color:inherit}
+
+  /* case-study bar */
+  .case{max-width:1280px;margin:0 auto;padding:28px 24px 16px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+  .case h1{font-size:20px;font-weight:600;margin:0 0 4px;letter-spacing:.02em}
+  .case p{margin:0;color:var(--sub)}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .seg{display:inline-flex;background:#ebe8e2;border-radius:8px;padding:3px}
+  .seg button{border:0;background:transparent;padding:6px 12px;border-radius:6px;cursor:pointer;color:var(--sub)}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+  /* app frame */
+  .app{max-width:1280px;margin:0 auto 12px;padding:0 24px}
+  .frame{display:grid;grid-template-columns:200px 1fr;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;min-height:720px}
+  .side{border-right:1px solid var(--line2);padding:18px 12px;display:flex;flex-direction:column;gap:2px}
+  .brand{font-weight:600;letter-spacing:.04em;padding:2px 10px 18px;color:var(--ink)}
+  .brand span{color:var(--accent)}
+  .nav{padding:7px 10px;border-radius:6px;color:var(--sub);display:flex;justify-content:space-between}
+  .nav.on{background:var(--accent-soft);color:var(--accent)}
+  .nav.sub{padding-left:24px;font-size:12.5px}
+  .nav.sub.on{background:none;font-weight:600}
+  .side .who{margin-top:auto;padding:10px;border-top:1px solid var(--line2);color:var(--sub);display:flex;gap:8px;align-items:center}
+  .avatar{width:24px;height:24px;border-radius:50%;background:#d9d4ca}
+  .main{display:flex;flex-direction:column;min-width:0}
+  .top{display:flex;justify-content:flex-end;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line2);color:var(--sub);gap:8px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--bid)}
+  .content{padding:18px 22px 22px}
+  .crumb{color:var(--mute);margin-bottom:10px}
+  .crumb b{color:var(--accent);font-weight:500}
+  .tabs{display:flex;gap:22px;border-bottom:1px solid var(--line2);margin-bottom:16px}
+  .tabs span{padding:6px 0 9px;color:var(--sub)}
+  .tabs span.on{color:var(--accent);border-bottom:2px solid var(--accent)}
+  .desc{color:var(--sub);margin-bottom:16px}
+
+  /* forms */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 20px}
+  .grid2>*,.grid3>*{min-width:0}
+  .field label{display:flex;gap:5px;align-items:center;color:var(--sub);font-size:12px;margin-bottom:5px}
+  .ctl{display:flex;align-items:center;border:1px solid var(--line);border-radius:6px;height:34px;padding:0 10px;background:#fff}
+  .ctl input,.ctl select{border:0;outline:0;flex:1;background:transparent;min-width:0}
+  .ctl .u{color:var(--mute);font-size:12px}
+  .sec{border-top:1px solid var(--line2);margin-top:18px;padding-top:16px}
+  .switch{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px}
+  .sw{width:34px;height:18px;border-radius:9px;background:var(--accent);position:relative;display:inline-block}
+  .sw::after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+  .v1{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th{font-weight:500;color:var(--sub);font-size:12px;text-align:right;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--line2);text-align:right;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  .bid{color:var(--bid)} .ask{color:var(--ask)}
+  .box{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  .box h3{margin:0;padding:10px 12px;font-size:12.5px;font-weight:600;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;justify-content:space-between}
+  .box h3 .l{display:flex;align-items:center;gap:6px}
+  tr.hl td{background:var(--hl)}
+  .na{color:var(--mute);font-size:12px}
+
+  /* v2 */
+  .v2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start}
+  .tiers td{padding:5px 8px}
+  .tiers input,.tiers select{width:100%;min-width:0;border:1px solid transparent;border-radius:5px;padding:5px 6px;text-align:right;background:transparent}
+  .tiers select{text-align:left}
+  .tiers input:hover,.tiers select:hover{border-color:var(--line)}
+  .tiers input:focus,.tiers select:focus{outline:0;border-color:var(--accent);background:#fff}
+  .tiers tr:hover td{background:#faf9f6}
+  .tiers tr.hl td{background:var(--hl)}
+  .del{border:0;background:none;color:var(--mute);cursor:pointer;font-size:15px;padding:2px 6px;border-radius:4px}
+  .del:hover{color:var(--ask);background:#fbeceb}
+  .add{border:0;background:none;color:var(--accent);cursor:pointer;padding:10px 12px}
+  .warn{color:var(--warn);font-size:11.5px;display:block;text-align:left;padding:0 6px}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--sub);font-size:12px}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .stack{display:flex;flex-direction:column;gap:16px}
+  .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+  .pbtn{padding:8px 26px;border-radius:6px;border:1px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer}
+  .pbtn.solid{background:var(--accent);color:#fff}
+
+  /* info tips */
+  .tip{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;
+    border:1px solid #b9c7d8;color:var(--accent);font-size:9.5px;font-weight:600;cursor:help;flex:none;font-style:normal}
+  #pop{position:fixed;z-index:50;max-width:280px;background:#2f2f2f;color:#f3f1ec;padding:10px 12px;border-radius:8px;
+    font-size:12px;line-height:1.6;pointer-events:none;opacity:0;transition:opacity .12s}
+  #pop b{display:block;color:#fff;margin-bottom:3px}
+
+  /* annotations */
+  .note{display:none;background:var(--note);border:1px solid var(--note-line);border-radius:8px;padding:9px 12px;margin:12px 0 0;color:#5b5134;font-size:12.5px;gap:8px}
+  body.notes .note{display:flex}
+  .note .n{flex:none;width:18px;height:18px;border-radius:50%;background:#c9a64a;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .dup{outline:1.5px dashed transparent;outline-offset:3px;border-radius:6px}
+  body.notes .dup{outline-color:#d4b45d}
+
+  footer{max-width:1280px;margin:0 auto;padding:10px 24px 32px;color:var(--mute);font-size:12px;text-align:right;letter-spacing:.04em}
+  .hidden{display:none!important}
+
+  @media (max-width:900px){
+    .frame{grid-template-columns:1fr}
+    .side{display:none}
+    .v1,.v2,.grid2,.grid3{grid-template-columns:1fr}
+    .tiers-wrap{overflow-x:auto}
+  }
+  /* v2 refinements */
+  .globals{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:flex-end;margin-bottom:14px}
+  .globals .field{width:220px}
+  .books{display:flex;flex-direction:column;gap:14px}
+  .live{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--accent);cursor:pointer;font-size:12px;padding:2px 4px}
+  .live .ld{width:7px;height:7px;border-radius:50%;background:var(--bid);box-shadow:0 0 0 0 rgba(47,138,87,.5);animation:pulse 1.6s infinite}
+  .live.paused .ld{background:var(--mute);animation:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,138,87,.45)}70%{box-shadow:0 0 0 6px rgba(47,138,87,0)}100%{box-shadow:0 0 0 0 rgba(47,138,87,0)}}
+  .sp{display:inline-flex;gap:6px;align-items:baseline;justify-content:flex-end}
+  .sp .from{color:var(--mute);font-size:11.5px}
+  .sp .to{font-weight:600}
+  .vol{color:var(--sub)}
+  .flash{animation:fl .6s}
+  @keyframes fl{from{background:#eef4fb}to{background:transparent}}
+  .legend{display:flex;gap:14px;color:var(--mute);font-size:11.5px;padding:8px 12px;border-top:1px solid var(--line2)}
+  td.hlc{background:var(--hl)}
+  .disclaimer{color:var(--mute);font-size:11.5px;margin-top:14px}
+  .tiers th.res,.tiers td.res{background:#fafaf8}
+  .tiers tr.hl td.res{background:var(--hl)}
+  .tiers th.res{color:var(--mute)}
+  .tiers td.res{font-variant-numeric:tabular-nums}
+  .tiers td,.tiers th{padding-left:6px;padding-right:6px}
+  .books th,.books td{padding:7px 7px}
+  .tiers-wrap,.books .box{overflow-x:auto}
+  .colgroup-label{font-size:11px;color:var(--mute);font-weight:400}
+  .globals .field.sm{width:150px}
+  body:not(.m-fixed) .mode-fixed{display:none!important}
+  body.m-fixed .mode-dynamic{display:none!important}
+  .fallback{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:14px;background:#fcfcfa}
+  .fb-title{display:flex;align-items:center;gap:6px;font-weight:600;font-size:12.5px;margin-bottom:8px}
+  .fb-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--sub)}
+  .ctl.mini{width:84px;height:30px;display:inline-flex}
+  .ctl.mini input{width:100%}
+  .badge{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:9px;background:#eef3f9;color:var(--accent);margin-left:6px;font-weight:500;vertical-align:1px}
+</style>
+</head>
+<body class="notes">
+
+<div class="case">
+  <div>
+    <h1 data-zh="Order Book 報價規則設定" data-en="Order Book Pricing Rules"></h1>
+    <p id="vdesc"></p>
+  </div>
+  <div class="controls">
+    <div class="seg" id="verSeg">
+      <button data-v="1" data-zh="第一版・完整構想" data-en="V1 · Full concept"></button>
+      <button data-v="2" class="on" data-zh="第二版・簡化後" data-en="V2 · Simplified"></button>
+    </div>
+    <div class="seg" id="noteSeg">
+      <button data-n="1" class="on" data-zh="顯示註解" data-en="Notes on"></button>
+      <button data-n="0" data-zh="隱藏" data-en="Off"></button>
+    </div>
+    <div class="seg" id="langSeg">
+      <button data-l="zh" class="on">中文</button>
+      <button data-l="en">EN</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="frame">
+    <aside class="side">
+      <div class="brand">Trading<span>Admin</span></div>
+      <div class="nav">Dashboard</div>
+      <div class="nav">System Settings <span>›</span></div>
+      <div class="nav">Traders &amp; Managers <span>›</span></div>
+      <div class="nav">Orders <span>›</span></div>
+      <div class="nav on">System Preparation <span>⌄</span></div>
+      <div class="nav sub on">Symbols</div>
+      <div class="nav sub">Groups</div>
+      <div class="nav">Journal <span>›</span></div>
+      <div class="nav">Reports</div>
+      <div class="who"><span class="avatar"></span>Admin</div>
+    </aside>
+
+    <div class="main">
+      <div class="top"><span class="dot"></span>Demo Server</div>
+      <div class="content">
+        <div class="crumb">Symbols / <b>EURUSD</b></div>
+        <div class="tabs">
+          <span>General</span><span class="on">Order book</span><span>Trade</span><span>Calculation</span><span>Swap</span><span>Margin Rate</span><span>Session</span>
+        </div>
+
+        <!-- ================= V1 ================= -->
+        <section id="view1" class="hidden">
+          <div class="desc">Settings of symbol quote and spread related parameters</div>
+          <div class="v1">
+            <div>
+              <div class="grid3">
+                <div class="field"><label>Spread Type <i class="tip" data-k="spreadType">i</i></label><div class="ctl"><select><option>Fixed Spread</option><option>Dynamic Spread</option></select></div></div>
+                <div class="field"><label>Bid Markup <i class="tip" data-k="markup">i</i></label><div class="ctl"><input value="-5"><span class="u">pt</span></div></div>
+                <div class="field"><label>Ask Markup</label><div class="ctl"><input value="5"><span class="u">pt</span></div></div>
+              </div>
+
+              <div class="sec">
+                <div class="switch">Enable Order Book <span class="sw"></span></div>
+                <div class="grid2">
+                  <div class="field dup"><label>Data Source - LP aggregation <i class="tip" data-k="lp">i</i></label><div class="ctl"><select><option>LP-A</option><option>LP-B</option><option>LP-C</option></select></div></div>
+                  <div class="field dup"><label>Data Source - Internal Simulation</label><div class="ctl"><select><option>On</option><option>Off</option></select></div></div>
+                </div>
+                <div class="note"><span class="n">1</span><span data-zh="甚至可以選擇報價要來自哪一家流動性提供者（LP）。這是平台成熟之後才需要的能力，以現階段的需求來說太遙遠了。" data-en="Admins could even pick which liquidity provider the quotes come from — a capability for a far more mature platform, not what this stage needed."></span></div>
+
+                <div class="grid2" style="margin-top:14px">
+                  <div class="field"><label>Max visible volume</label><div class="ctl"><input value="100"></div></div>
+                  <div class="field"><label>Maximum Depth Of Book <i class="tip" data-k="depth">i</i></label><div class="ctl"><select><option>5</option><option>10</option></select></div></div>
+                  <div class="field"><label>Grouping</label><div class="ctl"><select><option>On</option><option>Off</option></select></div></div>
+                  <div class="field"><label>Price Step</label><div class="ctl"><select><option>0.001</option></select></div></div>
+                  <div class="field"><label>Real Time</label><div class="ctl"><select><option>Yes</option><option>No</option></select></div></div>
+                  <div class="field"><label>Throttled <i class="tip" data-k="throttle">i</i></label><div class="ctl"><select><option>100ms</option><option>500ms</option></select></div></div>
+                </div>
+                <div class="note"><span class="n">2</span><span data-zh="設定項目太多：除了報價規則，還有深度、Grouping、Price Step、更新頻率這類偏技術的參數，管理員日常幾乎不會調整，卻全部放在同一層。" data-en="Too many settings: beyond the pricing rules, technical parameters like depth, grouping, price step and throttling — rarely touched by admins — all sit at the same level."></span></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="box">
+                <h3><span class="l">Order Book <i class="tip" data-k="preview">i</i></span></h3>
+                <table id="v1book"></table>
+              </div>
+              <div class="note"><span class="n">3</span><span data-zh="只有一張結果表，看不到原始報價，改了設定也無法比較前後差異。" data-en="Only one result table — without the raw quotes, admins can't see what their settings changed."></span></div>
+            </div>
+          </div>
+          <div class="actions"><button class="pbtn">Cancel</button><button class="pbtn solid">Save</button></div>
+        </section>
+
+        <!-- ================= V2 ================= -->
+        <section id="view2">
+          <div class="desc">Configure order book volume bands, markups and spreads for platform display.</div>
+          <div class="switch">Enable order book configuration <span class="sw"></span></div>
+
+          <div class="globals">
+            <div class="field"><label>Spread Type <i class="tip" data-k="spreadType">i</i></label>
+              <div class="ctl"><select id="spreadType"><option value="dynamic">Dynamic Spread</option><option value="fixed">Fixed Spread</option></select></div></div>
+            <div class="field sm mode-fixed"><label>Fixed Spread <i class="tip" data-k="fixedSpread">i</i></label>
+              <div class="ctl"><input type="number" min="1" step="1" id="fixedSp" value="12"><span class="u">pt</span></div></div>
+            <div class="field sm mode-dynamic"><label>Bid Markup <i class="tip" data-k="markup">i</i></label>
+              <div class="ctl"><input type="number" min="0" step="1" id="bidMk" value="3"><span class="u">pt</span></div></div>
+            <div class="field sm mode-dynamic"><label>Ask Markup</label>
+              <div class="ctl"><input type="number" min="0" step="1" id="askMk" value="3"><span class="u">pt</span></div></div>
+          </div>
+          <div class="fallback mode-fixed">
+            <div class="fb-title"><span data-zh="保護機制：原始價差過大時自動切回 Dynamic" data-en="Safeguard: switch back to Dynamic when raw spread is too wide"></span> <i class="tip" data-k="fallback">i</i></div>
+            <div class="fb-row">
+              <span data-zh="當原始價差超過" data-en="When raw spread exceeds"></span>
+              <span class="ctl mini"><input type="number" min="0" step="1" id="thr" value="10"><span class="u">pt</span></span>
+              <span data-zh="，該層改用 Bid +" data-en=", that tier uses Bid +"></span>
+              <span class="ctl mini"><input type="number" min="0" step="1" id="fbBid" value="3"><span class="u">pt</span></span>
+              <span data-zh="／ Ask +" data-en="/ Ask +"></span>
+              <span class="ctl mini"><input type="number" min="0" step="1" id="fbAsk" value="3"><span class="u">pt</span></span>
+            </div>
+            <div class="warn" id="thrWarn" style="padding:6px 0 0"></div>
+          </div>
+          <div class="note" style="margin:0 0 16px"><span class="n">1</span><span data-zh="欄位跟著 Spread Type 切換。Dynamic：設定「在市場價格上加幾點」，價差會跟著市場變動。Fixed：直接設定「客戶永遠看到幾點價差」，並在原始價差過大時自動切回 Dynamic，避免平台用比市場還好的價格報價。" data-en="Fields follow the Spread Type. Dynamic: set how many points to add on top of the market. Fixed: set the exact spread clients see — with an automatic switch back to Dynamic when raw spreads get too wide, so the platform never quotes better than the market."></span></div>
+
+          <div class="v2">
+            <div>
+              <div class="box tiers-wrap">
+                <h3><span class="l" data-zh="分層報價規則" data-en="Pricing tiers"></span><span class="colgroup-label" data-zh="灰底欄位為即時計算結果" data-en="Shaded columns are live results"></span></h3>
+                <table class="tiers">
+                  <thead><tr>
+                    <th>Tier</th>
+                    <th><span style="display:inline-flex;gap:5px;align-items:center">Volume Band <i class="tip" data-k="volumeBand">i</i></span></th>
+                    <th style="text-align:left"><span style="display:inline-flex;gap:5px;align-items:center">Liquidity Matching <i class="tip" data-k="matching">i</i></span></th>
+                    <th class="res">Bid</th>
+                    <th class="res"><span style="display:inline-flex;gap:5px;align-items:center">Spread (pt) <i class="tip" data-k="spread">i</i></span></th>
+                    <th class="res">Ask</th>
+                    <th></th>
+                  </tr></thead>
+                  <tbody id="tierBody"></tbody>
+                </table>
+                <button class="add" id="addTier">+ Add Tier</button>
+                <div class="legend"><span data-zh="價差：原始 → 設定後" data-en="Spread: raw → configured"></span></div>
+              </div>
+              <div class="note"><span class="n">2</span><span data-zh="每一層只設定兩件事：多大的量、用什麼方式取價。設定結果直接顯示在同一行，管理員不用在兩張表之間對照。" data-en="Each tier sets just two things: size and how to source liquidity. Results appear on the same row — no cross-referencing between tables."></span></div>
+              <div class="note"><span class="n">4</span><span data-zh="滑過任何一層，右邊會標出它用到原始報價的哪幾個價位。試著切換 Sweepable / Full Amount，或改成 Fixed Spread 看看保護機制怎麼運作。" data-en="Hover a tier to see which raw levels it uses. Try switching Sweepable / Full Amount, or Fixed Spread to see the safeguard at work."></span></div>
+            </div>
+
+            <div class="books">
+              <div class="box">
+                <h3><span class="l"><span data-zh="原始報價（LP）" data-en="Raw Order Book (LP)"></span> <i class="tip" data-k="raw">i</i></span>
+                  <button class="live" id="live"><span class="ld"></span><span id="liveTxt"></span></button></h3>
+                <table>
+                  <thead><tr><th>Volume</th><th>Bid</th><th>Spread (pt)</th><th>Ask</th><th>Volume</th></tr></thead>
+                  <tbody id="rawBody"></tbody>
+                </table>
+              </div>
+              <div class="note" style="margin-top:0"><span class="n">3</span><span data-zh="原始報價放在旁邊對照，也標出價差。報價會即時跳動，需要仔細比對時可以先暫停。" data-en="Raw quotes sit alongside for comparison, with spreads shown. Quotes move live — pause them to compare carefully."></span></div>
+            </div>
+          </div>
+          <div class="disclaimer" data-zh="＊此為作品集示意 prototype，報價數字為虛構，計算邏輯經過簡化。" data-en="* Portfolio prototype. Quotes are fictional and pricing logic is simplified."></div>
+          <div class="actions"><button class="pbtn">Cancel</button><button class="pbtn solid">Save</button></div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>Bella Chen</footer>
+<div id="pop"></div>
+<script>
+(function(){
+  let lang='zh', ver=2, hover=-1, paused=false;
+  const PT=0.00001;
+  const $=id=>document.getElementById(id);
+
+  const GLOSS={
+    spreadType:{t:'Spread Type',zh:'Dynamic Spread：在市場價格上加幾點，價差會隨市場變動。\nFixed Spread：客戶永遠看到固定的價差，以市場中間價為準往兩邊撐開。',en:'Dynamic Spread: add points on top of market prices; the spread moves with the market.\nFixed Spread: clients always see the same spread, centred on the market mid price.'},
+    fixedSpread:{t:'Fixed Spread',zh:'客戶看到的價差，固定為這個點數。例如 12 pt，代表 Ask − Bid 永遠是 0.00012。',en:'The exact spread clients see. e.g. 12 pt means Ask − Bid is always 0.00012.'},
+    fallback:{t:'Safeguard',zh:'市場劇烈波動時（例如重大新聞），原始價差可能比固定價差還寬，平台等於用比市場還好的價格報價、自己承擔損失。超過門檻的層級會自動改用 Dynamic，表格中會標示「Dynamic」。',en:'In volatile markets the raw spread can exceed the fixed spread, meaning the platform quotes better than the market and absorbs the loss. Tiers above the threshold switch to Dynamic automatically and are tagged in the table.'},
+    markup:{t:'Markup',zh:'Dynamic 模式下的加價點數，套用到所有層級。Bid 往下減、Ask 往上加，這是平台的價差收入。1 pt = 0.00001。',en:'Points added on top of liquidity prices — Bid moves down, Ask moves up. This is the platform\'s spread income. 1 pt = 0.00001.'},
+    volumeBand:{t:'Volume Band',zh:'成交量區間：這一層適用的下單量。例如 1,000,000 代表客戶買或賣 100 萬單位（約 10 手）時拿到的價格。',en:'The order size a tier applies to, e.g. 1,000,000 = the price for buying or selling 1M units (≈10 lots).'},
+    matching:{t:'Liquidity Matching',zh:'這個量要怎麼從原始報價取價。\nSweepable：可以一路吃好幾個價位湊足數量，價格取加權平均（VWAP）。\nFull Amount：只取一個「單一價位就夠量」的報價，不拆開吃。',en:'How a tier sources its price from raw liquidity.\nSweepable: sweep across several levels to fill the size, priced at the VWAP.\nFull Amount: use a single level that can fill the whole size on its own.'},
+    spread:{t:'Spread',zh:'Ask 減 Bid，單位是點（pt）。灰色是只用原始報價算出的價差，黑色是加上設定之後客戶實際看到的價差。',en:'Ask minus Bid, in points. Grey: spread from raw liquidity only. Bold: what the client actually sees after markup.'},
+    raw:{t:'Raw Order Book',zh:'從流動性提供者（LP）收到的原始報價深度，還沒套用任何規則。',en:'The depth received from liquidity providers (LPs), before any rules are applied.'},
+    preview:{t:'Client Order Book',zh:'套用規則之後，客戶在不同下單量會看到的價格。',en:'What clients see at each order size after the rules are applied.'},
+    depth:{t:'Maximum Depth Of Book',zh:'報價深度最多顯示幾層價位。',en:'How many price levels the book shows.'},
+    lp:{t:'LP Aggregation',zh:'選擇或合併不同流動性提供者的報價來源。',en:'Selecting or combining quote sources from different liquidity providers.'},
+    throttle:{t:'Throttled',zh:'報價更新的頻率上限，例如每 100ms 最多推一次。',en:'Caps how often quotes are pushed, e.g. at most once per 100ms.'}
+  };
+  const DESC={
+    1:{zh:'第一版：把當時理解到的所有設定都攤開，連報價來源都可以選。',en:'V1: every setting I understood at the time — even the liquidity source was configurable.'},
+    2:{zh:'第二版：欄位跟著價差模式切換，每層只設定量與取價方式，結果和原始報價並排比較。',en:'V2: fields follow the spread mode; each tier sets only size and matching, with results beside the raw quotes.'}
+  };
+  const LIVE={zh:['暫停即時報價','繼續即時報價'],en:['Pause live quoting','Resume live quoting']};
+
+  let raw={
+    bids:[{p:1.10499,v:500000},{p:1.10498,v:1000000},{p:1.10497,v:2000000},{p:1.10495,v:3000000},{p:1.10493,v:6000000}],
+    asks:[{p:1.10501,v:500000},{p:1.10502,v:1000000},{p:1.10503,v:2000000},{p:1.10505,v:3000000},{p:1.10507,v:6000000}]
+  };
+  let tiers=[
+    {vb:100000, mode:'sweep'},
+    {vb:500000, mode:'sweep'},
+    {vb:1000000,mode:'sweep'},
+    {vb:3000000,mode:'full'},
+    {vb:5000000,mode:'full'}
+  ];
+  const num=id=>Math.max(0,Number($(id).value)||0);
+  const mk=()=>({bid:Math.max(0,Number($('bidMk').value)||0),ask:Math.max(0,Number($('askMk').value)||0)});
+
+  const fmtV=n=>Number(n).toLocaleString('en-US');
+  const fmtP=n=>n.toFixed(5);
+  const floor5=x=>Math.floor(x*1e5+1e-7)/1e5;
+  const ceil5=x=>Math.ceil(x*1e5-1e-7)/1e5;
+  const pts=d=>Math.round(d/PT);
+
+  function fill(levels,size,mode){
+    if(!(size>0)) return null;
+    if(mode==='sweep'){
+      let rem=size,cost=0,used=[];
+      for(let i=0;i<levels.length&&rem>0;i++){const take=Math.min(rem,levels[i].v);cost+=take*levels[i].p;rem-=take;used.push(i);}
+      return rem>0?null:{p:cost/size,used};
+    }
+    const i=levels.findIndex(l=>l.v>=size);
+    return i<0?null:{p:levels[i].p,used:[i]};
+  }
+  function calc(t){
+    const b=fill(raw.bids,t.vb,t.mode), a=fill(raw.asks,t.vb,t.mode), m=mk();
+    if(!b||!a) return null;
+    let bid,ask,fb=false;
+    const rawSp=(a.p-b.p)/PT;
+    if($('spreadType').value==='fixed'){
+      const thr=num('thr');
+      if(rawSp>thr){ fb=true; bid=floor5(b.p-num('fbBid')*PT); ask=ceil5(a.p+num('fbAsk')*PT); }
+      else{
+        const F=Math.max(1,num('fixedSp')), mid=Math.round((b.p+a.p)/2/PT);
+        bid=(mid-Math.floor(F/2))*PT; ask=bid+F*PT;
+      }
+    } else { bid=floor5(b.p-m.bid*PT); ask=ceil5(a.p+m.ask*PT); }
+    return {bid,ask,fb,rawSpread:rawSp,spread:pts(ask-bid),ub:b.used,ua:a.used};
+  }
+
+  function renderRaw(){
+    const r=hover>=0?calc(tiers[hover]):null, hb=r?r.ub:[], ha=r?r.ua:[];
+    $('rawBody').innerHTML=raw.bids.map((b,i)=>{
+      const a=raw.asks[i];
+      return `<tr><td class="vol ${hb.includes(i)?'hlc':''}">${fmtV(b.v)}</td><td class="bid ${hb.includes(i)?'hlc':''}">${fmtP(b.p)}</td><td>${pts(a.p-b.p)}</td><td class="ask ${ha.includes(i)?'hlc':''}">${fmtP(a.p)}</td><td class="vol ${ha.includes(i)?'hlc':''}">${fmtV(a.v)}</td></tr>`;
+    }).join('');
+  }
+  function resultCells(i){
+    const r=calc(tiers[i]);
+    if(!r) return `<td class="res na" colspan="3" style="text-align:center">${lang==='zh'?'流動性不足':'Insufficient liquidity'}</td>`;
+    const rs=Math.round(r.rawSpread*10)/10;
+    return `<td class="res bid">${fmtP(r.bid)}</td><td class="res"><span class="sp"><span class="from">${rs} →</span><span class="to">${r.spread}</span></span>${r.fb?'<span class="badge">Dynamic</span>':''}</td><td class="res ask">${fmtP(r.ask)}</td>`;
+  }
+  function renderPreview(){
+    // update only result cells so inputs keep focus
+    document.querySelectorAll('#tierBody tr').forEach(tr=>{
+      const i=+tr.dataset.i;
+      tr.querySelectorAll('td.res').forEach(td=>td.remove());
+      tr.lastElementChild.insertAdjacentHTML('beforebegin',resultCells(i));
+    });
+  }
+  function renderTiers(){
+    const w=lang==='zh'?'需大於上一層':'Must exceed previous tier';
+    $('tierBody').innerHTML=tiers.map((t,i)=>{
+      const bad=i>0&&!(t.vb>tiers[i-1].vb);
+      return `<tr data-i="${i}" class="${i===hover?'hl':''}">
+        <td>${i+1}</td>
+        <td><input type="number" step="100000" min="0" data-f="vb" value="${t.vb}">${bad?`<span class="warn">${w}</span>`:''}</td>
+        <td><select data-f="mode"><option value="sweep"${t.mode==='sweep'?' selected':''}>Sweepable</option><option value="full"${t.mode==='full'?' selected':''}>Full Amount</option></select></td>
+        ${resultCells(i)}
+        <td><button class="del" title="Remove" data-del="${i}">×</button></td></tr>`;
+    }).join('');
+  }
+  function renderBooks(){renderPreview();renderRaw();}
+  function renderAll(){renderTiers();renderBooks();}
+
+  function setHover(i){
+    hover=i;
+    document.querySelectorAll('#tierBody tr').forEach(tr=>tr.classList.toggle('hl',+tr.dataset.i===i));
+    renderRaw();
+  }
+  ['tierBody'].forEach(id=>{
+    $(id).addEventListener('mouseover',e=>{const tr=e.target.closest('tr');if(tr&&+tr.dataset.i!==hover)setHover(+tr.dataset.i);});
+    $(id).addEventListener('mouseleave',()=>setHover(-1));
+  });
+
+  $('tierBody').addEventListener('input',e=>{
+    const tr=e.target.closest('tr'),f=e.target.dataset.f; if(!tr||!f||f==='mode')return;
+    tiers[+tr.dataset.i][f]=Math.max(0,Number(e.target.value)||0); renderBooks();
+  });
+  $('tierBody').addEventListener('change',e=>{
+    const tr=e.target.closest('tr'),f=e.target.dataset.f; if(!tr||!f)return;
+    tiers[+tr.dataset.i][f]= f==='mode'?e.target.value:Math.max(0,Number(e.target.value)||0); renderAll();
+  });
+  $('tierBody').addEventListener('click',e=>{
+    const d=e.target.dataset.del; if(d===undefined||tiers.length<=1)return;
+    tiers.splice(+d,1); hover=-1; renderAll();
+  });
+  $('addTier').addEventListener('click',()=>{
+    const l=tiers[tiers.length-1];
+    tiers.push({vb:l.vb*2,mode:'full'}); renderAll();
+  });
+  function modeUI(){
+    document.body.classList.toggle('m-fixed',$('spreadType').value==='fixed');
+    const w=num('thr')>num('fixedSp');
+    $('thrWarn').textContent = w ? (lang==='zh'?'門檻高於固定價差：原始價差介於兩者之間時，平台會用比市場還窄的價差報價。':'Threshold is above the fixed spread: between the two, the platform would quote tighter than the market.') : '';
+  }
+  $('spreadType').addEventListener('change',()=>{modeUI();renderBooks();});
+  ['bidMk','askMk','fixedSp','thr','fbBid','fbAsk'].forEach(id=>$(id).addEventListener('input',()=>{modeUI();renderBooks();}));
+
+  // live quoting
+  function tick(){
+    if(paused||ver!==2) return;
+    const shift=(Math.floor(Math.random()*3)-1)*PT;
+    const widen=Math.random()<0.3?(Math.random()<0.5?-1:1)*PT:0;
+    const vol=v=>Math.min(8000000,Math.max(200000,Math.round(v*(0.85+Math.random()*0.3)/100000)*100000));
+    raw.bids=raw.bids.map(l=>({p:+(l.p+shift).toFixed(5),v:vol(l.v)}));
+    raw.asks=raw.asks.map(l=>({p:+(l.p+shift+widen).toFixed(5),v:vol(l.v)}));
+    // keep book sane: asks above bids, levels ordered
+    if(raw.asks[0].p-raw.bids[0].p<PT) raw.asks=raw.asks.map(l=>({p:+(l.p+PT).toFixed(5),v:l.v}));
+    if(raw.asks[0].p-raw.bids[0].p>5*PT) raw.asks=raw.asks.map(l=>({p:+(l.p-PT).toFixed(5),v:l.v}));
+    renderBooks();
+  }
+  setInterval(tick,1800);
+  function liveLabel(){$('liveTxt').textContent=LIVE[lang][paused?1:0];$('live').classList.toggle('paused',paused);}
+  $('live').addEventListener('click',()=>{paused=!paused;liveLabel();});
+
+  // V1 static book
+  (function(){
+    const rows=[[120,1.10499,1.10501,95],[98,1.10498,1.10502,110],[76,1.10497,1.10503,88],[54,1.10496,1.10504,72],[31,1.10495,1.10505,60]];
+    $('v1book').innerHTML='<thead><tr><th>Volume</th><th>Bid</th><th>Spread</th><th>Ask</th><th>Volume</th></tr></thead><tbody>'+
+      rows.map(r=>`<tr><td>${r[0]}</td><td class="bid">${fmtP(r[1])}</td><td>${(r[2]-r[1]).toFixed(5)}</td><td class="ask">${fmtP(r[2])}</td><td>${r[3]}</td></tr>`).join('')+'</tbody>';
+  })();
+
+  function seg(id,fn){
+    $(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+      $(id).querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));fn(b);});
+  }
+  seg('verSeg',b=>{ver=+b.dataset.v;$('view1').classList.toggle('hidden',ver!==1);$('view2').classList.toggle('hidden',ver!==2);applyLang();});
+  seg('noteSeg',b=>document.body.classList.toggle('notes',b.dataset.n==='1'));
+  seg('langSeg',b=>{lang=b.dataset.l;document.documentElement.lang=lang==='zh'?'zh-Hant':'en';applyLang();renderAll();});
+  function applyLang(){
+    document.querySelectorAll('[data-zh]').forEach(el=>el.textContent=el.dataset[lang]);
+    $('vdesc').textContent=DESC[ver][lang]; liveLabel(); modeUI();
+  }
+
+  // tooltips
+  const pop=$('pop');
+  function showTip(el){
+    const g=GLOSS[el.dataset.k]; if(!g)return;
+    pop.innerHTML=`<b>${g.t}</b>`+g[lang].split('\n').map(s=>`<div>${s}</div>`).join('');
+    pop.style.opacity=1;
+    const r=el.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;
+    let x=Math.min(innerWidth-pw-10,Math.max(10,r.left+r.width/2-pw/2)),y=r.top-ph-8; if(y<10)y=r.bottom+8;
+    pop.style.left=x+'px';pop.style.top=y+'px';
+  }
+  document.querySelectorAll('.tip').forEach(el=>{
+    el.setAttribute('tabindex','0');
+    el.addEventListener('mouseenter',()=>showTip(el));el.addEventListener('focus',()=>showTip(el));
+    el.addEventListener('mouseleave',()=>pop.style.opacity=0);el.addEventListener('blur',()=>pop.style.opacity=0);
+  });
+
+  // initial state: ?v=1|2 &lang=zh|en &notes=0|1 &live=0 ; otherwise follow the portfolio's saved language
+  (function(){
+    const q=new URLSearchParams(location.search);
+    let l=q.get('lang');
+    if(!l){ try{ l=localStorage.getItem('bella-portfolio-language'); }catch(e){} }
+    if(l==='en'||l==='zh') $('langSeg').querySelector(`[data-l="${l}"]`).click();
+    if(q.get('v')==='1') $('verSeg').querySelector('[data-v="1"]').click();
+    if(q.get('notes')==='0') $('noteSeg').querySelector('[data-n="0"]').click();
+    if(q.get('live')==='0'){ paused=true; }
+  })();
+  applyLang(); renderAll();
+})();
+</script>
+</body>
+</html>
