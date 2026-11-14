@@ -114,7 +114,7 @@
     '© Bella Chen · Designed and built with AI-assisted development': '© Bella Chen · 以 AI 輔助開發設計與建置', 'Source on GitHub ↗': 'GitHub 原始碼 ↗',
     // case-studies.html
     '← Back to home': '← 回到首頁', 'All case studies': '全部案例', 'Eight product stories.': '八個產品故事。',
-    'Across three companies and independent work — trading platforms, enterprise systems, consumer and data products.': '橫跨三間公司與個人專案：交易平台、企業系統、消費性與資料產品。',
+    'From full-time roles and independent work — trading platforms, enterprise systems, consumer and data products.': '來自正職工作與個人專案：交易平台、企業系統、消費性與資料產品。',
     'Want the details behind a case?': '想深入了解某個案例？', 'Get in touch →': '聯絡我 →'
   };
   var UI = {
