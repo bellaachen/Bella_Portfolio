@@ -55,10 +55,11 @@
       ai: ['AI prototype · Claude', 'AI 原型 · Claude'], cta: ['Read case study', '閱讀案例'] },
     { id: 'crm', area: 'enterprise',
       title: ['Merchant CRM Platform', '商家 CRM 平台'],
-      category: ['B2B Data Product', 'B2B 資料產品'], company: ['invosdata', 'invosdata'],
+      category: ['B2B Data Product', 'B2B 資料產品'],
       summary: ['Cloud CRM planning using invoice-derived data to support merchant insights and targeted marketing.', '運用發票資料規劃雲端 CRM，支援商家洞察與精準行銷。'],
       tags: ['CRM', 'B2B SaaS', 'Analytics'],
-      points: [['Merchant user needs and workflows', 'Data-driven segmentation concepts', 'Operational CRM experience'], ['商家使用者需求與流程', '數據驅動的分眾概念', 'CRM 營運體驗']] }
+      img: 'crm/assets/preview.svg', link: 'crm/case-study.html',
+      ai: ['AI prototype · Claude', 'AI 原型 · Claude'], cta: ['Read case study', '閱讀案例'] }
   ];
 
   var FILTERS = [

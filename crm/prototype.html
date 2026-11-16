@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merchant CRM Platform · Prototype | Bella Chen</title>
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="../favicon.ico" sizes="32x32"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<style>
+:root{
+  --bg:#FAF9F5; --panel:#FFFFFF; --line:#E8E5DC; --ink:#23262F; --sub:#6B6F7B; --mute:#9A9DA6;
+  --brand:#3F4E7A; --brand-2:#6B7BAA; --brand-soft:#E9ECF4; --brand-faint:#F3F5FA;
+  --accent:#C9785A; --accent-soft:#F6E9E3; --ok:#4E8A6E; --warn:#B8873A;
+  --r:12px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55}
+button{font-family:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:20;background:rgba(250,249,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;padding:12px 24px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600}
+.logo .mark{width:30px;height:30px;border-radius:8px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:15px}
+.logo small{display:block;font-weight:400;color:var(--sub);font-size:12px}
+.top .grow{flex:1}
+select{font-family:inherit;font-size:13px;height:34px;line-height:32px;padding:0 34px 0 12px;border:1px solid var(--line);border-radius:8px;color:var(--ink);
+  -webkit-appearance:none;appearance:none;cursor:pointer;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%236B6F7B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center}
+select:hover{border-color:#D3CFC3}
+select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.period{display:flex;flex-direction:column;line-height:1.25;font-size:11.5px;color:var(--mute);padding:0 4px 0 16px;border-left:1px solid var(--line)}.period b{color:var(--ink);font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+.lang button{border:0;background:none;padding:5px 12px;font-size:12px;color:var(--sub)}
+.lang button.on{background:var(--brand);color:#fff}
+.shell{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 57px)}
+nav{border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:57px;height:calc(100vh - 57px)}
+nav button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:none;text-align:left;padding:9px 12px;border-radius:8px;color:var(--sub);font-size:14px;margin-bottom:2px}
+nav button:hover{background:var(--brand-faint);color:var(--ink)}
+nav button.on{background:var(--brand-soft);color:var(--brand);font-weight:600}
+nav .ico{width:18px;text-align:center;opacity:.8}
+nav .sep{height:1px;background:var(--line);margin:12px 8px}
+main{padding:24px 32px 40px;max-width:1180px}
+h1{font-size:22px;margin:0 0 4px;font-weight:600}
+.lead{color:var(--sub);margin:0 0 18px}
+.note{display:flex;gap:8px;align-items:flex-start;background:var(--brand-faint);border:1px solid var(--brand-soft);color:var(--brand);border-radius:10px;padding:9px 12px;font-size:12.5px;margin-bottom:18px}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:1fr 1fr} .g21{grid-template-columns:1.6fr 1fr} .g12{grid-template-columns:1fr 1.5fr}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card h3{margin:0 0 2px;font-size:15px;font-weight:600}
+.card .cap{color:var(--sub);font-size:12.5px;margin:0 0 14px}
+.kpi .lbl{color:var(--sub);font-size:12.5px}
+.kpi .val{font-size:26px;font-weight:600;margin:4px 0 2px;letter-spacing:-.01em}
+.kpi .d{font-size:12px}
+.up{color:var(--ok)} .down{color:var(--accent)}
+.insight{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 12px;border-radius:0 8px 8px 0;font-size:13px;margin-top:12px}
+.insight b{color:#8E4A30}
+.bar{display:grid;grid-template-columns:96px 1fr 52px;gap:10px;align-items:center;margin:7px 0;font-size:13px}
+.bar .track{height:10px;background:#F0EEE7;border-radius:6px;overflow:hidden;display:flex}
+.bar .fill{height:100%;background:var(--brand);border-radius:6px}
+.bar .num{text-align:right;color:var(--sub);font-variant-numeric:tabular-nums}
+.pyr{display:grid;grid-template-columns:1fr 54px 1fr;gap:6px;align-items:center;font-size:12.5px;margin:6px 0}
+.pyr .l{display:flex;justify-content:flex-end}.pyr .c{text-align:center;color:var(--sub)}
+.pyr .seg{height:16px;border-radius:4px}
+.pyr .f{background:var(--accent)} .pyr .m{background:var(--brand-2)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--sub);margin-bottom:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--sub);font-weight:500;font-size:12px;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid #F1EFE8;vertical-align:middle}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--brand-faint)} tr.sel td{background:var(--brand-soft)}
+.chip{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;background:var(--brand-soft);color:var(--brand);margin:2px 4px 2px 0;white-space:nowrap}
+.chip.a{background:var(--accent-soft);color:#8E4A30}
+.chip.g{background:#E5F0EA;color:#356650}
+.seg-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.seg-btns button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;color:var(--sub)}
+.seg-btns button.on{border-color:var(--brand);background:var(--brand);color:#fff}
+.heat{display:grid;grid-template-columns:44px repeat(14,1fr);gap:3px;font-size:11px}
+.heat .h{color:var(--mute);text-align:center}
+.heat .d{color:var(--sub);display:flex;align-items:center}
+.heat .c{aspect-ratio:1.5;border-radius:4px;position:relative}
+.heat .c:hover{outline:2px solid var(--ink);z-index:2}
+.scale{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mute);margin-top:10px}
+.scale span{display:inline-block;width:22px;height:9px;border-radius:2px}
+.mapwrap{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#F4F2EC}
+.mapwrap svg{display:block;width:100%;height:auto}
+.toggle{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.toggle label{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--sub);background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 11px;cursor:pointer}
+.toggle input{accent-color:var(--brand)}
+.stat-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.stat-row:last-child{border:0}.stat-row span:last-child{font-weight:600}
+.stack{display:flex;height:26px;border-radius:7px;overflow:hidden;margin:6px 0 10px}
+.stack div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11.5px;white-space:nowrap;overflow:hidden}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch}
+.flow .st{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12.5px;position:relative}
+.flow .st b{display:block;font-size:13.5px;margin-bottom:4px;color:var(--brand)}
+.flow .st:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--mute)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#F4F2EC;padding:2px 6px;border-radius:5px}
+.cond{display:flex;flex-wrap:wrap;gap:8px}
+.cond button{border:1px dashed var(--brand-2);background:#fff;color:var(--brand);border-radius:8px;padding:6px 11px;font-size:12.5px}
+.cond button.on{border-style:solid;background:var(--brand);color:#fff}
+.cond-group{margin-bottom:14px}.cond-group .t{font-size:12px;color:var(--sub);margin-bottom:6px}
+.reach{font-size:34px;font-weight:600;color:var(--brand)}
+.lock{background:#FBF3E4;color:#7A5A20;border:1px solid #F0DDB5;border-radius:8px;padding:10px 12px;font-size:12.5px;margin-top:10px}
+.btn{border:0;background:var(--brand);color:#fff;border-radius:8px;padding:9px 16px;font-size:13px}
+.btn[disabled]{background:#C8CCD8;cursor:not-allowed}
+.funnel .row{display:grid;grid-template-columns:120px 1fr 70px;gap:10px;align-items:center;margin:8px 0;font-size:13px}
+.funnel .b{height:22px;background:var(--brand);border-radius:5px}
+.spark{width:100%;height:120px}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:var(--mute);font-size:12px;display:flex;justify-content:space-between}
+.hide{display:none!important}
+.small{font-size:12px;color:var(--sub)}
+@media (max-width:900px){.shell{grid-template-columns:1fr}nav{position:static;height:auto;display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}nav button{white-space:nowrap;width:auto}nav .sep{display:none}.g4,.g3,.g2,.g21,.g12,.flow{grid-template-columns:1fr}main{padding:18px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo"><div class="mark">月</div><div><span data-t="brand"></span><small data-t="product"></small></div></div>
+  <div class="grow"></div>
+  <select id="storeSel"></select>
+  <div class="period"><span data-t="period"></span><b>2026/10/01 – 2026/10/31</b></div>
+  <div class="lang"><button data-l="en">EN</button><button data-l="zh">中文</button></div>
+</header>
+<div class="shell">
+  <nav id="nav"></nav>
+  <main>
+    <div id="view"></div>
+    <footer><span>Bella Chen</span><span data-t="foot"></span></footer>
+  </main>
+</div>
+
+<script>
+/* ---------- seeded random (deterministic demo data) ---------- */
+let seed=20180901; const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+
+/* ---------- i18n ---------- */
+const SITE_LANG_KEY='bella-portfolio-language';
+let L=(()=>{try{return localStorage.getItem(SITE_LANG_KEY)==='zh'?'zh':'en'}catch(e){return 'en'}})();
+const T={
+zh:{brand:'月光茶飲',product:'發票洞察 CRM · 商家後台',period:'資料期間',foot:'Prototype · 示意資料，非真實營運數據',
+ all:'全部門市',
+ nav_overview:'總覽',nav_audience:'客群輪廓',nav_product:'商品洞察',nav_time:'時段熱力圖',nav_map:'商圈地圖',nav_comp:'競品與錢包占比',nav_campaign:'受眾與活動',nav_data:'資料怎麼來',
+ sample:'樣本：發票存摺會員中，資料期間內曾在{s}消費者 n = {n}，已依全國載具人口加權。少於 50 人的組合不顯示。',
+ ov_t:'總覽',ov_l:'你的客人是誰、什麼時候來、在別處又花了多少——都從他們的發票來。',
+ k_cust:'會員消費者',k_inv:'發票張數',k_aov:'平均客單價',k_rep:'30 天回購率',
+ trend:'每週來客與營收',trend_c:'會員消費者的發票（已加權）',
+ who:'主力客群',who_c:'性別 × 年齡，占會員消費者比例',
+ ov_ins:'<b>平日 12–13 點</b>貢獻 31% 營收，主力是 25–34 歲在科技園區上班的女性；但這群人有 <b>41%</b> 的手搖飲花費，給了同一條街的其他品牌。',
+ au_t:'客群輪廓',au_l:'不是問卷，是真實消費者的組成。',
+ pyr:'性別 × 年齡',female:'女',male:'男',
+ life:'生活圈分群',life_c:'依消費地點與時段推估（平日午間＝工作地、晚間週末＝住家）',
+ seg_work:'園區上班族',seg_home:'在地住戶',seg_pass:'路過／通勤',seg_stu:'學生',
+ rfm:'顧客狀態',rfm_c:'依最近一次消費與頻率',
+ st_new:'新客',st_act:'活躍常客',st_risk:'流失風險',st_lost:'已沉睡',
+ au_ins:'<b>流失風險</b>的 1,140 人中，有 63% 不是不喝了——是消費地點從園區移到住家附近，你在那裡沒有門市。',
+ pr_t:'商品洞察',pr_l:'每一杯飲料，背後是誰在買。點選商品看詳細輪廓。',
+ item:'商品',cups:'杯數',rev:'營收',core:'主力客群',trendw:'10 月週趨勢',
+ sweet:'甜度偏好',sweet_c:'來自發票上的加料／客製明細列',
+ also_in:'同一張發票常一起買',also_out:'購買者在其他商家也常買',
+ peak:'尖峰時段',
+ tm_t:'時段熱力圖',tm_l:'星期 × 小時，顏色越深代表來客越多。',
+ tm_all:'全部客群',
+ tm_ins_all:'平日午餐是主峰，週末則平均分散在 14–17 點。',
+ tm_ins_work:'上班族集中在<b>平日 12–13 點與 15 點</b>下午茶；週五 15 點後明顯下降——適合把「週五下午買一送一」改到週二週三。',
+ tm_ins_home:'在地住戶的高峰在<b>平日 19–20 點與週末下午</b>，跟上班族完全錯開，是晚間時段的主力。',
+ tm_ins_stu:'學生集中在<b>平日 16–18 點</b>，客單價最低，但對加料最敏感。',
+ low:'少',high:'多',
+ mp_t:'商圈地圖',mp_l:'門市熱力點、客人從哪裡來，以及他們在附近還去了哪裡。',
+ ly_store:'本品牌門市',ly_work:'客人工作地（推估）',ly_home:'客人住家（推估）',ly_comp:'競品門市',
+ mp_sel:'點地圖上的門市看商圈',
+ m_cust:'會員消費者',m_rev:'10 月營收',m_radius:'80% 客人來自',m_work:'上班族占比',m_comp:'500m 內競品',
+ mp_ins:'住家熱區（東北側住宅區）有大量客人，卻沒有門市。<b>這些人 10 月在本品牌的消費較 9 月下降 38%</b>，同期在住家附近的手搖飲與便利商店消費增加。',
+ cp_t:'競品與錢包占比',cp_l:'你的客人，一個月在手搖飲花多少？有多少花在你這裡？',
+ sow:'手搖飲錢包占比',sow_c:'本品牌客人在「手搖飲＋現煮咖啡」類別的總花費分布',
+ you:'本品牌',compA:'手搖飲 A',compB:'手搖飲 B',compC:'手搖飲 C',cvs:'便利商店現煮',other:'其他',
+ sw_t:'客人沒來你這裡時，去了哪裡',sw_c:'依同一位消費者前後 7 天的發票',
+ street:'同一條街，三家店輪流喝',
+ street_c:'在本品牌民權店 100m 內，有兩家競品。三家共同客人的消費分布：',
+ cp_ins:'共同客人平均一週喝 2.3 杯，<b>沒有固定品牌</b>。誰離得近、誰有優惠就買誰——忠誠度活動的效果會比降價更好。',
+ oat:'品類趨勢：燕麥奶',oat_c:'本品牌客人在所有商家購買「燕麥／植物奶」品項的比例（近 5 個月）',
+ oat_ins:'客人在便利商店買燕麥拿鐵、在電商買整箱燕麥奶，但本品牌只有 1 款燕麥飲品。',
+ ca_t:'受眾與活動',ca_l:'圈出要溝通的人，透過發票存摺 App 發券，再用發票驗證有沒有真的來買。',
+ build:'建立受眾',
+ g_age:'年齡',g_gender:'性別',g_life:'生活圈',g_beh:'消費行為',
+ b_lapsed:'近 30 天沒來',b_comp:'常買競品',b_oat:'有燕麥奶偏好',b_top:'高消費常客',
+ reach:'預估可觸及',people:'人',
+ lock:'符合條件的人數低於 50 人，為避免回推到個人，無法建立此受眾。',
+ create:'建立受眾並發券',
+ res_t:'上一檔活動成效',res_c:'「園區上班族・近 30 天沒來」燕麥奶紅茶第二杯半價',
+ f_sent:'推播送達',f_open:'打開優惠券',f_red:'到店核銷',f_back:'30 天內回購',
+ lift:'對照組（未發券）回購 6.2%，活動帶來的<b>增量回購 +11.4 個百分點</b>；核銷者有 34% 同時加點珍珠或布丁。',
+ verify:'為什麼可以驗證？',verify_c:'核銷不是看有沒有點連結，而是看那位消費者之後有沒有出現本品牌的發票——是真的走進店裡、真的付錢。',
+ dt_t:'資料怎麼來',dt_l:'從一張張發票到商家後台，中間要處理的事情。',
+ p1:'發票存摺會員',p1d:'會員同意後，同步載具內的電子發票，並填寫性別、出生年',
+ p2:'品名正規化',p2d:'把各家 POS 寫法不同的品名，對到統一的商品字典',
+ p3:'門市定位',p3d:'賣方統編 → 登記地址 → 座標；電商與平台地址排除',
+ p4:'去識別化彙總',p4d:'商家只看彙總，不看個人；小於 50 人的組合隱藏',
+ p5:'商家後台',p5d:'客群、商品、時段、商圈、競品、受眾',
+ raw:'原始發票品名長這樣',raw_c:'實際發票明細的寫法（取自真實載具資料）',
+ r_raw:'發票上的品名',r_norm:'正規化後',r_note:'要處理的問題',
+ issues:'資料限制，介面上要誠實標示',
+ i1:'<b>樣本偏誤</b>：只看得到發票存摺會員，年齡層偏年輕 → 依載具人口加權，並標示樣本數',
+ i2:'<b>沒有時間</b>：部分來源只到日期，沒有時分 → 時段分析只用有時間戳記的發票',
+ i3:'<b>平台地址是總公司</b>：電商、外送、App 訂閱的地址都在台北信義區 → 不能拿來推估生活圈',
+ i4:'<b>外送看不到店家</b>：外送平台開的發票，賣方是平台不是餐廳 → 需另外比對品名',
+ i5:'<b>覆蓋率</b>：只有存進載具的發票才收得到，現金紙本會漏掉',
+ i6:'<b>折扣與作廢</b>：折扣是負數明細列、作廢發票要剔除，否則營收會失真'
+},
+en:{brand:'Moonlight Tea',product:'Invoice Insight CRM · Merchant Console',period:'Period',foot:'Prototype · Sample data, not real operations',
+ all:'All stores',
+ nav_overview:'Overview',nav_audience:'Audience',nav_product:'Products',nav_time:'Time heatmap',nav_map:'Trade area map',nav_comp:'Competitors & wallet',nav_campaign:'Audiences & campaigns',nav_data:'Where the data comes from',
+ sample:'Sample: e-invoice wallet members who bought from {s} during the period, n = {n}, weighted to the national carrier population. Groups under 50 people are hidden.',
+ ov_t:'Overview',ov_l:'Who your customers are, when they come, and what they spend elsewhere — all from their receipts.',
+ k_cust:'Member customers',k_inv:'Invoices',k_aov:'Avg. ticket',k_rep:'30-day repeat rate',
+ trend:'Weekly customers & revenue',trend_c:'Invoices from member customers (weighted)',
+ who:'Core customers',who_c:'Gender × age, share of member customers',
+ ov_ins:'<b>Weekdays 12–1 pm</b> bring 31% of revenue, mostly women aged 25–34 working in the tech park — yet <b>41%</b> of their bubble-tea spend goes to other brands on the same street.',
+ au_t:'Audience',au_l:'Not a survey — the actual mix of people who paid.',
+ pyr:'Gender × age',female:'F',male:'M',
+ life:'Life-circle segments',life_c:'Inferred from where and when people spend (weekday lunch = work, evenings/weekends = home)',
+ seg_work:'Office workers',seg_home:'Local residents',seg_pass:'Commuters',seg_stu:'Students',
+ rfm:'Customer status',rfm_c:'By recency and frequency',
+ st_new:'New',st_act:'Active regulars',st_risk:'At risk',st_lost:'Dormant',
+ au_ins:'Of the 1,140 <b>at-risk</b> customers, 63% haven\'t stopped drinking tea — their spending moved from the tech park to near home, where you have no store.',
+ pr_t:'Products',pr_l:'Who is actually behind every cup. Click a product for its profile.',
+ item:'Product',cups:'Cups',rev:'Revenue',core:'Core buyers',trendw:'Weekly (Oct)',
+ sweet:'Sugar preference',sweet_c:'From the customisation lines printed on invoices',
+ also_in:'Often on the same invoice',also_out:'Buyers also buy elsewhere',
+ peak:'Peak hours',
+ tm_t:'Time heatmap',tm_l:'Day × hour. Darker means more customers.',
+ tm_all:'All customers',
+ tm_ins_all:'Weekday lunch is the main peak; weekends spread evenly across 2–5 pm.',
+ tm_ins_work:'Office workers peak at <b>weekday 12–1 pm and the 3 pm tea break</b>, and drop off after 3 pm on Fridays — move the "Friday afternoon BOGO" to Tue/Wed.',
+ tm_ins_home:'Residents peak at <b>weekday 7–8 pm and weekend afternoons</b> — the opposite of office workers, and the core of evening sales.',
+ tm_ins_stu:'Students cluster at <b>weekday 4–6 pm</b>: lowest ticket, most sensitive to toppings.',
+ low:'Low',high:'High',
+ mp_t:'Trade area map',mp_l:'Store hotspots, where customers come from, and where else they go nearby.',
+ ly_store:'Our stores',ly_work:'Where customers work (inferred)',ly_home:'Where customers live (inferred)',ly_comp:'Competitor stores',
+ mp_sel:'Click a store on the map to see its trade area',
+ m_cust:'Member customers',m_rev:'October revenue',m_radius:'80% of customers within',m_work:'Office-worker share',m_comp:'Competitors within 500 m',
+ mp_ins:'The residential hotspot in the north-east holds many of your customers but no store. <b>Their spend with you fell 38% in October vs September</b>, while their spend at nearby tea shops and convenience stores rose.',
+ cp_t:'Competitors & wallet share',cp_l:'How much do your customers spend on drinks each month — and how much of it is yours?',
+ sow:'Share of wallet',sow_c:'Where your customers\' "tea + fresh coffee" spend goes',
+ you:'Moonlight',compA:'Tea brand A',compB:'Tea brand B',compC:'Tea brand C',cvs:'Convenience-store coffee',other:'Other',
+ sw_t:'When they don\'t come to you, where do they go?',sw_c:'Same customer, invoices within 7 days',
+ street:'One street, three shops in rotation',
+ street_c:'Two competitors sit within 100 m of our Minquan store. Spend of their shared customers:',
+ cp_ins:'Shared customers drink 2.3 cups a week with <b>no fixed brand</b> — they buy whoever is closest or on promotion. A loyalty mechanic will work better than a price cut.',
+ oat:'Category trend: oat milk',oat_c:'Share of our customers buying oat / plant-milk items at any merchant (last 5 months)',
+ oat_ins:'Customers buy oat lattes at convenience stores and oat milk by the case online — but we offer only one oat drink.',
+ ca_t:'Audiences & campaigns',ca_l:'Pick who to reach, send a coupon through the e-invoice app, then verify with invoices whether they really came.',
+ build:'Build an audience',
+ g_age:'Age',g_gender:'Gender',g_life:'Life circle',g_beh:'Behaviour',
+ b_lapsed:'No visit in 30 days',b_comp:'Often buys competitors',b_oat:'Prefers oat milk',b_top:'High-value regulars',
+ reach:'Estimated reach',people:'people',
+ lock:'Fewer than 50 people match. To avoid re-identifying individuals, this audience can\'t be created.',
+ create:'Create audience & send coupon',
+ res_t:'Last campaign',res_c:'"Office workers · no visit in 30 days" — second oat-milk black tea half price',
+ f_sent:'Push delivered',f_open:'Coupon opened',f_red:'Redeemed in store',f_back:'Repeat within 30 days',
+ lift:'The control group (no coupon) repeated at 6.2%; the campaign added <b>+11.4 pts incremental repeat</b>. 34% of redeemers also added pearls or pudding.',
+ verify:'Why can we verify it?',verify_c:'Redemption isn\'t a click — it\'s whether that person\'s next invoice shows our brand. They really walked in and really paid.',
+ dt_t:'Where the data comes from',dt_l:'What happens between a pile of receipts and a merchant dashboard.',
+ p1:'Wallet members',p1d:'With consent, invoices in their carrier are synced; members give gender and birth year',
+ p2:'Item normalisation',p2d:'Map each POS\'s own spelling to one product dictionary',
+ p3:'Store geocoding',p3d:'Seller tax ID → registered address → coordinates; e-commerce & platforms excluded',
+ p4:'De-identified aggregates',p4d:'Merchants see groups, never individuals; groups under 50 hidden',
+ p5:'Merchant console',p5d:'Audience, products, time, trade area, competitors, campaigns',
+ raw:'What item names look like on invoices',raw_c:'Real spellings from actual carrier invoice data',
+ r_raw:'On the invoice',r_norm:'Normalised',r_note:'Problem to solve',
+ issues:'Data limits — shown honestly in the UI',
+ i1:'<b>Sample bias</b>: only wallet members are visible, skewing young → weight to the carrier population and show n',
+ i2:'<b>No time of day</b>: some sources carry the date only → time analysis uses timestamped invoices only',
+ i3:'<b>Platform HQ addresses</b>: e-commerce, delivery and app subscriptions all show a Xinyi HQ address → excluded from life-circle inference',
+ i4:'<b>Delivery hides the restaurant</b>: the platform is the seller, not the restaurant → match by item name',
+ i5:'<b>Coverage</b>: only invoices saved to a carrier are captured; cash paper receipts are missed',
+ i6:'<b>Discounts & voids</b>: discounts are negative lines and voided invoices must be removed, or revenue is distorted'
+}};
+const t=k=>T[L][k]??k;
+const nm=o=>typeof o==='string'?o:o[L];
+
+/* ---------- demo data ---------- */
+const AGES=['18–24','25–34','35–44','45–54','55+'];
+const STORES=[
+ {id:'rg',zh:'瑞光店',en:'Ruiguang',x:250,y:330,cust:3820,rev:1.42,r:'600m',work:72,home:15,stu:6,comp:4},
+ {id:'gq',zh:'港墘店',en:'Gangqian',x:395,y:250,cust:2960,rev:1.08,r:'700m',work:64,home:22,stu:8,comp:3},
+ {id:'zz',zh:'洲子店',en:'Zhouzi',x:180,y:200,cust:2410,rev:0.91,r:'550m',work:78,home:10,stu:5,comp:2},
+ {id:'mq',zh:'民權店',en:'Minquan',x:560,y:395,cust:2050,rev:0.74,r:'900m',work:31,home:52,stu:12,comp:5},
+ {id:'jn',zh:'江南店',en:'Jiangnan',x:470,y:130,cust:1240,rev:0.43,r:'800m',work:44,home:28,stu:20,comp:2}
+];
+let fStore=null;
+const share=()=>fStore==null?1:STORES[fStore].cust/12480;
+const prof=()=>{if(fStore==null)return{work:46,home:28,stu:15,pass:11};const x=STORES[fStore];return{work:x.work,home:x.home,stu:x.stu,pass:100-x.work-x.home-x.stu}};
+const sc=n=>Math.round(n*share());
+const storeName=()=>fStore==null?(L==='zh'?'本品牌':'this brand'):(L==='zh'?'本品牌'+nm(STORES[fStore]):nm(STORES[fStore])+' store');
+function pyrData(){const w=prof().work/100,h=1-w;const WF=[8,30,16,5,1],WM=[5,20,12,3,0],HF=[8,14,14,10,6],HM=[6,10,12,10,10];const b=(a,c)=>a.map((v,i)=>Math.round(v*w+c[i]*h));return[b(WF,HF),b(WM,HM)]}
+const ITEMS=[
+ {zh:'燕麥奶紅茶',en:'Oat-milk black tea',cups:6840,price:65,f:71,age:[14,46,24,11,5],peak:[12,15],core:{zh:'25–34 女・上班族',en:'F 25–34 · office'},tr:[5,6,6,7,7,8,9,10],sw:[34,30,22,14],in:[{zh:'加珍珠',en:'+ pearls'},{zh:'可頌',en:'Croissant'}],out:[{zh:'便利商店燕麥拿鐵',en:'C-store oat latte',p:44},{zh:'電商整箱燕麥奶',en:'Oat milk by the case (online)',p:21}]},
+ {zh:'珍珠奶茶',en:'Bubble milk tea',cups:9120,price:55,f:55,age:[38,30,16,10,6],peak:[16,17],core:{zh:'18–24・學生',en:'18–24 · students'},tr:[9,9,8,9,8,8,8,7],sw:[22,40,26,12],in:[{zh:'加布丁',en:'+ pudding'},{zh:'雞排',en:'Fried chicken'}],out:[{zh:'其他手搖飲珍奶',en:'Bubble tea elsewhere',p:58},{zh:'便利商店甜點',en:'C-store desserts',p:19}]},
+ {zh:'黃金烏龍',en:'Golden oolong',cups:5210,price:40,f:44,age:[10,28,30,20,12],peak:[12,19],core:{zh:'35–44・在地住戶',en:'35–44 · residents'},tr:[6,6,6,6,7,6,7,7],sw:[58,24,12,6],in:[{zh:'無糖',en:'No sugar'},{zh:'便當',en:'Bento'}],out:[{zh:'超市瓶裝茶',en:'Bottled tea (supermarket)',p:37},{zh:'便利商店瓶裝茶',en:'Bottled tea (c-store)',p:33}]},
+ {zh:'鐵觀音拿鐵',en:'Tieguanyin latte',cups:4380,price:60,f:63,age:[16,40,26,12,6],peak:[15,20],core:{zh:'25–44 女',en:'F 25–44'},tr:[5,5,5,6,5,6,6,6],sw:[30,36,24,10],in:[{zh:'少冰',en:'Less ice'},{zh:'蛋糕',en:'Cake'}],out:[{zh:'咖啡連鎖拿鐵',en:'Coffee-chain latte',p:39},{zh:'甜點店',en:'Dessert shops',p:18}]},
+ {zh:'冬瓜檸檬',en:'Winter melon lemon',cups:3650,price:45,f:52,age:[30,26,18,14,12],peak:[14,17],core:{zh:'18–24・週末',en:'18–24 · weekends'},tr:[6,6,5,5,4,4,3,3],sw:[12,30,34,24],in:[{zh:'加蘆薈',en:'+ aloe'},{zh:'鹽酥雞',en:'Popcorn chicken'}],out:[{zh:'便利商店果汁',en:'C-store juice',p:31},{zh:'其他手搖飲果茶',en:'Fruit tea elsewhere',p:42}]},
+ {zh:'芋泥鮮奶',en:'Taro fresh milk',cups:2980,price:70,f:68,age:[33,34,18,10,5],peak:[15,16],core:{zh:'18–34 女',en:'F 18–34'},tr:[2,3,3,4,5,6,6,7],sw:[24,42,22,12],in:[{zh:'加芋圓',en:'+ taro balls'},{zh:'蛋糕',en:'Cake'}],out:[{zh:'甜點店',en:'Dessert shops',p:35},{zh:'便利商店甜點',en:'C-store desserts',p:28}]}
+];
+const SWEET=['無糖','微糖','半糖','全糖'], SWEET_EN=['No sugar','Light','Half','Full'];
+
+/* heatmap generator */
+const HOURS=[8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+const DAYS_ZH=['一','二','三','四','五','六','日'],DAYS_EN=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+function heat(seg){
+  const P=prof(),ww=seg==='all'?P.work/46:1,wh=seg==='all'?P.home/28:1,wsu=seg==='all'?P.stu/15:1;
+  const g=(h,c,w)=>Math.exp(-((h-c)**2)/(2*w*w));
+  return DAYS_ZH.map((_,d)=>HOURS.map(h=>{
+    const we=d>=5; let v=0;
+    if(seg==='all'||seg==='work'){ v+=ww*( we?0.1*g(h,15,2):(1.0*g(h,12.5,0.8)+0.6*g(h,15.2,0.7)+0.25*g(h,8.6,0.6))*(d===4&&h>=15?0.35:1)) }
+    if(seg==='all'||seg==='home'){ v+=wh*(we?(0.75*g(h,15,2.2)):(0.55*g(h,19.5,1)+0.15*g(h,12,1))) }
+    if(seg==='all'||seg==='stu'){ v+=wsu*(we?0.35*g(h,14,2):0.6*g(h,17,1)) }
+    return Math.max(0,v*(0.9+0.2*rnd()));
+  }));
+}
+
+/* ---------- views ---------- */
+const NAV=[['overview','◎'],['audience','◐'],['product','▤'],['time','▦'],['map','⌖'],['comp','⇄'],['campaign','✉'],null,['data','ⓘ']];
+let cur='overview', selItem=0, tmSeg='all', layers={store:1,work:1,home:1,comp:0};
+let cond={age:new Set(['25–34']),gender:new Set(['F']),life:new Set(['work']),beh:new Set(['lapsed'])};
+
+function renderNav(){
+  document.getElementById('nav').innerHTML=NAV.map(n=>n?`<button class="${n[0]===cur?'on':''}" data-v="${n[0]}"><span class="ico">${n[1]}</span>${t('nav_'+n[0])}</button>`:'<div class="sep"></div>').join('');
+  document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{cur=b.dataset.v;render();window.scrollTo(0,0)});
+}
+const note=()=>`<div class="note"><span>ⓘ</span><span>${t('sample').replace('{s}',storeName()).replace('{n}',sc(12480).toLocaleString())}</span></div>`;
+const head=(a,b)=>`<h1>${t(a)}</h1><p class="lead">${t(b)}</p>`;
+const bar=(lbl,p,max,col,suffix='%')=>`<div class="bar"><span>${lbl}</span><div class="track"><div class="fill" style="width:${p/max*100}%;${col?'background:'+col:''}"></div></div><span class="num">${p}${suffix}</span></div>`;
+
+function pyramid(f,m){ // arrays per age
+  const max=Math.max(...f,...m);
+  return `<div class="legend"><span><i style="background:var(--accent)"></i>${t('female')}</span><span><i style="background:var(--brand-2)"></i>${t('male')}</span></div>`+
+  AGES.map((a,i)=>`<div class="pyr"><div class="l"><div class="seg f" style="width:${f[i]/max*100}%" title="${f[i]}%"></div></div><div class="c">${a}</div><div><div class="seg m" style="width:${m[i]/max*100}%" title="${m[i]}%"></div></div></div>`).join('')+
+  `<div class="pyr small"><div style="text-align:right">${f.reduce((a,b)=>a+b)}%</div><div></div><div>${m.reduce((a,b)=>a+b)}%</div></div>`;
+}
+function line(vals,vals2,labels){
+  const W=520,H=140,p=8,step=(W-2*p)/(vals.length-1);
+  const y=(a)=>{const mx=Math.max(...a),mn=Math.min(...a),lo=mn-(mx-mn)*0.8,hi=mx+(mx-mn)*0.3;return v=>H-p-((v-lo)/(hi-lo||1))*(H-2*p)};
+  const y1=y(vals),y2=y(vals2);
+  const pts=a=>a.map((v,i)=>`${p+i*step},${y1(v)}`).join(' ');
+  const pts2=vals2.map((v,i)=>`${p+i*step},${y2(v)}`).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H+18}" class="spark">
+   <polyline points="${pts(vals)} ${W-p},${H-p} ${p},${H-p}" fill="var(--brand-faint)" stroke="none"/>
+   <polyline points="${pts(vals)}" fill="none" stroke="var(--brand)" stroke-width="2"/>
+   <polyline points="${pts2}" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 3"/>
+   ${vals.map((v,i)=>`<text x="${p+i*step}" y="${H+14}" font-size="10" fill="#9A9DA6" text-anchor="${i===0?'start':i===vals.length-1?'end':'middle'}">${labels?labels[i]:'W'+(i+1)}</text>`).join('')}
+  </svg><div class="legend" style="margin-top:4px"><span><i style="background:var(--brand)"></i>${L==='zh'?'會員消費者':'Customers'}</span><span><i style="background:var(--accent)"></i>${L==='zh'?'營收':'Revenue'}</span></div>`;
+}
+function spark(a){const W=90,H=24,max=Math.max(...a),min=Math.min(...a);return `<svg width="${W}" height="${H}"><polyline fill="none" stroke="var(--brand)" stroke-width="1.6" points="${a.map((v,i)=>`${i*W/(a.length-1)},${H-3-(v-min)/(max-min||1)*(H-6)}`).join(' ')}"/></svg>`}
+
+const V={
+overview(){
+  return head('ov_t','ov_l')+note()+`
+  <div class="grid g4">
+   ${[['k_cust',sc(12480).toLocaleString(),'+6.2%',1],['k_inv',sc(21640).toLocaleString(),'+3.8%',1],['k_aov','NT$ '+(fStore==null?58:[56,59,55,63,52][fStore]),'−1.4%',0],['k_rep',(fStore==null?46:[52,47,55,38,33][fStore])+'%','+2.1 pt',1]].map(k=>`<div class="card kpi"><div class="lbl">${t(k[0])}</div><div class="val">${k[1]}</div><div class="d ${k[3]?'up':'down'}">${k[2]} ${L==='zh'?'較 9 月':'vs Sep'}</div></div>`).join('')}
+  </div>
+  <div class="grid g21" style="margin-top:16px">
+   <div class="card"><h3>${t('trend')}</h3><p class="cap">${t('trend_c')}</p>${line([2810,2870,2930,2890,2440].map(sc),[168,172,176,173,141].map(sc),['10/01','10/08','10/15','10/22','10/29'])}<div class="small">${L==='zh'?'10/29 週僅含 3 天':'Week of 10/29 has 3 days only'}</div></div>
+   <div class="card"><h3>${t('who')}</h3><p class="cap">${t('who_c')}</p>${pyramid(...pyrData())}</div>
+  </div>
+  <div class="insight">${fStore!=null&&prof().work<60?(L==='zh'?`<b>${nm(STORES[fStore])}</b>的客人有 ${prof().home}% 是在地住戶，尖峰在<b>平日 19–20 點與週末下午</b>，跟園區門市完全不同——這家店的活動不該跟著全品牌的午間檔期走。`:`${prof().home}% of <b>${nm(STORES[fStore])}</b> customers are local residents, peaking at <b>weekday 7–8 pm and weekend afternoons</b> — unlike the tech-park stores, so it shouldn't follow the brand-wide lunch promotions.`):t('ov_ins')}</div>`;
+},
+audience(){
+  const P=prof();const segs=[['seg_work',P.work,'var(--brand)'],['seg_home',P.home,'var(--brand-2)'],['seg_stu',P.stu,'#A9B3CF'],['seg_pass',P.pass,'#D3D7E3']];
+  return head('au_t','au_l')+note()+`
+  <div class="grid g2">
+   <div class="card"><h3>${t('pyr')}</h3><p class="cap">${t('who_c')}</p>${pyramid(...pyrData())}</div>
+   <div class="card"><h3>${t('life')}</h3><p class="cap">${t('life_c')}</p>
+     <div class="stack">${segs.map(s=>`<div style="width:${s[1]}%;background:${s[2]}">${s[1]}%</div>`).join('')}</div>
+     ${segs.map(s=>bar(t(s[0]),s[1],80,s[2])).join('')}
+     <h3 style="margin-top:18px">${t('rfm')}</h3><p class="cap">${t('rfm_c')}</p>
+     ${[['st_new',1820,'#A9B3CF'],['st_act',5640,'var(--brand)'],['st_risk',1140,'var(--accent)'],['st_lost',3880,'#D3D7E3']].map(s=>bar(t(s[0]),sc(s[1]),sc(6000),s[2],'')).join('')}
+   </div>
+  </div>
+  <div class="insight">${t('au_ins')}</div>`;
+},
+product(){
+  const it=ITEMS[selItem];
+  const f=it.age.map(a=>Math.round(a*it.f/100)), m=it.age.map(a=>Math.round(a*(100-it.f)/100));
+  return head('pr_t','pr_l')+note()+`
+  <div class="grid g12">
+   <div class="card" style="padding:8px 4px">
+    <table><tr><th>${t('item')}</th><th>${t('cups')}</th><th>${t('core')}</th><th>${t('trendw')}</th></tr>
+    ${ITEMS.map((x,i)=>`<tr class="click ${i===selItem?'sel':''}" data-i="${i}"><td><b>${nm(x)}</b><div class="small">NT$ ${x.price}</div></td><td>${sc(x.cups).toLocaleString()}</td><td><span class="chip">${nm(x.core)}</span></td><td>${spark(x.tr.slice(3))}</td></tr>`).join('')}
+    </table>
+   </div>
+   <div class="card">
+    <h3>${nm(it)}</h3><p class="cap">${sc(it.cups).toLocaleString()} ${L==='zh'?'杯':'cups'} · NT$ ${(sc(it.cups)*it.price).toLocaleString()} · ${t('peak')} ${it.peak.map(h=>h+':00').join(' / ')}</p>
+    <div class="grid g2">
+     <div>${pyramid(f,m)}</div>
+     <div><div class="small" style="margin-bottom:6px"><b>${t('sweet')}</b><br>${t('sweet_c')}</div>
+       ${it.sw.map((v,i)=>bar(L==='zh'?SWEET[i]:SWEET_EN[i],v,60,i===0?'var(--ok)':i===3?'var(--accent)':'')).join('')}</div>
+    </div>
+    <div class="grid g2" style="margin-top:14px">
+     <div><div class="small"><b>${t('also_in')}</b></div>${it.in.map(x=>`<span class="chip g">${nm(x)}</span>`).join('')}</div>
+     <div><div class="small"><b>${t('also_out')}</b></div>${it.out.map(x=>`<span class="chip a">${nm(x)} ${x.p}%</span>`).join('')}</div>
+    </div>
+   </div>
+  </div>`;
+},
+time(){
+  seed=7+['all','work','home','stu'].indexOf(tmSeg);
+  const hm=heat(tmSeg),max=Math.max(...hm.flat());
+  const col=v=>{const a=v/max;return `rgba(63,78,122,${(0.06+a*0.94).toFixed(2)})`};
+  const days=L==='zh'?DAYS_ZH.map(d=>'週'+d):DAYS_EN;
+  return head('tm_t','tm_l')+note()+`
+  <div class="card">
+   <div class="seg-btns">${[['all','tm_all'],['work','seg_work'],['home','seg_home'],['stu','seg_stu']].map(s=>`<button data-s="${s[0]}" class="${tmSeg===s[0]?'on':''}">${t(s[1])}</button>`).join('')}</div>
+   <div class="heat"><div></div>${HOURS.map(h=>`<div class="h">${h}</div>`).join('')}
+   ${hm.map((r,d)=>`<div class="d">${days[d]}</div>`+r.map((v,i)=>`<div class="c" style="background:${col(v)}" title="${days[d]} ${HOURS[i]}:00 · ${Math.round(v/max*100)}"></div>`).join('')).join('')}
+   </div>
+   <div class="scale">${t('low')} ${[.1,.3,.5,.7,.9].map(a=>`<span style="background:rgba(63,78,122,${a})"></span>`).join('')} ${t('high')}</div>
+   <div class="insight">${tmSeg==='all'&&fStore!=null?(prof().work>=60?(L==='zh'?`<b>${nm(STORES[fStore])}</b>以平日午間為主（上班族 ${prof().work}%），週末幾乎沒有來客——週末可以考慮縮短營業時間。`:`<b>${nm(STORES[fStore])}</b> is driven by weekday lunch (office workers ${prof().work}%); weekends are nearly empty — consider shorter weekend hours.`):(L==='zh'?`<b>${nm(STORES[fStore])}</b>的晚間與週末來客比園區門市高很多（住戶 ${prof().home}%），尖峰跟其他店錯開。`:`<b>${nm(STORES[fStore])}</b> sees far more evening and weekend traffic than the tech-park stores (residents ${prof().home}%).`)):t('tm_ins_'+tmSeg)}</div>
+  </div>`;
+},
+map(){
+  seed=99;
+  const blobs=(n,cx,cy,sx,sy)=>Array.from({length:n},()=>[cx+(rnd()+rnd()+rnd()-1.5)*sx,cy+(rnd()+rnd()+rnd()-1.5)*sy]);
+  const work=blobs(70,230,270,170,140), home=[...blobs(55,600,170,140,110),...blobs(25,560,430,120,70)];
+  const comps=[[540,380],[585,410],[270,350],[410,230],[200,180],[620,200],[650,150],[300,300]];
+  const s=fStore!=null?STORES[fStore]:null;
+  return head('mp_t','mp_l')+note()+`
+  <div class="grid g21">
+   <div class="card">
+    <div class="toggle">${[['store','ly_store','var(--brand)'],['work','ly_work','#6B7BAA'],['home','ly_home','var(--accent)'],['comp','ly_comp','#8A8D96']].map(l=>`<label><input type="checkbox" data-ly="${l[0]}" ${layers[l[0]]?'checked':''}><i style="width:9px;height:9px;border-radius:50%;background:${l[2]};display:inline-block"></i>${t(l[1])}</label>`).join('')}</div>
+    <div class="mapwrap"><svg viewBox="0 0 760 500">
+     <defs>
+      <radialGradient id="gw"><stop offset="0" stop-color="#6B7BAA" stop-opacity=".35"/><stop offset="1" stop-color="#6B7BAA" stop-opacity="0"/></radialGradient>
+      <radialGradient id="gh"><stop offset="0" stop-color="#C9785A" stop-opacity=".35"/><stop offset="1" stop-color="#C9785A" stop-opacity="0"/></radialGradient>
+     </defs>
+     <rect width="760" height="500" fill="#F4F2EC"/>
+     <path d="M0 470 Q200 440 380 470 T760 455 L760 500 L0 500Z" fill="#DCE6EC"/>
+     <rect x="100" y="150" width="300" height="230" rx="14" fill="#ECE9E0"/>
+     <text x="112" y="172" font-size="12" fill="#9A9DA6">${L==='zh'?'科技園區':'Tech park'}</text>
+     <rect x="470" y="90" width="250" height="170" rx="14" fill="#EFEADF"/>
+     <text x="482" y="112" font-size="12" fill="#9A9DA6">${L==='zh'?'住宅區':'Residential'}</text>
+     <g stroke="#FFFFFF" stroke-width="9" fill="none" stroke-linecap="round">
+      <path d="M0 330 L760 360"/><path d="M0 220 L760 250"/><path d="M330 0 L360 500"/><path d="M520 0 L540 500"/><path d="M140 0 L170 500"/><path d="M0 410 L760 420"/>
+     </g>
+     <path d="M0 290 C200 300 400 280 760 300" stroke="#B8BDD0" stroke-width="3" fill="none" stroke-dasharray="10 6"/>
+     <circle cx="300" cy="288" r="7" fill="#fff" stroke="#3F4E7A" stroke-width="2.5"/><text x="312" y="280" font-size="11" fill="#6B6F7B">${L==='zh'?'捷運站':'MRT'}</text>
+     <circle cx="600" cy="300" r="7" fill="#fff" stroke="#3F4E7A" stroke-width="2.5"/><text x="612" y="292" font-size="11" fill="#6B6F7B">${L==='zh'?'捷運站':'MRT'}</text>
+     ${layers.work?work.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="34" fill="url(#gw)" pointer-events="none"/>`).join(''):''}
+     ${layers.home?home.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="34" fill="url(#gh)" pointer-events="none"/>`).join(''):''}
+     ${layers.comp?comps.map(p=>`<rect x="${p[0]-5}" y="${p[1]-5}" width="10" height="10" rx="2" fill="#8A8D96" transform="rotate(45 ${p[0]} ${p[1]})"/>`).join(''):''}
+     ${s?`<circle cx="${s.x}" cy="${s.y}" r="${parseInt(s.r)/5}" fill="none" stroke="#3F4E7A" stroke-width="1.5" stroke-dasharray="5 4"/>`:''}
+     ${layers.store?STORES.map((st,i)=>`<g class="st" data-st="${i}" style="cursor:pointer">
+        <circle cx="${st.x}" cy="${st.y}" r="${8+st.cust/600}" fill="#3F4E7A" fill-opacity=".18"/>
+        <circle cx="${st.x}" cy="${st.y}" r="8" fill="${fStore===i?'#C9785A':'#3F4E7A'}" stroke="#fff" stroke-width="2.5"/>
+        <text x="${st.x+12}" y="${st.y-10}" font-size="12" font-weight="600" fill="#23262F">${nm(st)}</text></g>`).join(''):''}
+     <g transform="translate(560,180)" opacity="${layers.home?1:0}"><rect x="-4" y="-4" width="118" height="26" rx="13" fill="#fff" stroke="#C9785A"/><text x="55" y="13" font-size="11" text-anchor="middle" fill="#8E4A30">${L==='zh'?'熱區・無門市':'Hotspot · no store'}</text></g>
+    </svg></div>
+   </div>
+   <div class="card">
+    ${s?`<h3>${nm(s)}</h3><p class="cap">${t('mp_l')}</p>
+      ${[['m_cust',s.cust.toLocaleString()],['m_rev','NT$ '+s.rev+'M'],['m_radius',s.r],['m_work',s.work+'%'],['m_comp',s.comp]].map(r=>`<div class="stat-row"><span>${t(r[0])}</span><span>${r[1]}</span></div>`).join('')}
+      <div style="margin-top:14px">${bar(t('seg_work'),s.work,100,'var(--brand-2)')}${bar(t('seg_home'),s.home,100,'var(--accent)')}${bar(t('seg_stu'),s.stu,100,'#A9B3CF')}</div>`
+      :`<h3>${t('mp_sel')}</h3><p class="cap">${STORES.length} ${L==='zh'?'家門市・也可以用右上角選單切換':'stores · or use the store menu, top right'}</p>${STORES.map(st=>bar(nm(st),st.cust,4000,'','')).join('')}`}
+   </div>
+  </div>
+  <div class="insight">${t('mp_ins')}</div>`;
+},
+comp(){
+  const sow=[['you',34,'var(--brand)'],['compA',22,'#8C97BD'],['compB',18,'#B3BBD6'],['cvs',15,'var(--accent)'],['other',11,'#D8D5CC']];
+  return head('cp_t','cp_l')+note()+`
+  <div class="grid g2">
+   <div class="card"><h3>${t('sow')}</h3><p class="cap">${t('sow_c')}</p>
+    <div class="stack">${sow.map(s=>`<div style="width:${s[1]}%;background:${s[2]}">${s[1]}%</div>`).join('')}</div>
+    ${sow.map(s=>bar(t(s[0]),s[1],40,s[2])).join('')}
+    <div class="small" style="margin-top:8px">${L==='zh'?'每人每月手搖飲＋現煮咖啡花費：NT$ 1,420，在本品牌 NT$ 483':'Monthly tea + coffee spend per customer: NT$1,420, of which NT$483 with us'}</div>
+   </div>
+   <div class="card"><h3>${t('sw_t')}</h3><p class="cap">${t('sw_c')}</p>
+    ${[['compA',31],['cvs',27],['compB',21],['compC',12],['other',9]].map(s=>bar(t(s[0]),s[1],35,s[0]==='cvs'?'var(--accent)':'')).join('')}
+   </div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+   <div class="card"><h3>${t('street')}</h3><p class="cap">${t('street_c')}</p>
+    <div class="stack">${[['you',37,'var(--brand)'],['compA',35,'#8C97BD'],['compC',28,'#B3BBD6']].map(s=>`<div style="width:${s[1]}%;background:${s[2]}">${t(s[0])} ${s[1]}%</div>`).join('')}</div>
+    <div class="insight" style="margin-top:6px">${t('cp_ins')}</div>
+   </div>
+   <div class="card"><h3>${t('oat')}</h3><p class="cap">${t('oat_c')}</p>
+    ${line([12,14,16,18,21],[12,14,16,18,21],L==='zh'?['6 月','7 月','8 月','9 月','10 月']:['Jun','Jul','Aug','Sep','Oct']).replace(/<div class="legend"[\s\S]*$/,'')}
+    <div class="small">12% → 21%</div>
+    <div class="insight">${t('oat_ins')}</div>
+   </div>
+  </div>`;
+},
+campaign(){
+  const base=sc(12480); let r=base;
+  const fa={'18–24':.24,'25–34':.41,'35–44':.21,'45–54':.09,'55+':.05};
+  r*= cond.age.size?[...cond.age].reduce((s,a)=>s+fa[a],0):1;
+  r*= cond.gender.size===1?(cond.gender.has('F')?.58:.42):1;
+  const fl={work:.46,home:.28,stu:.15}; r*= cond.life.size?[...cond.life].reduce((s,a)=>s+fl[a],0):1;
+  const fb={lapsed:.18,comp:.41,oat:.21,top:.09}; [...cond.beh].forEach(b=>r*=fb[b]);
+  r=Math.round(r); const locked=r<50;
+  const grp=(key,opts)=>`<div class="cond-group"><div class="t">${t(key)}</div><div class="cond">${opts.map(o=>`<button data-g="${o[0]}" data-o="${o[1]}" class="${cond[o[0]].has(o[1])?'on':''}">${o[2]}</button>`).join('')}</div></div>`;
+  return head('ca_t','ca_l')+note()+`
+  <div class="grid g21">
+   <div class="card"><h3>${t('build')}</h3><p class="cap">&nbsp;</p>
+    ${grp('g_age',AGES.map(a=>['age',a,a]))}
+    ${grp('g_gender',[['gender','F',t('female')],['gender','M',t('male')]])}
+    ${grp('g_life',[['life','work',t('seg_work')],['life','home',t('seg_home')],['life','stu',t('seg_stu')]])}
+    ${grp('g_beh',[['beh','lapsed',t('b_lapsed')],['beh','comp',t('b_comp')],['beh','oat',t('b_oat')],['beh','top',t('b_top')]])}
+   </div>
+   <div class="card"><div class="small">${t('reach')}</div>
+    <div class="reach">${locked?'< 50':r.toLocaleString()} <span style="font-size:14px;font-weight:400;color:var(--sub)">${t('people')}</span></div>
+    ${locked?`<div class="lock">🔒 ${t('lock')}</div>`:''}
+    <div style="margin-top:14px"><button class="btn" ${locked?'disabled':''}>${t('create')}</button></div>
+    <div class="insight" style="border-color:var(--brand);background:var(--brand-faint)"><b style="color:var(--brand)">${t('verify')}</b><br>${t('verify_c')}</div>
+   </div>
+  </div>
+  <div class="card funnel" style="margin-top:16px"><h3>${t('res_t')}</h3><p class="cap">${t('res_c')}</p>
+   ${[['f_sent',3200],['f_open',1410],['f_red',612],['f_back',566]].map(f=>`<div class="row"><span>${t(f[0])}</span><div><div class="b" style="width:${f[1]/3200*100}%"></div></div><span class="num">${f[1].toLocaleString()}</span></div>`).join('')}
+   <div class="insight">${t('lift')}</div>
+  </div>`;
+},
+data(){
+  const raws=[
+   ['中●波霸奶茶','珍珠奶茶 / M / 波霸',L==='zh'?'尺寸、配料寫在品名裡，各店符號不同':'Size & topping embedded, store-specific symbols'],
+   ['娜杯紅茶拿鐵(M)　＋　微糖/微冰/　$0','紅茶拿鐵 / M / 微糖・微冰',L==='zh'?'甜度冰塊是另一列 0 元明細，要合併回主商品':'Sugar/ice is a separate $0 line; merge back'],
+   ['無糖/溫/珍珠/　$10','加料：珍珠 +10',L==='zh'?'加料有價格，要拆出配料營收':'Paid topping; split out topping revenue'],
+   ['冰燕麥拿鐵(中) ／ 大-冰燕麥拿鐵','燕麥拿鐵 / M、L',L==='zh'?'同商品在兩家超商寫法不同':'Same item, two chains, two spellings'],
+   ['餐飲費','（無法辨識）',L==='zh'?'品項資訊遺失，只能用於金額與時段':'No item detail; usable for amount/time only'],
+   ['促銷折扣　−75','折扣 → 分攤回商品',L==='zh'?'負數明細列，要分攤避免營收失真':'Negative line; allocate to items'],
+   ['平台費 / 外送費 2026-10-25 …','（排除）',L==='zh'?'外送平台費用，非商品':'Delivery-platform fees, not products']
+  ];
+  return head('dt_t','dt_l')+`
+  <div class="flow">${[1,2,3,4,5].map(i=>`<div class="st"><b>${t('p'+i)}</b>${t('p'+i+'d')}</div>`).join('')}</div>
+  <div class="card" style="margin-top:16px;padding:8px 4px"><div style="padding:10px 14px 0"><h3>${t('raw')}</h3><p class="cap">${t('raw_c')}</p></div>
+   <table><tr><th>${t('r_raw')}</th><th>${t('r_norm')}</th><th>${t('r_note')}</th></tr>
+   ${raws.map(r=>`<tr><td><span class="mono">${r[0]}</span></td><td>${r[1]}</td><td class="small">${r[2]}</td></tr>`).join('')}</table>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>${t('issues')}</h3>
+   ${[1,2,3,4,5,6].map(i=>`<div class="stat-row" style="display:block">${t('i'+i)}</div>`).join('')}
+  </div>`;
+}};
+
+function render(){
+  document.documentElement.lang=L==='zh'?'zh-Hant':'en';
+  document.title=(L==='zh'?'商家 CRM 平台 · 原型':'Merchant CRM Platform · Prototype')+' | Bella Chen';
+  document.querySelectorAll('.lang button').forEach(x=>x.classList.toggle('on',x.dataset.l===L));
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  const ss=document.getElementById('storeSel');
+  ss.innerHTML=`<option value="">${t('all')}</option>`+STORES.map((s,i)=>`<option value="${i}" ${fStore===i?'selected':''}>${nm(s)}</option>`).join('');
+  ss.onchange=()=>{fStore=ss.value===''?null:+ss.value;render()};
+  renderNav();
+  document.getElementById('view').innerHTML=V[cur]();
+  bind();
+}
+function bind(){
+  document.querySelectorAll('tr.click').forEach(r=>r.onclick=()=>{selItem=+r.dataset.i;render()});
+  document.querySelectorAll('.seg-btns button').forEach(b=>b.onclick=()=>{tmSeg=b.dataset.s;render()});
+  document.querySelectorAll('[data-ly]').forEach(c=>c.onchange=()=>{layers[c.dataset.ly]=c.checked?1:0;render()});
+  document.querySelectorAll('g.st').forEach(g=>g.onclick=()=>{fStore=fStore===+g.dataset.st?null:+g.dataset.st;render()});
+  document.querySelectorAll('.cond button').forEach(b=>b.onclick=()=>{const s=cond[b.dataset.g];s.has(b.dataset.o)?s.delete(b.dataset.o):s.add(b.dataset.o);render()});
+}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{L=b.dataset.l;try{localStorage.setItem(SITE_LANG_KEY,L)}catch(e){}render()});
+render();
+</script>
+</body>
+</html>

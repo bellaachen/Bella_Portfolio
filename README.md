@@ -27,6 +27,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 | Enterprise Permission Studio | [Case study](https://bellaachen.github.io/Bella_Portfolio/permission/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/permission/demo.html) |
 | Groups — From 0 to 1 | [Case study](https://bellaachen.github.io/Bella_Portfolio/community/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/community/prototype.html) |
 | Credit Card Reward Recommender (Rebuild) | [Case study](https://bellaachen.github.io/Bella_Portfolio/credit/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/credit/prototype.html) |
+| Merchant CRM Platform | [Case study](https://bellaachen.github.io/Bella_Portfolio/crm/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/crm/prototype.html) |
 | AI Chart — Chart Analysis Concept | [Prototype](https://bellaachen.github.io/Bella_Portfolio/ai-chart-lens/prototype.html) |
 | Product thinking | [Designing a Reliable Symbol Management System](https://bellaachen.github.io/Bella_Portfolio/product-thinking/symbol-management.html) · [How I Use AI in My PM Work](https://bellaachen.github.io/Bella_Portfolio/product-thinking/ai-pm-workflow.html) ([Prototype](https://bellaachen.github.io/Bella_Portfolio/product-thinking/order-book-prototype.html)) |
 | Lab | [Career Bingo · 職場賓果](https://bellaachen.github.io/career-bingo/) · [Which Cat Are You? · 你是哪一種貓咪](https://bellaachen.github.io/which-cat-are-you/) · [Story Writer skill](ai-workflow/story-writer) · [Design system](design-system) |
@@ -64,6 +65,7 @@ A static site published with GitHub Pages from the `main` branch root. No build 
 | `permission/` | Enterprise Permission Studio — case study, prototype and product specification |
 | `community/` | Groups — From 0 to 1: case study and mobile prototype |
 | `credit/` | Credit Card Reward Recommender (Rebuild): case study and prototype |
+| `crm/` | Merchant CRM Platform: case study and prototype |
 | `ai-chart-lens/` | AI Chart concept prototype |
 | `product-thinking/` | Product thinking articles |
 | `ai-workflow/story-writer/` | Story Writer — a Claude skill that turns a brief into dev-ready Jira stories |
