@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico" sizes="32x32"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><title>Global Trading App · Prototype | Bella Chen</title>
+<style>.notes{display:none!important}.shell{grid-template-columns:230px minmax(400px,1fr)!important}</style>
+<style>
+:root{
+  --bg:#f6f7f9;--paper:#fff;--ink:#1b2230;--ink2:#4a5568;--muted:#8a94a6;--line:#e7eaf0;--soft:#f2f4f8;
+  --brand:#2a3fd6;--brand-soft:#eef0ff;--warn:#b7791f;--warn-soft:#fff8e6;--err:#c53030;--err-soft:#fff1f1;--ok-soft:#ecf8f1;
+  --demo:#7a52cc;--demo-soft:#f3eefc;
+  --up:#0f8a55;--down:#d13b3b;--up-soft:#e8f6ee;--down-soft:#fdecec;
+}
+body.tw{--up:#d13b3b;--down:#0f8a55;--up-soft:#fdecec;--down-soft:#e8f6ee}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.num{font-variant-numeric:tabular-nums}
+.up{color:var(--up)}.down{color:var(--down)}
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:230px minmax(400px,1fr) 380px;min-height:100vh}
+.side{border-right:1px solid var(--line);background:var(--paper);padding:22px 16px;position:sticky;top:0;z-index:60;height:100vh;overflow:auto}
+.side h1{font-size:15px;margin:0 0 2px;letter-spacing:.01em}
+.side .sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.side .grp{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:16px 6px 6px}
+.side button.nav{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;font-size:13px;color:var(--ink2)}
+.side button.nav:hover{background:var(--soft)}
+.side button.nav.on{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 18px 8px;min-height:100vh;position:sticky;top:0;height:100vh}
+.scn{position:relative;margin:0 0 8px;z-index:50}
+.scn-btn{display:flex;align-items:center;gap:10px;width:100%;border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:10px 12px;font-size:13px;text-align:left}
+.scn.open .scn-btn{border-color:var(--brand);background:var(--brand-soft)}
+.scn-btn:hover{border-color:#cfd5e2}
+.scn-dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex:none}
+.scn-sum{display:block;color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scn-arr{width:16px;height:16px;color:var(--ink2);transition:transform .2s;flex:none}
+.scn.open .scn-arr{transform:rotate(180deg)}
+.scn .controls{width:max-content;max-width:calc(100vw - 260px);display:none;position:fixed;z-index:100;box-shadow:0 14px 40px rgba(20,30,50,.16)}
+.scn.open .controls{display:grid}
+.controls{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px 16px;display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:center;min-width:430px}
+.controls .ttl{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.ctl-l{font-size:12px;color:var(--ink2);white-space:nowrap}
+.controls .seg{justify-self:start}
+.seg{display:inline-flex;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:2px}
+.seg button{white-space:nowrap;border:0;background:none;padding:4px 10px;border-radius:999px;font-size:12px;color:var(--ink2)}
+.seg button.on{background:var(--ink);color:#fff}
+.notes{border-left:1px solid var(--line);background:var(--paper);padding:24px 22px;position:sticky;top:0;height:100vh;overflow:auto}
+.notes .eyebrow{font-size:11px;letter-spacing:.1em;color:var(--brand);font-weight:700;text-transform:uppercase}
+.notes h2{font-size:19px;margin:4px 0 6px}
+.notes p.lead{color:var(--ink2);margin:0 0 14px;font-size:13px}
+.notes h3{font-size:12px;color:var(--muted);letter-spacing:.06em;margin:18px 0 6px;text-transform:uppercase}
+.notes ul{margin:0;padding-left:18px}.notes li{margin:4px 0;font-size:13px;color:var(--ink2)}
+.ref{display:flex;gap:8px;align-items:baseline;font-size:12.5px;margin:4px 0;color:var(--ink2)}
+.ref code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--soft);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--ink);white-space:nowrap}
+.fix{font-size:12.5px;background:var(--soft);border-radius:8px;padding:8px 10px;margin:6px 0;color:var(--ink2)}
+.fix b{color:var(--ink)}
+.try li{list-style:none;margin-left:-18px}
+.try li:before{content:"→ ";color:var(--brand)}
+.foot{font-size:11px;color:var(--muted);margin-top:14px;text-align:center}
+@media(max-width:1180px){.shell{grid-template-columns:1fr}.center{position:relative!important;height:auto!important;min-height:0!important}.side,.notes{position:relative;height:auto;border:0}.side{order:1}.center{order:2}.notes{order:3}}
+/* ---------- phone ---------- */
+.phone{width:390px;height:812px;background:#111;border-radius:52px;padding:11px;box-shadow:0 30px 60px rgba(20,30,50,.18)}
+.screen{position:relative;width:100%;height:100%;background:var(--paper);border-radius:42px;overflow:hidden;display:flex;flex-direction:column}
+.status{height:44px;flex:none;display:flex;justify-content:space-between;align-items:flex-end;padding:0 28px 6px;font-size:13px;font-weight:600}
+.status .isl{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:110px;height:30px;background:#111;border-radius:20px}
+.body{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+.tabbar{flex:none;display:flex;border-top:1px solid var(--line);padding:6px 0 22px;background:var(--paper)}
+.tabbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;white-space:nowrap;color:var(--muted)}
+.tabbar button.on{color:var(--brand);font-weight:600}
+.tabbar svg{width:22px;height:22px}
+.hdr{display:flex;align-items:center;gap:8px;padding:6px 16px 10px;min-height:44px}
+.hdr .t{flex:1;text-align:center;font-weight:600;font-size:15px}
+.hdr .t small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.ib{border:0;background:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;color:var(--ink)}
+.ib:hover{background:var(--soft)}.ib svg{width:20px;height:20px}
+.acct{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 10px 5px 12px;font-size:12.5px;font-weight:600}
+.acct svg{width:14px;height:14px;color:var(--muted)}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.03em;border-radius:5px;padding:1px 6px;vertical-align:1px}
+.b-demo{background:var(--demo-soft);color:var(--demo)}.b-live{background:var(--ok-soft);color:#16794a}.b-copy{background:#e9f3ff;color:#245fae}
+.b-warn{background:var(--warn-soft);color:var(--warn)}.b-mute{background:var(--soft);color:var(--ink2)}.b-err{background:var(--err-soft);color:var(--err)}
+.modebar{margin:0 16px 10px;border-radius:10px;padding:7px 12px;font-size:12px;display:flex;align-items:center;gap:8px}
+.modebar.demo{background:var(--demo-soft);color:var(--demo)}
+.modebar.copy{background:#e9f3ff;color:#245fae}
+.modebar svg{width:15px;height:15px;flex:none}
+.sec{padding:4px 16px 14px}
+.sec-t{display:flex;justify-content:space-between;align-items:center;margin:10px 0 8px}
+.sec-t b{font-size:15px}.sec-t a{font-size:12px;color:var(--brand);text-decoration:none;cursor:pointer}
+.card{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--paper)}
+.muted{color:var(--muted)}.small{font-size:12px}.xs{font-size:11px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.kv:last-child{border-bottom:0}.kv span:first-child{color:var(--ink2)}
+.btn{border:0;border-radius:12px;padding:13px 14px;font-weight:600;font-size:14.5px;width:100%}
+.btn.pri{background:var(--brand);color:#fff}.btn.sec2{background:var(--soft);color:var(--ink)}
+.btn.out{background:var(--paper);border:1px solid var(--line)}
+.btn.buy{background:var(--up);color:#fff}.btn.sell{background:var(--down);color:#fff}
+.btn.danger{background:var(--err-soft);color:var(--err)}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chip{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 12px;font-size:12.5px;white-space:nowrap;color:var(--ink2)}
+.chip.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:600}
+.chip.off{color:var(--muted);background:var(--soft);border-style:dashed}
+.segc{display:flex;background:var(--soft);border-radius:10px;padding:3px;margin:0 16px 12px}
+.segc button{flex:1;border:0;background:none;padding:7px 0;border-radius:8px;font-size:13px;color:var(--ink2)}
+.segc button.on{background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.08);color:var(--ink);font-weight:600}
+.li{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;-webkit-user-select:none}
+.li:hover{background:#fafbfc}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;flex:none;background:var(--soft);color:var(--ink2)}
+.sym{font-weight:600;font-size:14px}
+.px{font-weight:600;font-size:14px;text-align:right}
+.chg{font-size:11.5px;text-align:right;border-radius:5px;padding:1px 6px;display:inline-block;min-width:58px}
+.chg.up{background:var(--up-soft)}.chg.down{background:var(--down-soft)}
+.stale .px,.stale [data-live]{color:var(--muted)!important}
+.msg{border-radius:10px;padding:10px 12px;font-size:12.5px;margin:10px 0;display:flex;gap:8px;white-space:pre-line}
+.msg svg{width:16px;height:16px;flex:none;margin-top:1px}
+.msg.err{background:var(--err-soft);color:var(--err)}.msg.warn{background:var(--warn-soft);color:#8a5a12}.msg.info{background:var(--brand-soft);color:#2a3a9e}
+.field{margin:12px 0}
+.field label{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-bottom:5px}
+.stepper{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stepper button{border:0;background:var(--soft);width:44px;font-size:18px}
+.stepper input,.inp{flex:1;border:0;padding:10px 12px;font-size:15px;font-weight:600;text-align:center;outline:none;min-width:0;font-variant-numeric:tabular-nums}
+.inp{border:1px solid var(--line);border-radius:10px;text-align:left;width:100%;font-weight:500}
+.inp:focus,.stepper:focus-within{border-color:var(--brand)}
+.ferr{color:var(--err);font-size:11.5px;margin-top:4px}
+.sticky{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:10px 16px 12px;z-index:2}
+.tradebar{display:flex;gap:8px;align-items:stretch}
+.tradebar .btn{padding:8px 10px;line-height:1.2}
+.tradebar .btn small{display:block;font-weight:500;font-size:11px;opacity:.9}
+.spr{display:grid;place-items:center;font-size:11px;color:var(--muted);min-width:42px;text-align:center}
+.skel{background:linear-gradient(90deg,#eef1f5 25%,#f7f8fa 37%,#eef1f5 63%);background-size:400% 100%;animation:sk 1.3s infinite;border-radius:6px;height:12px}
+@keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.empty{text-align:center;padding:36px 24px;color:var(--ink2)}
+.empty .ic{width:52px;height:52px;border-radius:16px;background:var(--soft);display:grid;place-items:center;margin:0 auto 12px;color:var(--muted)}
+.empty .ic svg{width:24px;height:24px}
+.tile{background:#f7f8fa;border-radius:14px;padding:12px 14px;font-size:12.5px;color:var(--ink2)}
+.tile b{display:block;font-size:16px;color:var(--ink);font-weight:600;margin-top:2px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.eqchip{background:#eceef2;border-radius:999px;padding:3px 10px;font-size:12px;color:var(--ink2);font-weight:600}
+.sethero{background:linear-gradient(180deg,#d6dcfb 0%,#e9ecfd 45%,#f8f8fa 100%);padding:22px 20px 22px;text-align:center}
+.screen.grad .status{background:#d6dcfb}
+.setav{width:76px;height:76px;border-radius:50%;margin:0 auto;background:radial-gradient(circle at 50% 35%,#2e3f9a,#141d52);color:#fff;display:grid;place-items:center;font-weight:700;font-size:22px;letter-spacing:.04em;box-shadow:0 6px 16px rgba(20,29,82,.25)}
+.actpill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);border-radius:999px;padding:5px 14px;font-size:13px;color:var(--ink2);margin-top:8px}
+.actpill i{width:8px;height:8px;border-radius:50%}
+.swbtn{display:inline-flex;align-items:center;gap:6px;border:0;background:#eceffd;color:var(--brand);border-radius:999px;padding:7px 14px;font-size:13.5px;margin-top:10px}
+.swbtn svg{width:16px;height:16px}
+.setbody{background:#f8f8fa;padding:4px 16px 0;min-height:100%}
+.sg-t{font-size:15px;font-weight:600;color:var(--ink2);margin:18px 2px 8px}
+.sg{background:var(--paper);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sg .li{padding:15px 16px}.sg .li:last-child{border-bottom:0}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
+.qa{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);padding:4px 0}
+.qa span.i{width:46px;height:46px;border-radius:14px;background:var(--soft);display:grid;place-items:center;color:var(--brand)}
+.qa span.i svg{width:21px;height:21px}
+.qa:first-child span.i{background:var(--brand);color:#fff}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.metrics div{font-size:11.5px;color:var(--muted)}.metrics b{display:block;font-size:14px;color:var(--ink);font-weight:600}
+.step{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px}
+.dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex:none}
+.dot.done{background:var(--ok-soft);color:#16794a}.dot.todo{border:1.5px solid var(--line);color:var(--muted)}.dot.now{background:var(--brand);color:#fff}
+.news{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.news:last-child{border-bottom:0}
+.thumb{width:64px;height:48px;border-radius:8px;flex:none;background:linear-gradient(135deg,#dfe6f5,#f1f3f9)}
+canvas{display:block;width:100%}
+.tf{display:flex;gap:4px;align-items:center;padding:4px 16px}
+.tf button{border:0;background:none;padding:4px 9px;border-radius:7px;font-size:12px;color:var(--muted)}
+.tf button.on{background:var(--soft);color:var(--ink);font-weight:600}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;font-size:12.5px}
+.statgrid div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)}
+.statgrid span{color:var(--muted)}
+.tip{border:0;background:none;padding:0 0 0 4px;color:var(--muted);vertical-align:-3px}
+.tip svg{width:14px;height:14px}
+.expl{font-size:11.5px;color:var(--ink2);background:var(--soft);border-radius:8px;padding:8px 10px;margin:-2px 0 8px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.pill.open{background:var(--ok-soft);color:#16794a}.pill.open i{background:#16a05a}
+.pill.closed{background:var(--soft);color:var(--ink2)}.pill.closed i{background:#a0a8b8}
+/* overlays */
+.scrim{position:absolute;inset:0;background:rgba(15,20,30,.38);z-index:20;display:flex;align-items:flex-end}
+.sheet{background:var(--paper);width:100%;border-radius:22px 22px 0 0;padding:8px 18px 28px;max-height:86%;overflow:auto;animation:up .22s ease}
+@keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+.sheet.noanim{animation:none}
+.grab{width:38px;height:4px;border-radius:4px;background:#d9dde5;margin:4px auto 12px}
+.sheet h4{margin:0 0 4px;font-size:17px}
+.opt{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.opt:last-child{border-bottom:0}
+.radio{width:18px;height:18px;border-radius:50%;border:2px solid #c9cfda;flex:none}
+.radio.on{border:5px solid var(--brand)}
+.center-dlg{position:absolute;inset:0;z-index:30;background:rgba(15,20,30,.45);display:grid;place-items:center;padding:28px}
+.dlg{background:var(--paper);border-radius:18px;padding:22px;text-align:center;width:100%}
+.dlg .big{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;margin:0 auto 12px}
+.dlg .big svg{width:26px;height:26px}
+.toast{position:absolute;left:16px;right:16px;bottom:96px;background:#1b2230;color:#fff;border-radius:12px;padding:11px 14px;font-size:13px;z-index:40;display:flex;justify-content:space-between;align-items:center;gap:10px;animation:up .2s}
+.toast a{color:#9fb0ff;font-weight:600;cursor:pointer}
+.netbar{background:#2d3443;color:#fff;font-size:12px;padding:6px 14px;display:flex;gap:8px;align-items:center;flex:none}
+.netbar svg{width:14px;height:14px}
+.hold{position:relative;overflow:hidden}
+.hold i{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.28)}
+.hold.holding i{width:100%;transition:width 1s linear}
+.toggle{width:44px;height:26px;border-radius:999px;background:#d4d9e2;position:relative;border:0;flex:none;transition:.2s}
+.toggle:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.2s}
+.toggle.on{background:var(--brand)}.toggle.on:after{left:21px}
+.setgrp{margin:6px 16px 14px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.setgrp .li{padding:12px 14px}
+.setgrp .li:last-child{border-bottom:0}
+.grp-t{font-size:11.5px;color:var(--muted);margin:14px 20px 0;letter-spacing:.04em}
+.ext{font-size:11px;color:var(--muted)}
+.chev{color:#b3bac8;width:16px;height:16px;flex:none}
+.sigcard{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.sigcard:hover{border-color:#cfd5e2}
+.risk{display:inline-flex;gap:2px;vertical-align:middle}
+.risk i{width:5px;height:12px;border-radius:2px;background:#e3e7ee}
+.risk i.f{background:#e0a23b}.risk.lo i.f{background:#27a86a}.risk.hi i.f{background:#d64545}
+.mode{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;display:flex;gap:10px}
+.mode.on{border-color:var(--brand);background:var(--brand-soft)}
+.mode b{font-size:13.5px}.mode p{margin:2px 0 0;font-size:11.5px;color:var(--ink2)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink2);cursor:pointer;margin:12px 0}
+.cb{width:18px;height:18px;border-radius:5px;border:2px solid #c9cfda;flex:none;display:grid;place-items:center;margin-top:1px}
+.cb.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.cb svg{width:12px;height:12px}
+.flabel{font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center}
+.dd{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#f4f5f8;border-radius:12px;padding:12px 14px;cursor:pointer;font-size:14px}
+.ddin{border:0;background:none;outline:none;font-size:15px;font-weight:600;flex:1;min-width:0;color:var(--ink)}
+.ddlist{border:1px solid var(--line);border-radius:12px;margin-top:6px;box-shadow:0 6px 18px rgba(20,30,50,.08);overflow:hidden}
+.ddlist div{padding:11px 14px;font-size:14px;cursor:pointer}.ddlist div:hover{background:var(--soft)}.ddlist div.on{color:var(--brand);font-weight:600}
+.link{color:var(--brand);font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.dotted{border-bottom:1px dotted var(--ink2);font-weight:600;color:var(--ink)}
+.ovgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;font-size:13px;font-weight:600}
+.ovgrid span{display:block;font-size:11.5px;color:var(--muted);font-weight:400;text-decoration:underline dotted;text-underline-offset:3px}
+.ctinfo{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px;box-shadow:0 6px 18px rgba(20,30,50,.08)}
+.ctinfo b{font-size:13px}.ctinfo p{font-size:11px;color:var(--ink2);margin:3px 0 8px;line-height:1.4}
+.ctill{display:flex;gap:6px;background:#f7f8fa;border-radius:10px;padding:8px 4px;text-align:center}
+.ctill>div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px}
+.coins{display:flex;flex-direction:column;gap:1px}.coins i{display:block;width:26px;height:4px;border-radius:2px;background:linear-gradient(90deg,#e7b54a,#f6d77f,#e0a63a)}
+.tkhdr{display:flex;align-items:center;padding:4px 12px 10px}
+.tkhdr .mid{flex:1;text-align:center;cursor:pointer}
+.tkhdr .mid b{font-size:16px}.tkhdr .mid small{display:block;font-size:11px;color:var(--muted)}
+.bs{display:flex;position:relative;margin:6px 16px 0}
+.bs button{flex:1;border:0;padding:10px 0 12px;font-size:15px;font-weight:600;background:#f1f2f4;color:var(--ink2);line-height:1.3}
+.bs button:first-child{border-radius:6px 0 0 6px;margin-right:4px}.bs button:last-child{border-radius:0 6px 6px 0}
+.bs button b{display:block;font-size:17px;font-weight:600}
+.bs button.on.buy{background:var(--up);color:#fff}.bs button.on.sell{background:var(--down);color:#fff}
+.bs .spd{position:absolute;left:50%;bottom:0;transform:translateX(-50%);background:#fff;border-radius:6px 6px 0 0;padding:3px 14px;font-size:12px;color:var(--ink2)}
+.ohlc{display:grid;grid-template-columns:repeat(4,1fr);margin:8px 16px 4px;text-align:center;font-size:11.5px;color:var(--muted)}
+.ohlc div+div{border-left:1px solid var(--line)}.ohlc b{display:block;color:var(--ink);font-size:12.5px;font-weight:600}
+.tr{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:14px;color:var(--ink2)}
+.tr b{color:var(--ink);font-weight:600}
+.tr .sel{display:flex;align-items:center;gap:4px;color:var(--ink);font-weight:600;font-size:15px;cursor:pointer;background:none;border:0}
+.tr .sel svg{width:16px;height:16px;color:var(--muted)}
+.stp{display:flex;border:1px solid #dfe2e8;border-radius:6px;overflow:hidden;width:62%}
+.stp input{flex:1;min-width:0;border:0;padding:9px 12px;font-size:15px;font-weight:500;outline:none;font-variant-numeric:tabular-nums}
+.stp button{border:0;background:#f1f2f4;width:42px;font-size:18px;color:var(--ink2)}
+.tdiv{border-top:1px solid var(--line);margin:8px 0}
+.tkfoot{padding:10px 16px 14px;position:sticky;bottom:0;background:var(--paper)}
+.btn.rd{border-radius:999px}
+/* KYC */
+.kstep{background:#eef0fd;border-radius:12px;padding:12px 16px;margin:0 16px 14px}
+.kstep .n{font-size:12px;color:var(--brand);font-weight:600}.kstep .t{font-size:14.5px;font-weight:600;margin:2px 0 8px}
+.kbar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.kbar i{height:4px;border-radius:4px;background:#fff}.kbar i.f{background:var(--brand)}
+.kf{margin:0 16px 14px}.kf label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;color:var(--ink)}
+.kin{width:100%;border:1px solid #dfe2e8;border-radius:8px;padding:10px 12px;font-size:14px;outline:none;background:#fff;color:var(--ink);font-family:inherit;appearance:none;-webkit-appearance:none}
+select.kin{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%238a94a6' stroke-width='1.8'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+.kin:focus{border-color:var(--brand)}.kin.bad{border-color:var(--err)}.kin:disabled{background:#f3f4f6;color:var(--muted)}
+.kin.ph{color:#a0a8b8}
+.kh{font-size:19px;font-weight:700;margin:6px 16px 12px}
+.khelp{color:var(--err);font-size:11.5px;margin-top:4px}
+.kcard{border:1px solid #dfe2e8;border-radius:10px;padding:14px;display:flex;gap:12px;align-items:center;cursor:pointer;margin:0 16px 12px}
+.kcard.on{border-color:var(--brand);background:#f3f4fe}
+.kcard .ill{width:58px;height:58px;border-radius:14px;display:grid;place-items:center;font-size:30px;flex:none;background:#fff}
+.kcard p{margin:3px 0 0;font-size:12px;color:var(--ink2);line-height:1.4}
+.kcheck{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--brand);display:grid;place-items:center;color:var(--brand);flex:none}
+.kcheck svg{width:12px;height:12px}
+.kbanner{margin:0 16px 14px;border-radius:16px;padding:16px 10px;background:linear-gradient(135deg,#eef0ff,#e3e4fb);display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:12px;font-weight:600;color:var(--ink2)}
+.kbanner .em{font-size:28px;display:block;margin:6px 0}
+.knum{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--brand);color:#fff;font-size:11px}
+.kproc{margin:0 16px 14px;border:1px solid var(--brand);border-radius:10px;padding:14px;background:#f6f7ff;font-size:13px}
+.kproc h5{font-size:16px;margin:0}.kproc .sub{color:var(--brand);font-size:12.5px;margin:2px 0 10px;padding-bottom:10px;border-bottom:1px solid #d6dafa}
+.kproc b{display:block;margin-top:8px}.kproc p{margin:2px 0;color:var(--ink2);font-size:12px}
+.legal{margin:0 16px;font-size:11px;color:var(--ink2);line-height:1.55}
+.legal h6{font-size:13px;margin:12px 0 4px;color:var(--ink)}
+.kup{border:1.5px dashed #dfe2e8;border-radius:10px;padding:18px;text-align:center;font-size:12.5px;color:var(--ink2);margin:0 16px 6px;position:relative}
+.kup svg.big{width:26px;height:26px;color:var(--ink2)}
+.kup .lim{font-size:11px;color:var(--muted);margin-top:8px}
+.obtn{border:1.5px solid var(--brand);color:var(--brand);background:#fff;border-radius:999px;padding:5px 16px;font-weight:600;font-size:13px;margin-top:8px}
+.idimg{width:78%;margin:0 auto;aspect-ratio:1.58;border-radius:10px;background:linear-gradient(135deg,#dfe7f7,#f4f6fb);position:relative;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.idimg:before{content:"";position:absolute;left:9%;top:22%;width:24%;height:52%;border-radius:6px;background:#c9d3e8}
+.idimg:after{content:"";position:absolute;left:40%;top:28%;width:48%;height:6px;border-radius:3px;background:#c9d3e8;box-shadow:0 14px 0 #d4dcee,0 28px 0 #d4dcee,0 42px 0 #d4dcee}
+.idx{position:absolute;right:12%;top:6px;width:22px;height:22px;border-radius:50%;background:#555;color:#fff;display:grid;place-items:center;border:0;z-index:2}
+.idx svg{width:12px;height:12px}
+.kprog{height:8px;border-radius:8px;background:#eef0fd;overflow:hidden;width:200px;margin:12px auto}
+.kprog i{display:block;height:100%;background:linear-gradient(90deg,#3b30d9,#6b5cff);border-radius:8px;width:0;animation:kp 2.6s linear forwards}
+@keyframes kp{to{width:100%}}
+.vp{margin:0 16px;border-radius:14px;padding:18px 14px;background:linear-gradient(135deg,#f1f3ff,#e4e6fb);min-height:120px;display:flex;flex-direction:column;justify-content:center}
+.vp.bad{background:linear-gradient(135deg,#fff0f0,#fde2e2)}
+.vpi{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--brand);display:grid;place-items:center;margin-bottom:8px;box-shadow:0 2px 6px rgba(40,50,120,.08)}
+.vpi svg{width:22px;height:22px}
+.vp p{margin:4px 0;font-size:13.5px;color:var(--ink2);line-height:1.5}
+.v3{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:start;text-align:center;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.v3 .c{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;margin:0 auto 6px;font-size:11px}
+.v3 .c.ok{border:1.5px solid var(--brand);color:var(--brand)}.v3 .c.no{border:1.5px dashed #c3c8d4;color:var(--muted)}
+.v3 .c svg{width:12px;height:12px}
+.v3 .ln{width:28px;height:3px;border-radius:3px;background:#d0d4e4;margin-top:11px}.v3 .ln.f{background:var(--brand)}
+.v3 .tg{display:inline-block;margin-top:6px;font-size:10.5px;border-radius:5px;padding:2px 6px;font-weight:600}
+.tg.ok{background:#fff;color:var(--brand)}.tg.no{background:#fdf2df;color:#c07a12}
+.proc{display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink2);padding:14px 0 4px}
+.proc i{width:16px;height:16px;border-radius:50%;border:1.5px dashed #8a94a6;animation:rot 3s linear infinite}
+.eqmini{margin:0 16px 14px;background:#f7f8fa;border-radius:10px;padding:10px 14px}
+.eqmini .chipg{background:#e2f6ea;color:#16794a;font-size:11.5px;border-radius:999px;padding:2px 8px;font-weight:600;margin-left:8px}
+.bn{padding:10px 0;border-bottom:1px solid var(--line)}.bn .m{font-size:11.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.bn .m em{font-style:normal;background:var(--brand-soft);color:var(--brand);border-radius:4px;padding:0 6px;font-weight:600}
+.bn b{display:block;font-size:14px;margin-top:4px}
+.flag{width:18px;height:12px;border-radius:2px;display:inline-block}
+.cpc{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px;background:#fff}
+.cpc.ended .cpg,.cpc.ended .feestrip{opacity:.7}
+.cpst{display:flex;justify-content:center;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 0}
+.feestrip{display:flex;gap:24px;background:#f7f8fa;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--ink2);margin:10px 0}
+.feestrip b{color:var(--ink)}
+.cpg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px;font-size:14px;font-weight:600}
+.cpg span{display:flex;align-items:center;font-size:11.5px;color:var(--muted);font-weight:400}
+.cpg .tip svg{width:13px;height:13px}
+.cfgbtn{border:1px solid var(--line);background:#fff;border-radius:10px;width:36px;height:36px;display:grid;place-items:center;color:var(--brand);flex:none}
+.cfgbtn:hover{background:var(--brand-soft)}.cfgbtn svg{width:18px;height:18px}
+.cfgrow{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.cfgrow:last-child{border-bottom:0}
+.cfgrow .k{flex:1;font-size:14px}.cfgrow .k small{display:block;font-size:11.5px;color:var(--muted)}
+.cfgrow .v{font-weight:600;font-size:14px}
+.kebab{border:1px solid var(--line);background:#fff;border-radius:10px;width:42px;font-size:18px;color:var(--ink2)}
+.cpacts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.cpacts button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 0;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--ink2)}
+.cpacts svg{width:14px;height:14px}
+.cpsw{border-top:1px solid var(--line);text-align:center;padding:10px 0;font-size:13px;color:var(--brand);font-weight:600;cursor:pointer;display:flex;justify-content:center;gap:6px;align-items:center}
+.cpsw svg{width:15px;height:15px}
+.bigin{display:flex;align-items:center;background:#f4f5f8;border-radius:12px;padding:14px 16px;margin:6px 0}
+.bigin input{flex:1;border:0;background:none;outline:none;font-size:22px;font-weight:600;text-align:center;min-width:0;font-variant-numeric:tabular-nums}
+.balchip{font-size:11px;background:var(--brand-soft);color:var(--brand);border-radius:5px;padding:2px 7px;font-weight:600}
+.spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--brand-soft);border-top-color:var(--brand);animation:rot .8s linear infinite;margin:0 auto}
+@keyframes rot{to{transform:rotate(360deg)}}
+.timeline{margin:18px 0;text-align:left}
+.tl{display:flex;gap:10px;padding:6px 0;font-size:13px;align-items:center}
+.disc{font-size:10.5px;color:var(--muted);text-align:center;padding:4px 20px 18px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <h1>Trading App Prototype</h1>
+    <div class="sub">Interactive mobile trading prototype<br>Bella Chen · Product Manager</div>
+    <div class="scn" id="scn"><button class="scn-btn" id="scnBtn"><span class="scn-dot"></span><span style="flex:1;min-width:0;text-align:left"><b>Scenario</b><span class="scn-sum" id="scnSum"></span></span><svg class="scn-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button><div class="controls" id="controls"></div></div>
+    <div id="navlist"></div>
+  </aside>
+
+  <section class="center">
+    
+    <div class="phone"><div class="screen" id="screen"></div></div>
+    <div class="foot">Portfolio prototype · dummy data<br>Bella Chen</div>
+  </section>
+
+  <aside class="notes" id="notes"></aside>
+</div>
+
+<script>
+/* =========================================================
+   ICONS
+   ========================================================= */
+const IC={
+ home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ quotes:'<path d="M3 17l5-6 4 4 8-9"/><path d="M14 6h6v6"/>',
+ portfolio:'<path d="M12 3v9h9"/><circle cx="12" cy="12" r="9"/>',
+ settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+ back:'<path d="M15 18l-6-6 6-6"/>',
+ chev:'<path d="M9 18l6-6-6-6"/>',
+ down:'<path d="M6 9l6 6 6-6"/>',
+ up:'<path d="M6 15l6-6 6 6"/>',
+ star:'<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+ x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
+ candle:'<path d="M7 3v4M7 17v4M17 3v2M17 15v6"/><rect x="5" y="7" width="4" height="10" rx="1"/><rect x="15" y="5" width="4" height="10" rx="1"/>',
+ line:'<path d="M3 17l5-6 4 4 8-9"/>',
+ wifi:'<path d="M2 8.8a15 15 0 0 1 20 0M5 12.6a10 10 0 0 1 14 0M8.5 16.3a5 5 0 0 1 7 0"/><path d="M12 20h.01"/><path d="M3 3l18 18"/>',
+ tool:'<path d="M14.7 6.3a4 4 0 0 0 5 5L22 14l-8 8-2.3-2.3a4 4 0 0 0-5-5L3 11l8-8z"/>',
+ lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 1 1 8 0v4"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 20a6.5 6.5 0 0 0-3-5.5"/>',
+ sort:'<path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4"/>',
+ deposit:'<path d="M12 4v12M6 10l6 6 6-6"/><path d="M4 20h16"/>',
+ support:'<path d="M21 12a9 9 0 1 1-3.6-7.2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',
+ history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>',
+ trade:'<path d="M7 7h11l-3-3M17 17H6l3 3"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+ ext:'<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+ bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+ cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+ doc:'<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+ shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>',
+ idcard:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.6 1.7-2.3 3-2.3s2.4.7 3 2.3M15 10h3M15 13h3"/>',
+ hourglass:'<path d="M7 3h10M7 21h10M8 3v4a4 4 0 0 0 8 0V3M8 21v-4a4 4 0 0 1 8 0v4"/>',
+ block:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+ edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+ pause:'<path d="M9 5v14M15 5v14"/>',
+ play:'<path d="M7 5l12 7-12 7z"/>',
+ sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ chatuser:'<path d="M20 15a2 2 0 0 1-2 2h-5l-4 3v-3H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><circle cx="17.5" cy="17.5" r="2" fill="#fff"/><path d="M14.5 22a3 3 0 0 1 6 0"/>',
+ eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+ swap:'<path d="M4 8h15l-4-4M20 16H5l4 4"/>'
+};
+const ic=(n,s='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ${s}>${IC[n]}</svg>`;
+const icf=n=>`<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">${IC[n]}</svg>`;
+
+/* =========================================================
+   DATA
+   ========================================================= */
+const SY={
+ XAUUSD:{name:'Gold vs US Dollar',cat:'Commodities',px:2648.35,dig:2,spread:.25,cs:100,lev:100,unit:'lot',step:.01,min:.01,types:['market','limit','stop','stoplimit'],dir:'full',ab:'Au'},
+ EURUSD:{name:'Euro / US Dollar',cat:'Forex',px:1.05482,dig:5,spread:.00008,cs:100000,lev:500,unit:'lot',step:.01,min:.01,types:['market','limit','stop','stoplimit'],dir:'full',ab:'€$'},
+ USDJPY:{name:'US Dollar / Japanese Yen',cat:'Forex',px:154.212,dig:3,spread:.012,cs:100000,lev:500,unit:'lot',step:.01,min:.01,types:['market','limit','stop','stoplimit'],dir:'full',ab:'$¥'},
+ GBPUSD:{name:'British Pound / US Dollar',cat:'Forex',px:1.25731,dig:5,spread:.00011,cs:100000,lev:500,unit:'lot',step:.01,min:.01,types:['market','limit','stop','stoplimit'],dir:'full',ab:'£$'},
+ NAS100:{name:'US Tech 100',cat:'Indices',px:20745.2,dig:1,spread:1.2,cs:1,lev:100,unit:'lot',step:.1,min:.1,types:['market','limit','stop'],dir:'full',ab:'NQ'},
+ US500:{name:'US 500',cat:'Indices',px:5967.4,dig:1,spread:.5,cs:1,lev:100,unit:'lot',step:.1,min:.1,types:['market','limit','stop'],dir:'close',ab:'SP'},
+ AAPL:{name:'Apple Inc.',cat:'Shares',px:229.87,dig:2,spread:.06,cs:1,lev:5,unit:'share',step:1,min:1,types:['market','limit'],dir:'full',ab:'AP',div:{exd:'Feb 10, 2027',amt:'0.25'}},
+ NVDA:{name:'NVIDIA Corp.',cat:'Shares',px:142.35,dig:2,spread:.05,cs:1,lev:5,unit:'share',step:1,min:1,types:['market','limit'],dir:'long',ab:'NV'},
+ TSLA:{name:'Tesla Inc.',cat:'Shares',px:338.6,dig:2,spread:.1,cs:1,lev:5,unit:'share',step:1,min:1,types:['market','limit'],dir:'full',ab:'TS'}
+};
+const P={};
+for(const k in SY){const b=SY[k].px;const o=b*(1+(Math.random()-.5)*.012);P[k]={bid:b,open:o,hi:Math.max(b,o)*1.002,lo:Math.min(b,o)*.998}}
+const ask=s=>P[s].bid+SY[s].spread;
+
+let pid=100;
+const mkPos=(s,side,vol,open,extra={})=>({id:'P'+(++pid),s,side,vol,open,sl:'',tp:'',t:extra.t||'Nov 21, 14:32',...extra});
+const ACC={
+ live:{id:'95096766',kind:'Live',plan:'Standard',bal:10000,credit:0,access:'full',
+   pos:[mkPos('XAUUSD','buy',.1,2631.2,{t:'Nov 22, 09:15'}),mkPos('EURUSD','sell',.5,1.0571,{t:'Nov 20, 21:40'}),mkPos('AAPL','buy',10,221.4,{t:'Nov 18, 22:31'})],
+   ord:[{id:'O501',s:'NAS100',side:'buy',type:'limit',vol:.5,price:20500,t:'Nov 23, 10:02'}],
+   hist:[{s:'GBPUSD',side:'buy',vol:.3,open:1.2512,close:1.2561,pnl:147,t:'Nov 19',ccy:'USD'},{s:'AAPL',kind:'div',pnl:2.5,t:'Nov 15',ccy:'USD'},{s:'USDJPY',side:'sell',vol:.2,open:155.02,close:155.41,pnl:-50.19,t:'Nov 12',ccy:'USD'},{s:'XAUUSD',side:'buy',vol:.05,open:2601.3,close:2622.8,pnl:107.5,t:'Nov 08',ccy:'USD'}]},
+ demo:{id:'1023016',kind:'Demo',plan:'Demo',bal:100000,credit:0,access:'full',pos:[mkPos('USDJPY','buy',1,153.88)],ord:[],hist:[]},
+ copier:{id:'95100221',kind:'Live',plan:'Copier',tag:'Copy · Nezatron',bal:2000,credit:0,access:'close',pos:[mkPos('XAUUSD','sell',.02,2655.1),mkPos('GBPUSD','buy',.1,1.2549)],ord:[],hist:[]}
+};
+const SIG=[
+ {id:'nz',sub:0,name:'Nezatron',strat:'Pull-Back strategy',bal:10868.42,ab:'NZ',risk:3,ret:{'1M':3.8,'3M':11.2,'6M':24.6},mdd:9.4,win:64,copiers:640,min:200,since:'2023',style:'Gold & majors · swing',fee:20},
+ {id:'dr',sub:50,name:'DanielR',strat:'Index Breakout',bal:24310.05,ab:'DR',risk:5,ret:{'1M':-1.2,'3M':17.9,'6M':31.0},mdd:18.2,win:58,copiers:210,min:500,since:'2024',style:'Indices · intraday',fee:25},
+ {id:'kz',sub:0,name:'Kaze Capital',strat:'FX Carry Basket',bal:58200.00,ab:'KZ',risk:2,ret:{'1M':1.1,'3M':4.6,'6M':9.8},mdd:4.1,win:71,copiers:1180,min:100,since:'2022',style:'FX carry · low turnover',fee:15},
+ {id:'nr',sub:30,name:'NicoRo',strat:'Momentum Scalper',bal:3120.77,ab:'NR',risk:6,ret:{'1M':-2.6,'3M':22.4,'6M':48.3},mdd:27.5,win:49,copiers:88,min:1000,since:'2025',style:'Crypto-correlated FX · high leverage',fee:30}
+];
+const NEWS=[['EIA crude inventories fall more than expected','Commodities · 12 min'],['Dollar steadies ahead of FOMC minutes','Forex · 34 min'],['Nasdaq futures edge higher on chip earnings','Indices · 1 h']];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const S={
+ stack:['home'],persona:'client',acc:'live',market:'open',data:'normal',color:'intl',sys:'none',
+ watch:['XAUUSD','EURUSD','USDJPY','NAS100','AAPL','NVDA','US500'],
+ qseg:'watch',mcat:'Forex',psg:'open',sort:null,sym:'XAUUSD',spTab:'overview',posId:null,ordId:null,
+ tf:'15m',ctype:'candle',acctOpen:false,
+ ord:null,orderRes:null,oneClick:false,ocVol:.1,
+ sig:'nz',sigPer:'3M',sigFilter:'all',copy:null,ctSeg:'signals',bill:'sub',cpN:3,
+ copies:[{id:'c1',sig:'nz',name:'Copy trading 1',status:'copying',bal:2000,sl:1400,type:'smart',mult:1.25,mcl:100,pnl:1099.24,hwm:2200,next:'2026-12-14',acct:'95100221'},{id:'c2',sig:'dr',name:'Copy trading 2',status:'paused',bal:800,sl:500,type:'exact',mult:1,mcl:100,pnl:240.24,hwm:900,next:'2026-12-14',acct:'95100236'},{id:'c3',sig:'kz',name:'Copy trading 3',status:'ended',bal:0,sl:0,type:'smart',mult:1,mcl:100,pnl:-35.6,hwm:500,next:'—',acct:'95100198'}],
+ sheet:null,toast:null,expl:{},geoAck:false,maint:false
+};
+S.kyc='not_started';S.k={type:'individual',country:'Australia',inv:'',plat:'Sample Trader',ccy:'USD',lev:'Dynamic Margin',acct:'',exp:'',emp:'',src:'',ind:'',occ:'',inc:'',sav:'',fn:'Bella',ln:'Chen',mn:'',gender:'',dob:'',cc:'+886',mob:'912-345-678',nat:'',pid:'',state:'',city:'',zip:'',addr:'',terms:[0,0,0,0,0],front:null,back:null};S.kerr={};
+const OPEN_AT=Date.now()+ (2*3600+14*60+33)*1000;
+const cur=()=>S.stack[S.stack.length-1];
+const A=()=>ACC[S.persona==='new'?'demo':S.acc];
+const accList=()=>S.persona==='new'?['demo']:['live','demo','copier'];
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+const fmt=(n,d=2)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const money=(n,sign=false)=>(sign&&n>0?'+':'')+(n<0?'-':'')+'$'+fmt(Math.abs(n));
+const cls=n=>n>0?'up':n<0?'down':'';
+const pnl=p=>{const px=p.side==='buy'?P[p.s].bid:ask(p.s);let v=(px-p.open)*(p.side==='buy'?1:-1)*p.vol*SY[p.s].cs;if(p.s.endsWith('JPY'))v/=px;return v};
+const marginOf=(s,vol,price)=>{const sp=SY[s];const notional=s.startsWith('USD')?vol*sp.cs:vol*sp.cs*price;return notional/sp.lev};
+const stats=a=>{const up=a.pos.reduce((t,p)=>t+pnl(p),0);const used=a.pos.reduce((t,p)=>t+marginOf(p.s,p.vol,p.open),0);const eq=a.bal+a.credit+up;return{up,used,eq,free:eq-used,level:used?eq/used*100:null}};
+const cd=()=>{let s=Math.max(0,Math.floor((OPEN_AT-Date.now())/1000));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`};
+const volLabel=s=>SY[s].unit==='share'?'shares':'lots';
+const fv=(s,v)=>SY[s].unit==='share'?fmt(v,0):fmt(v,2);
+const sideTag=s=>`<span class="badge ${s==='buy'?'':''}" style="background:${s==='buy'?'var(--up-soft)':'var(--down-soft)'};color:${s==='buy'?'var(--up)':'var(--down)'}">${s==='buy'?'Buy':'Sell'}</span>`;
+const TYPE_N={market:'Market',limit:'Limit',stop:'Stop',stoplimit:'Stop Limit'};
+const accBadge=a=>a.access==='close'?'<span class="badge b-copy">Copier</span>':a.kind==='Demo'?'<span class="badge b-demo">DEMO</span>':'<span class="badge b-live">LIVE</span>';
+
+/* =========================================================
+   NAV / NOTES CONFIG
+   ========================================================= */
+const NAV=[
+ ['Onboarding & KYC',[['home','Home · New user (KYC states)'],['kycType','Account type & country'],['kycIntro','Identity verification'],['kycTrade','1 · Trading & Employment'],['kycPersonal','2 · Personal information'],['kycTerms','3 · Terms & Conditions'],['kycId','4 · Confirm ID'],['kycDone','Application submitted'],['homeLive','Home · Live client']]],
+ ['Markets',[['quotes','Watchlist & Markets'],['search','Search'],['symbol','Symbol detail & chart'],['spec','Specification']]],
+ ['Trade',[['ticket','Place order'],['status','Order status']]],
+ ['Portfolio',[['portfolio','Portfolio'],['position','Position detail']]],
+ ['Copy Trading',[['signals','Signal discovery'],['signal','Signal profile'],['copysetup','Copy Signal settings'],['mycopy','My Copy Trading'],['ctbilling','Copy billing']]],
+ ['Account',[['settings','Settings'],['sysset','System settings'],['userinfo','User information']]]
+];
+const NOTES={};
+/* =========================================================
+   RENDER — SCREENS
+   ========================================================= */
+function statusBar(){return `<div class="status"><span>9:41</span><div class="isl"></div><span style="letter-spacing:2px">▂▄▆ ◔</span></div>`}
+function tabbar(){const t=S.stack[0];const tabs=[['home','Home','home'],['quotes','Quotes','quotes'],['portfolio','Portfolio','portfolio'],['signals','Copy Trading','users'],['settings','Setting','settings']];
+ return `<div class="tabbar">${tabs.map(([k,l,i])=>`<button class="${t===k?'on':''}" data-act="tab" data-v="${k}">${ic(i)}${l}</button>`).join('')}</div>`}
+function acctPill(){const a=A();return `<button class="acct" data-act="acctSheet">${a.id} · USD ${accBadge(a)} ${ic('down')}</button>`}
+function modebar(){const a=A();if(a.access==='close')return `<div class="modebar copy">${ic('users')}<span><b>Copier account</b> · Account status: Close Only</span></div>`;
+ if(a.kind==='Demo')return `<div class="modebar demo">${ic('info')}<span><b>Demo account</b> · virtual funds, no real money at risk</span></div>`;return ''}
+function hdr(title,sub='',right=''){return `<div class="hdr"><button class="ib" data-act="back">${ic('back')}</button><div class="t">${title}${sub?`<small>${sub}</small>`:''}</div>${right||'<span style="width:34px"></span>'}</div>`}
+function mstatus(){return S.market==='open'?`<span class="pill open"><i></i>Market open · closes in 03:12:08</span>`:`<span class="pill closed"><i></i>Market closed · opens in <span data-live="cd" class="num">${cd()}</span></span>`}
+
+function homeHdr(){return `<div class="hdr" style="justify-content:space-between">${acctPill()}<div style="display:flex;gap:2px"><button class="ib" title="Support" data-act="quick" data-v="support">${ic('chatuser')}</button><button class="ib" data-act="go" data-v="search">${ic('search')}</button></div></div>`}
+function scrHome(){
+ if(S.persona==='new')return scrHomeNew();
+ const a=A(),st=stats(a);
+ const loading=S.data==='loading';const hide=S.hideBal;
+ const v=x=>hide?'••••••':x;
+ return `${homeHdr()}
+ <div class="sec" style="padding-top:0">
+  <div class="tile" style="padding:16px">
+   <div class="row" style="justify-content:flex-start;gap:6px"><span class="small muted">Equity</span><button class="tip" data-act="hideBal">${ic('eye')}</button>${a.access==='close'?'<span class="badge b-copy" style="margin-left:auto">Copy · Nezatron</span>':''}</div>
+   ${loading?'<div class="skel" style="height:30px;width:60%;margin:8px 0"></div>':`<div class="row" style="justify-content:flex-start;gap:10px;flex-wrap:wrap;margin-top:4px"><span style="font-size:30px;font-weight:700" class="num" data-live="${hide?'':'acc:eq'}">${v(money(st.eq))}</span><span class="eqchip num" data-live="${hide?'':'acc:upchip'}">${v(upChip(st))}</span></div>`}
+  </div>
+  <div class="tiles num">
+   <div class="tile">Balance<b>${v(fmt(a.bal))}</b></div>
+   <div class="tile">Free Margin<b data-live="${hide?'':'acc:freen'}">${v(fmt(st.free))}</b></div>
+   <div class="tile">Margin Level<b data-live="${hide?'':'acc:lvl'}">${v(st.level?fmt(st.level,0)+'%':'—')}</b></div>
+   <div class="tile">Credit<b>${v(fmt(a.credit,0))}</b></div>
+  </div>
+ </div>
+ <div class="sec">
+  <div class="sec-t"><b>Open positions</b><a data-act="tab" data-v="portfolio">View all</a></div>
+  ${a.pos.slice(0,2).map(p=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer" data-act="openPos" data-v="${p.id}"><div><span class="sym">${p.s}</span> ${sideTag(p.side)}<div class="xs muted num">${fv(p.s,p.vol)} ${volLabel(p.s)} @ ${fmt(p.open,SY[p.s].dig)}</div></div><b class="num ${cls(pnl(p))}" data-live="pnl:${p.id}">${money(pnl(p),true)}</b></div>`).join('')||'<div class="small muted">No open positions</div>'}
+ </div>
+ ${insights()}`}
+function upChip(st){const pct=st.eq-st.up?st.up/(st.eq-st.up)*100:0;return `${st.up>0?'+':''}${fmt(st.up)} (${st.up>0?'+':''}${fmt(pct)}%)`}
+function insights(){const fl={AU:'linear-gradient(#1f3b8f,#1f3b8f)',JP:'radial-gradient(circle,#d33 34%,#fff 36%)',US:'repeating-linear-gradient(#c33 0 2px,#fff 2px 4px)',CN:'linear-gradient(#d22,#d22)'};
+ const items=[['17:05 Nov 24','AU','DJ30','EIA Distillate Fuel Production Change'],['16:40 Nov 24','JP','USDJPY','Japanese Shares Fall Amid Tech Selloff'],['15:12 Nov 24','US','EURUSD','Dollar Stabilizes as Inflation Data Looms'],['13:16 Nov 24','CN','USDCNH','Offshore Yuan Remains Strong']];
+ return `<div style="height:8px;background:#f4f5f7;margin-top:10px"></div><div class="sec"><div class="sec-t"><b style="font-size:17px">Breaking News</b></div>
+ <div class="chips" style="margin-bottom:4px"><span class="chip on" style="border:0">Forex</span><span class="chip" style="border:0">Commodities</span><span class="chip" style="border:0">Indices</span></div>
+ ${items.map(([t,c,tag,h])=>`<div class="bn"><div class="m">${t} <span class="flag" style="background:${fl[c]}"></span> <em>${tag}</em></div><b>${h}</b></div>`).join('')}</div>`}
+function scrHomeNew(){const k=S.kyc;const ck=ic('check');
+ const v3=(st)=>`<div class="v3">${[['Account<br>Details',st[0]],['Terms &amp;<br>Conditions',st[1]],['Upload<br>Documents',st[2]]].map(([l,d],i)=>`${i?`<div class="ln ${d||st[i-1]?'f':''}"></div>`:''}<div><div class="c ${d?'ok':'no'}">${d?ck:i+1}</div>${l}<br><span class="tg ${d?'ok':'no'}">${d?'Completed':'Incomplete'}</span></div>`).join('')}</div>`;
+ let body='';
+ if(k==='not_started')body=`<div class="vp" style="text-align:center"><div style="font-size:16px;color:var(--ink);line-height:1.4">Complete your verification<br>in 3 simple steps</div>
+   <div class="v3" style="margin-top:14px">${[['👤','Account<br>Details'],['📝','Terms &amp;<br>Conditions'],['🪪','Upload<br>Documents']].map(([e,l],i)=>`${i?'<div class="ln"></div>':''}<div><span class="knum">${i+1}</span><div style="font-size:26px;margin:6px 0">${e}</div>${l}</div>`).join('')}</div></div>
+   <div style="margin:12px 16px 0"><button class="btn pri rd" data-act="kycStart">Continue</button></div>`;
+ else if(k==='in_progress')body=`<div class="kh" style="font-size:17px">Verification Progress</div><div class="vp">${v3([1,0,0])}</div><div style="margin:12px 16px 0"><button class="btn pri rd" data-act="kycResume">Continue</button></div>`;
+ else if(k==='under_review')body=`<div class="kh" style="font-size:17px">Verification Progress</div><div class="vp">${v3([1,1,1])}</div><div class="proc"><i></i>Processing your application</div>`;
+ else if(k==='action')body=`<div class="kh" style="font-size:17px">Verification Progress</div><div class="vp bad"><span class="vpi" style="background:#fff;color:var(--err)">${ic('idcard')}</span><p>Your identity verification was unsuccessful.</p><p>Please review the details and resubmit your documents.</p></div><div style="margin:12px 16px 0"><button class="btn pri rd" data-act="kycResubmit">Continue Verification</button></div>`;
+ else if(k==='reverify')body=`<div class="kh" style="font-size:17px">Verification Progress</div><div class="vp"><span class="vpi">${ic('hourglass')}</span><p>We’re checking your updated details to make sure everything is complete and accurate. You’ll be notified once the review is finished.</p></div><div class="proc"><i></i>Verifying your information</div>`;
+ else if(k==='rejected')body=`<div class="kh" style="font-size:17px">Verification Progress</div><div class="vp"><span class="vpi" style="color:var(--ink2)">${ic('block')}</span><p>Your application review is complete. Unfortunately, we’re unable to proceed with your application at this stage.</p></div><div style="margin:12px 16px 0"><button class="btn pri rd" data-act="kycDear">View Details</button></div>`;
+ const eq=stats(A()).eq;
+ return `${homeHdr()}<div class="eqmini"><div class="small muted">Equity ${ic('eye','style="width:13px;height:13px;vertical-align:-2px"')}</div><div style="font-size:21px;font-weight:700" class="num"><span data-live="acc:eq">${money(eq)}</span><span class="chipg" data-live="acc:upchip">${upChip(stats(A()))}</span></div></div>${body}${insights()}`}
+function rowSym(s,opts={}){const sp=SY[s],p=P[s],c=(p.bid-p.open)/p.open*100;const closed=S.market==='closed';
+ return `<div class="li" data-act="openSym" data-v="${s}" ${opts.lp?`data-lp="${s}"`:''}>
+  <div class="av">${sp.ab}</div>
+  <div style="flex:1;min-width:0"><div class="sym">${s} ${closed?'<span class="badge b-mute">Closed</span>':''} ${sp.dir==='close'?'<span class="badge b-warn">Close only</span>':sp.dir==='long'?'<span class="badge b-mute">Long only</span>':''}</div><div class="xs muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sp.name}</div></div>
+  ${opts.star?`<button class="ib" data-act="star" data-v="${s}" style="color:${S.watch.includes(s)?'#e0a23b':'#c3c9d4'}">${S.watch.includes(s)?icf('star'):ic('star')}</button>`:`<div><div class="px num" data-live="bid:${s}">${fmt(p.bid,sp.dig)}</div><span class="chg num ${cls(c)}" data-live="chg:${s}">${c>0?'+':''}${fmt(c,2)}%</span></div>`}
+ </div>`}
+function scrQuotes(){
+ const seg=S.qseg;
+ let body='';
+ if(seg==='watch'){
+  if(S.data==='loading')body=skelRows(6);
+  else if(S.data==='error')body=errState('Couldn’t load prices','Price feed timed out (code 504).');
+  else body=(S.watch.length?S.watch.map(s=>rowSym(s,{lp:1})).join(''):`<div class="empty"><div class="ic">${ic('star')}</div><b>Your watchlist is empty</b><div class="small">Tap the star on any market to follow it here.</div></div>`)+`<div class="xs muted" style="text-align:center;padding:12px">Long-press a market for more options</div>`;
+ } else if(seg==='markets'){
+  const cats=['Forex','Commodities','Indices','Shares'];
+  body=`<div class="chips" style="padding:0 16px 8px">${cats.map(c=>`<button class="chip ${S.mcat===c?'on':''}" data-act="mcat" data-v="${c}">${c}</button>`).join('')}</div>`+Object.keys(SY).filter(s=>SY[s].cat===S.mcat).map(s=>rowSym(s)).join('');
+ }
+ return `<div class="hdr" style="justify-content:space-between">${acctPill()}<button class="ib" data-act="go" data-v="search">${ic('search')}</button></div>
+ <div class="segc">${[['watch','Watchlist'],['markets','Markets']].map(([k,l])=>`<button class="${seg===k?'on':''}" data-act="qseg" data-v="${k}">${l}</button>`).join('')}</div>
+ <div class="${S.sys==='offline'?'stale':''}">${body}</div>`}
+function skelRows(n){return Array.from({length:n},()=>`<div class="li"><div class="av skel" style="border-radius:50%"></div><div style="flex:1"><div class="skel" style="width:40%"></div><div class="skel" style="width:65%;margin-top:6px;height:9px"></div></div><div class="skel" style="width:60px"></div></div>`).join('')}
+function errState(t,why){return `<div class="empty"><div class="ic" style="background:var(--err-soft);color:var(--err)">${ic('alert')}</div><b>${t}</b><div class="small">${why}<br><span class="muted">Last updated 09:38:12</span></div><button class="btn out" style="width:auto;padding:8px 18px;margin-top:12px" data-act="retry">Retry</button></div>`}
+
+function scrSearch(){const q=(S.q||'').toLowerCase();const list=Object.keys(SY).filter(s=>!q||s.toLowerCase().includes(q)||SY[s].name.toLowerCase().includes(q));
+ return `<div class="hdr"><button class="ib" data-act="back">${ic('back')}</button><input class="inp" id="q" data-in="q" placeholder="Search markets, e.g. Gold, AAPL" value="${S.q||''}" style="padding:9px 12px"></div>
+ <div id="sres">${list.length?list.map(s=>rowSym(s,{star:1})).join(''):`<div class="empty"><div class="ic">${ic('search')}</div><b>No markets match “${S.q}”</b><div class="small">Try a symbol (EURUSD) or a name (Apple).</div></div>`}</div>`}
+
+function scrSymbol(){const s=S.sym,sp=SY[s],p=P[s],c=(p.bid-p.open)/p.open*100;const closed=S.market==='closed';const a=A();
+ const blocked=closed||a.access==='close'||sp.dir==='no';
+ return `${hdr(s,sp.name,`<button class="ib" data-act="star" data-v="${s}" style="color:${S.watch.includes(s)?'#e0a23b':'var(--ink)'}">${S.watch.includes(s)?icf('star'):ic('star')}</button>`)}
+ ${modebar()}
+ <div class="sec ${S.sys==='offline'?'stale':''}" style="padding-bottom:6px">
+  <div class="row" style="align-items:flex-end"><div><div style="font-size:28px;font-weight:700" class="num" data-live="bid:${s}">${fmt(p.bid,sp.dig)}</div>
+  <div class="small num" data-live="chgabs:${s}"><span class="${cls(c)}">${c>0?'+':''}${fmt(p.bid-p.open,sp.dig)} (${c>0?'+':''}${fmt(c,2)}%)</span></div></div>${mstatus()}</div>
+ </div>
+ <div class="tf">${['1m','15m','1H','1D'].map(t=>`<button class="${S.tf===t?'on':''}" data-act="tf" data-v="${t}">${t}</button>`).join('')}<span style="flex:1"></span>
+  <button class="ib" title="Candles" data-act="ctype" data-v="candle" style="${S.ctype==='candle'?'background:var(--soft)':''}">${ic('candle')}</button><button class="ib" title="Line" data-act="ctype" data-v="line" style="${S.ctype==='line'?'background:var(--soft)':''}">${ic('line')}</button></div>
+ <canvas id="chart" height="210"></canvas>
+ ${S.oneClick&&!blocked?`<div class="msg info" style="margin:8px 16px">${ic('bolt')}<span><b>One-click trading is on</b> · ${fv(s,S.ocVol*(sp.unit==='share'?100:1))} ${volLabel(s)} per tap. Orders are sent immediately.</span></div>`:''}
+ <div class="sec">
+  <div class="statgrid num"><div><span>Open</span>${fmt(p.open,sp.dig)}</div><div><span>Spread</span>${fmt(sp.spread,sp.dig)}</div><div><span>Day high</span>${fmt(p.hi,sp.dig)}</div><div><span>Day low</span>${fmt(p.lo,sp.dig)}</div></div>
+  ${sp.div?`<div class="card" style="margin-top:12px;display:flex;gap:12px;align-items:center"><span style="color:var(--brand)">${ic('cal','style="width:22px;height:22px"')}</span><div style="flex:1"><b style="font-size:13px">Dividend · $${sp.div.amt} per share</b><div class="xs muted">Ex-dividend ${sp.div.exd}. Long positions held at close receive a cash adjustment; short positions are debited.</div></div></div>`:''}
+  <div class="li" style="padding:12px 0" data-act="go" data-v="spec"><div style="flex:1"><b style="font-size:13.5px">Specification</b><div class="xs muted">Trading hours, costs, margin &amp; order types</div></div>${ic('chev','class="chev"')}</div>
+  <div class="sec-t"><b>News</b></div>
+  ${NEWS.slice(0,2).map(n=>`<div class="news"><div class="thumb"></div><div><div style="font-size:13px;font-weight:600">${n[0]}</div><div class="xs muted">${n[1]}</div></div></div>`).join('')}
+ </div>
+ <div class="sticky">
+  ${blocked?`<div class="xs" style="text-align:center;color:var(--ink2);margin-bottom:6px">${closed?`Market is closed. Opens in <span data-live="cd" class="num">${cd()}</span>`:a.access==='close'?'Copier account · new orders unavailable (Close Only)':'This Instrument Is Non-Tradable'}</div>`:''}
+  <div class="tradebar">
+   <button class="btn sell" ${blocked?'disabled':''} data-act="trade" data-v="sell">Sell<small class="num" data-live="bid:${s}">${fmt(p.bid,sp.dig)}</small></button>
+   <div class="spr num">Spread<br>${fmt(sp.spread,sp.dig)}</div>
+   <button class="btn buy" ${blocked?'disabled':''} data-act="trade" data-v="buy">Buy<small class="num" data-live="ask:${s}">${fmt(ask(s),sp.dig)}</small></button>
+  </div>
+ </div>`}
+
+function tipRow(k,label,val,expl){const open=S.expl[k];return `<div class="kv"><span>${label}<button class="tip" data-act="expl" data-v="${k}">${ic('info')}</button></span><b class="num" style="font-weight:600">${val}</b></div>${open?`<div class="expl">${expl}</div>`:''}`}
+function scrSpec(){const s=S.sym,sp=SY[s];const dirTxt={full:'Buy & sell',close:'Close only — no new positions',long:'Buy only',short:'Sell only',no:'Not tradable'}[sp.dir];
+ const tab=S.spTab;
+ let inner='';
+ if(tab==='overview'){
+  inner=`<div class="card" style="margin-bottom:12px">
+   <div class="row"><b>Can I trade now?</b>${S.market==='open'&&sp.dir!=='no'?'<span class="badge b-live">YES</span>':'<span class="badge b-mute">NOT NOW</span>'}</div>
+   <div style="margin-top:8px">${mstatus()}</div>
+   <div class="kv" style="margin-top:8px"><span>Direction</span><b style="font-weight:600">${dirTxt}</b></div>
+   <div style="margin-top:6px" class="small muted">Order types</div>
+   <div class="chips" style="flex-wrap:wrap;margin-top:6px">${Object.keys(TYPE_N).map(t=>`<span class="chip ${sp.types.includes(t)?'':'off'}">${TYPE_N[t]}${sp.types.includes(t)?'':' · not available'}</span>`).join('')}</div>
+  </div>
+  <div class="sec-t" style="margin-top:4px"><b>What it costs</b></div>
+  ${tipRow('spr','Spread','Floating · now '+fmt(sp.spread,sp.dig),'The gap between buy and sell price. You pay it once when you open a trade. It widens around news and market open.')}
+  ${tipRow('swl','Overnight fee (long)','-'+fmt(sp.cs>1000?6.8:0.42,2)+' USD / lot','Charged when a position is held past 23:59 server time. Wednesday is charged 3× to cover the weekend.')}
+  ${tipRow('sws','Overnight fee (short)','+'+fmt(sp.cs>1000?1.9:0.11,2)+' USD / lot','Can be a credit or a charge depending on interest-rate differences.')}
+  ${tipRow('com','Commission','None','This account type prices costs into the spread.')}`;
+ } else if(tab==='conditions'){
+  inner=`${tipRow('vol','Volume','min '+fv(s,sp.min)+' · step '+fv(s,sp.step)+' '+volLabel(s),'The smallest size you can trade and the increment between sizes. 1 lot = '+fmt(sp.cs,0)+' units.')}
+  ${tipRow('lev','Leverage','1 : '+sp.lev,'Margin required = trade value ÷ leverage. Higher leverage means smaller margin but larger losses relative to your deposit.')}
+  ${tipRow('stl','Stop level','10 points','Pending orders and SL/TP must be at least this far from the current price.')}
+  ${tipRow('gsl','Guaranteed stop distance','30 points','A guaranteed stop loss closes your position at the exact level with no slippage, for a premium. Slippage may still occur in price gaps.')}
+  ${tipRow('exp','Pending order expiry','Good till cancelled / custom','Pending orders stay active until filled, cancelled, or the date you choose.')}
+  <div class="sec-t"><b>Margin tiers</b></div>
+  <div class="small muted" style="margin-bottom:6px">Larger positions need more margin per lot. Shown in USD.</div>
+  ${[['0 – 50 lots','1 : '+sp.lev],['50 – 200 lots','1 : '+Math.round(sp.lev/2)],['200+ lots','1 : '+Math.round(sp.lev/5)]].map(r=>`<div class="kv"><span>${r[0]}</span><b style="font-weight:600">${r[1]}</b></div>`).join('')}`;
+ } else {
+  inner=`<div class="small muted" style="margin-bottom:6px">Times in your time zone (GMT+8)</div>
+  ${[['Mon','06:05 – 24:00'],['Tue – Thu','00:00 – 04:59, 06:05 – 24:00'],['Fri','00:00 – 04:59'],['Sat – Sun','Closed']].map(r=>`<div class="kv"><span>${r[0]}</span><b class="num" style="font-weight:600">${r[1]}</b></div>`).join('')}
+  <div class="msg info">${ic('info')}<span>Holiday hours are announced 3 days ahead and shown here automatically.</span></div>`;
+ }
+ return `${hdr('Specification',s+' · '+sp.name)}
+ <div class="segc">${[['overview','Overview'],['conditions','Conditions'],['hours','Hours']].map(([k,l])=>`<button class="${tab===k?'on':''}" data-act="spTab" data-v="${k}">${l}</button>`).join('')}</div>
+ <div class="sec" style="padding-top:0">${inner}</div>`}
+
+/* ---- order ticket ---- */
+function ptStep(s){const sp=SY[s];return Math.pow(10,-sp.dig)*(sp.dig>=3?10:1)}
+function validate(){const o=S.ord,s=o.sym,sp=SY[s],a=A(),st=stats(a);const v=[];const f={};
+ if(S.market==='closed')v.push(['err','Market is closed. Orders can only be placed or modified during trading hours.\nMarket opens in '+cd()]);
+ else if(a.access==='close')v.push(['err','Account Status: Close Only\nThis copier account can close or modify positions but cannot open new orders.']);
+ else if(!sp.types.includes(o.type))v.push(['err',`${TYPE_N[o.type]} orders are not acceptable for this instrument`]);
+ else if(sp.dir==='no')v.push(['err','This Instrument Is Non-Tradable']);
+ else if(sp.dir==='close')v.push(['err','New Positions Are Not Accepted For This Instrument']);
+ else if(sp.dir==='long'&&o.side==='sell')v.push(['err','Only Buy Orders Are Accepted For This Instrument']);
+ else if(sp.dir==='short'&&o.side==='buy')v.push(['err','Only Sell Orders Are Accepted For This Instrument']);
+ const mkt=o.side==='buy'?ask(s):P[s].bid;let px=mkt;
+ if(o.type!=='market'){px=+o.price;
+  if(!o.price||isNaN(px))f.price='Enter a price';
+  else if(o.type==='limit'&&o.side==='buy'&&px>=mkt)f.price='Buy limit must be below the current ask ('+fmt(mkt,sp.dig)+')';
+  else if(o.type==='limit'&&o.side==='sell'&&px<=mkt)f.price='Sell limit must be above the current bid ('+fmt(mkt,sp.dig)+')';
+  else if((o.type==='stop'||o.type==='stoplimit')&&o.side==='buy'&&px<=mkt)f.price='Buy stop must be above the current ask ('+fmt(mkt,sp.dig)+')';
+  else if((o.type==='stop'||o.type==='stoplimit')&&o.side==='sell'&&px>=mkt)f.price='Sell stop must be below the current bid ('+fmt(mkt,sp.dig)+')';}
+ if(!(o.vol>=sp.min-1e-9))f.vol=`Minimum ${fmt(sp.min*sp.cs,sp.min*sp.cs<1?1:0)} units`;
+ if(o.slT!=='none'){const x=+o.sl;if(!o.sl)f.sl='Enter a stop loss price';else if(o.side==='buy'&&x>=px)f.sl='Stop loss must be below the entry price';else if(o.side==='sell'&&x<=px)f.sl='Stop loss must be above the entry price';else if(o.slT==='gsl'&&Math.abs(px-x)/Math.pow(10,-sp.dig)<30)f.sl='Guaranteed stop must be at least 30 points away'}
+ if(o.tpT!=='none'){const x=+o.tp;if(!o.tp)f.tp='Enter a take profit price';else if(o.side==='buy'&&x<=px)f.tp='Take profit must be above the entry price';else if(o.side==='sell'&&x>=px)f.tp='Take profit must be below the entry price'}
+ const m=marginOf(s,o.vol||0,px||mkt);const val=(s.startsWith('USD')?(o.vol||0)*sp.cs:(o.vol||0)*sp.cs*(px||mkt));
+ if(!v.length&&m>st.free)v.push(['err',`Insufficient free margin.\nRequired ${money(m)} · available ${money(st.free)}`]);
+ return {v,f,m,val,px,st,ok:!v.length&&!Object.keys(f).length};
+}
+const SLN={none:'None',sl:'Stop Loss',tob:'TOB Stop Loss',gsl:'Guaranteed Stop Loss'},TPN={none:'None',tp:'Take Profit',gtp:'Guaranteed Take Profit'};
+const unitsOf=o=>o.vol*SY[o.sym].cs;
+const fu=(s,u)=>String(Math.round(u*10)/10);
+function scrTicket(){const o=S.ord,s=o.sym,sp=SY[s],a=A(),st=stats(a),p=P[s];const c=(p.bid-p.open)/p.open*100;
+ const prow=(key,label)=>`<div class="tr"><span>${label}</span><div class="stp"><input class="num" data-in="${key}" inputmode="decimal" value="${o[key]}" placeholder="${fmt(o.side==='buy'?ask(s):p.bid,sp.dig)}"><button data-act="pstep" data-v="${key}:-1">−</button><button data-act="pstep" data-v="${key}:1">+</button></div></div><div class="ferr" id="e_${key}" style="text-align:right"></div>`;
+ return `<div class="tkhdr"><button class="ib" data-act="back">${ic('back')}</button><div class="mid" data-act="acctSheet"><b class="num">${a.id} - USD</b> ${a.kind==='Demo'?'<span class="badge b-demo" style="font-size:12px;padding:2px 8px">Demo</span>':a.access==='close'?'<span class="badge b-copy">Copier</span>':'<span class="badge b-live">Live</span>'} ${ic('down','style="width:16px;height:16px;vertical-align:-3px;color:var(--muted)"')}<small class="num">Equity：<span data-live="acc:eqn">${fmt(st.eq)}</span></small></div><span style="width:34px"></span></div>
+ <div style="padding:2px 16px 0" class="row" ><div><b style="font-size:15px">${s}</b> <span class="small" style="color:var(--ink2);margin-left:6px">${sp.name}</span></div></div>
+ <div class="bs"><button class="sell ${o.side==='sell'?'on':''}" data-act="oside" data-v="sell">Sell<b class="num" data-live="bid:${s}">${fmt(p.bid,sp.dig)}</b></button><button class="buy ${o.side==='buy'?'on':''}" data-act="oside" data-v="buy">Buy<b class="num" data-live="ask:${s}">${fmt(ask(s),sp.dig)}</b></button><span class="spd num">${fmt(sp.spread/Math.pow(10,-sp.dig),0)}</span></div>
+ <div class="ohlc num"><div>Open<b>${fmt(p.open,sp.dig)}</b></div><div>Day High<b>${fmt(p.hi,sp.dig)}</b></div><div>Day Low<b>${fmt(p.lo,sp.dig)}</b></div><div>Chg%<b class="${cls(c)}" data-live="chgp:${s}">${c>0?'+':''}${fmt(c,2)}%</b></div></div>
+ <div style="padding:6px 16px 0">
+  <div class="tr"><span>Order Type</span><button class="sel" data-act="otypeSheet">${TYPE_N[o.type]} Order ${ic('chev')}</button></div>
+  ${o.type!=='market'?prow('price','Price'):''}
+  <div class="tr"><span>Units</span><div class="stp"><input class="num" id="volIn" data-in="units" inputmode="decimal" value="${fu(s,unitsOf(o))}"><button data-act="vol" data-v="-1">−</button><button data-act="vol" data-v="1">+</button></div></div><div class="ferr" id="e_vol" style="text-align:right"></div>
+  <div id="calc"></div>
+  <div class="tdiv"></div>
+  <div class="tr"><span>Stop Loss Type <button class="tip" data-act="expl" data-v="slt">${ic('info')}</button></span><button class="sel" data-act="slSheet">${SLN[o.slT]} ${ic('chev')}</button></div>
+  ${S.expl.slt?`<div class="expl">Stop loss closes your position when price moves against you. TOB uses the top-of-book price; guaranteed stops have no slippage but charge a premium.</div>`:''}
+  ${o.slT!=='none'?prow('sl','Price')+'<div id="slCalc"></div>':''}
+  <div class="tdiv"></div>
+  <div class="tr"><span>Take Profit Type <button class="tip" data-act="expl" data-v="tpt">${ic('info')}</button></span><button class="sel" data-act="tpSheet">${TPN[o.tpT]} ${ic('chev')}</button></div>
+  ${S.expl.tpt?`<div class="expl">Take profit closes your position when price reaches your target. A guaranteed take profit fills at the exact level for a premium.</div>`:''}
+  ${o.tpT!=='none'?prow('tp','Price')+'<div id="tpCalc"></div>':''}
+ </div>
+ <div class="tkfoot"><div id="tmsg"></div><button class="btn rd ${o.side}" id="placeBtn" data-act="place">Place Orders</button></div>`}
+function legCalc(r,key,typ){const o=S.ord,s=o.sym,sp=SY[s];const x=+o[key];if(!o[key]||isNaN(x))return '';
+ const pts=Math.abs(r.px-x)/Math.pow(10,-sp.dig);let usd=Math.abs(r.px-x)*o.vol*sp.cs;if(s.endsWith('JPY'))usd/=x;const loss=key==='sl';
+ const prem=typ==='gsl'||typ==='gtp'?o.vol*sp.cs*r.px*0.0002/(s.endsWith('JPY')?r.px:1):0;
+ return `<div class="tr num"><span>Point</span><b>${fmt(pts,0)}</b></div><div class="tr num"><span>USD</span><b class="${loss?'down':'up'}">${loss?'-':'+'}${fmt(usd)}</b></div>${typ==='tob'?'<div class="tr num"><span>TOB Premium</span><b>0.00</b></div>':''}${typ==='gsl'||typ==='gtp'?`<div class="tr num"><span>Guaranteed Premium</span><b>${fmt(prem)}</b></div>`:''}`}
+function refreshTicket(){if(cur()!=='ticket')return;const r=validate(),o=S.ord,s=o.sym;
+ const c=document.getElementById('calc');if(!c)return;
+ const row=(k,l,v,e)=>`<div class="tr num"><span>${l} <button class="tip" data-act="expl" data-v="${k}">${ic('info')}</button></span><b>${v}</b></div>${S.expl[k]?`<div class="expl">${e}</div>`:''}`;
+ c.innerHTML=row('fm','Free Margin',fmt(r.st.free,1),'Equity minus margin already used by open positions.')+row('tv','Est. Trade Value',fmt(r.val),'Units × price, in USD.')+row('mg','Est. Trade Margin',fmt(r.m),'Trade value ÷ leverage (1:'+SY[s].lev+'). Hedged positions only charge the larger side.')+row('lv','Est. Trade Leverage',fmt(r.m?r.val/r.m:0)+'x','Trade value ÷ trade margin.');
+ const sc=document.getElementById('slCalc');if(sc)sc.innerHTML=legCalc(r,'sl',o.slT);
+ const tc=document.getElementById('tpCalc');if(tc)tc.innerHTML=legCalc(r,'tp',o.tpT);
+ ['price','vol','sl','tp'].forEach(k=>{const e=document.getElementById('e_'+k);if(e)e.textContent=r.f[k]||''});
+ document.getElementById('tmsg').innerHTML=r.v.map(([t,m])=>`<div class="msg ${t}" style="margin-top:0">${ic('alert')}<span>${m}</span></div>`).join('');
+ document.getElementById('placeBtn').disabled=!r.ok;
+}
+function scrStatus(){const r=S.orderRes;if(!r)return hdr('Order status');
+ const o=r.o,s=o.sym,sp=SY[s];
+ let head,body,cta;
+ if(r.phase==='submitted'){head=`<div class="spin"></div><h3 style="margin:16px 0 4px">Order request submitted</h3><div class="small muted">Waiting for execution…</div>`;cta='';}
+ else if(r.phase==='rejected'){head=`<div class="dlg" style="padding:0"><div class="big" style="background:var(--err-soft);color:var(--err)">${ic('x')}</div></div><h3 style="margin:4px 0">Order rejected</h3><div class="small" style="color:var(--ink2)">Price changed before execution (requote).<br><b>No order was placed</b> and no margin was used.</div>`;
+   cta=`<button class="btn pri" data-act="retryOrder">Review again</button><button class="btn" style="background:none;margin-top:4px" data-act="done">Done</button>`;}
+ else{const filled=r.phase==='filled';head=`<div class="dlg" style="padding:0"><div class="big" style="background:var(--ok-soft);color:#16794a">${ic('check')}</div></div><h3 style="margin:4px 0">${filled?'Order filled':'Pending order placed'}</h3><div class="small muted">${filled?`${o.side==='buy'?'Bought':'Sold'} ${fv(s,o.vol)} ${volLabel(s)} ${s} at ${fmt(r.fill,sp.dig)}`:`${TYPE_N[o.type]} ${o.side} ${fv(s,o.vol)} ${s} at ${fmt(+o.price,sp.dig)} · waiting for trigger`}</div>`;
+   cta=`<button class="btn pri" data-act="viewResult">${filled?'View position':'View order'}</button><button class="btn" style="background:none;margin-top:4px" data-act="done">Done</button>`;}
+ const steps=[['Submitted',true],[r.phase==='rejected'?'Rejected':r.phase==='pending'?'Accepted · pending':'Filled',r.phase!=='submitted']];
+ return `<div class="hdr"><span style="width:34px"></span><div class="t">Order status</div><span style="width:34px"></span></div>
+ <div class="sec" style="text-align:center;padding-top:30px">${head}
+  <div class="timeline card">${steps.map(([l,d],i)=>`<div class="tl"><span class="dot ${d?(r.phase==='rejected'&&i===1?'':'done'):'todo'}" style="${r.phase==='rejected'&&i===1?'background:var(--err-soft);color:var(--err)':''}">${d?ic(r.phase==='rejected'&&i===1?'x':'check','style="width:12px;height:12px"'):''}</span><span style="flex:1">${l}</span><span class="xs muted num">${d?'09:41:0'+(i+2):'—'}</span></div>`).join('')}</div>
+ </div>${cta?`<div class="sticky">${cta}</div>`:''}`}
+
+
+/* ---- KYC ---- */
+const KOPT={inv:['Under $1,000','$1,000 – $10,000','$10,000 – $50,000','$50,000 – $100,000','Over $100,000'],ccy:['USD','AUD','EUR','GBP','JPY'],acct:['Standard','ProZero','Bespoke'],
+ exp:['I trade CFDs / FX regularly','I have traded shares or funds','I have studied trading but not traded','No experience, and I don’t understand leveraged products'],
+ emp:['Employed','Self-employed','Retired','Student','Unemployed'],src:['Income from employment','Savings','Investments','Inheritance','Business income'],ind:['Finance','Technology','Manufacturing','Healthcare','Education','Other'],
+ occ:['Manager','Professional','Engineer','Sales','Administrative','Other'],inc:['Under $25,000','$25,000 – $50,000','$50,000 – $100,000','Over $100,000'],sav:['Under $10,000','$10,000 – $50,000','$50,000 – $100,000','Over $100,000'],
+ gender:['Female','Male','Prefer not to say'],nat:['Taiwanese','Australian','Chinese','Japanese','Indonesian','Vietnamese','Other'],
+ country:['Australia','China','Indonesia','Vietnam','Taiwan','Japan','South Africa','United States'],state:['Region 1','Region 2','Region 3']};
+const REG=c=>c==='Australia'?'ASIC':c==='South Africa'?'FSCA':'SVG FSA';
+function kstep(n,t){return `<div class="kstep"><div class="n">Step ${n} of 4</div><div class="t">${t}</div><div class="kbar">${[1,2,3,4].map(i=>`<i class="${i<=n?'f':''}"></i>`).join('')}</div></div>`}
+function khdr(t){return `<div class="hdr"><button class="ib" data-act="back">${ic('back')}</button><div class="t">${t}</div><button class="ib" title="Fill sample data" data-act="kfill" style="font-size:11px;width:auto;padding:0 6px;color:var(--brand)">Autofill</button></div>`}
+function kfoot(label,act,dis=false){return `<div class="tkfoot"><button class="btn pri rd" ${dis?'disabled':''} data-act="${act}">${label}</button></div>`}
+function ksel(key,label,opts,extra={}){const v=S.k[key];const bad=S.kerr[key];
+ return `<div class="kf"><label>${label}</label><select class="kin ${v?'':'ph'} ${bad?'bad':''}" data-kin="${key}" ${extra.dis?'disabled':''}>${extra.dis?`<option>${v}</option>`:`<option value="">Please Select</option>${opts.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}`}</select>${bad?`<div class="khelp">${bad}</div>`:''}</div>`}
+function ktxt(key,label,ph,type='text'){const bad=S.kerr[key];return `<div class="kf"><label>${label}</label><input class="kin ${bad?'bad':''}" type="${type}" data-kin="${key}" placeholder="${ph}" value="${S.k[key]||''}">${bad?`<div class="khelp">${bad}</div>`:''}</div>`}
+function scrKycType(){const t=S.k.type;
+ return `${hdr('Account Type')}<div class="kh">Choose your account type</div>
+ ${[['individual','🧑‍💼','Individual Account','Access 2,200+ instruments on our trading platforms, plus free education and multilingual 24/5 support.'],['corporate','🏢','Corporate Account','Open a trading account in the name of your company with all the same benefits.']].map(([k,e,h,p])=>`<div class="kcard ${t===k?'on':''}" data-act="ktype" data-v="${k}"><div class="ill">${e}</div><div style="flex:1"><b style="font-size:14px">${h}</b><p>${p}</p></div>${t===k?`<span class="kcheck">${ic('check')}</span>`:''}</div>`).join('')}
+ <div style="height:220px"></div>${kfoot('Next','ktypeNext')}`}
+function scrKycIntro(){
+ return `${hdr('Identity Verification')}<div class="kh" style="text-align:center;font-size:20px">Start trading in 3 simple steps</div>
+ <div class="kbanner">${[['🔐','Verify Account'],['💳','Deposit Funds'],['📈','Start Trading']].map(([e,l],i)=>`<div><span class="knum">${i+1}</span><span class="em">${e}</span>${l}</div>`).join('')}</div>
+ <div class="kproc"><h5>Regular Process</h5><div class="sub">24 business hours to process your application.</div><div style="font-weight:600">It’s required</div>
+  <b>1. Government-issued ID check</b><p>Images of your valid identity document to confirm its authenticity.</p>
+  <b>2. Manual filling of personal details</b><p>More time to fill your personal details manually.</p></div>
+ <div class="legal"><b>Regulator for your application: ${REG(S.k.country)}</b> (Country of residence: ${S.k.country}).<br><br>RISK WARNING: Foreign exchange and derivatives trading carries significant risk and is not suitable for all investors. You do not own, or have any interest in, the underlying assets. Before you trade, consider your objectives, risk tolerance and experience, and seek independent advice if needed. Key Information Statements and Terms are available on request.</div>
+ ${kfoot('Start','kgo" data-v="kycTrade')}`}
+function scrKycTrade(){
+ return `${khdr('Trading & Employment')}${kstep(1,'Trading & Employment')}
+ <div class="kh" style="font-size:17px">Trading Preferences</div>
+ ${ksel('inv','Total Amount of Investments',KOPT.inv)}${ksel('plat','Trading Platform',[], {dis:1})}${ksel('ccy','Funding Currency',KOPT.ccy)}${ksel('lev','Leverage Type',[],{dis:1})}${ksel('acct','Account Type',KOPT.acct)}${ksel('exp','Trading Experience',KOPT.exp)}
+ <div class="kh" style="font-size:17px;margin-top:20px">Employment Information</div>
+ ${ksel('emp','Employment Status',KOPT.emp)}${ksel('ind','Industry',KOPT.ind)}${ksel('occ','Occupation',KOPT.occ)}${ksel('inc','Annual Income',KOPT.inc)}${ksel('sav','Savings',KOPT.sav)}${ksel('src','Primary Source of Trading Funds',KOPT.src)}
+ ${kfoot('Next','kNext1')}`}
+function scrKycPersonal(){S.k.countryP=S.k.country;
+ return `${khdr('Personal Information')}${kstep(2,'Personal Information')}
+ ${ktxt('fn','First Name','As shown on your ID')}${ktxt('ln','Last Name','As shown on your ID')}${ktxt('mn','Middle Name (Optional)','')}
+ ${ksel('gender','Gender',KOPT.gender)}${ktxt('dob','Date of Birth','yyyy/mm/dd','date')}
+ <div class="kf"><label>Mobile Number</label><div style="display:flex;gap:8px"><select class="kin" style="width:96px" data-kin="cc">${['+886','+61','+86','+81','+62','+84','+27','+1'].map(c=>`<option ${c===S.k.cc?'selected':''}>${c}</option>`).join('')}</select><input class="kin" data-kin="mob" value="${S.k.mob}"></div></div>
+ ${ksel('nat','Nationality',KOPT.nat)}${ktxt('pid','Photo ID Number','As seen on your ID documents')}
+ ${ksel('countryP','Country of Residence',KOPT.country).replace('data-kin="countryP"','data-kin="countryP"').replace(/<option ([^>]*)>(.*?)<\/option>/g,(m,a,o)=>`<option ${o===S.k.country?'selected':''}>${o}</option>`).replace('<option >Please Select</option>','')}
+ ${ksel('state','State',KOPT.state)}${ktxt('city','City','Enter your city')}${ktxt('zip','Zip','Enter your zip code')}${ktxt('addr','Residential Address','Street name/number of address')}
+ ${kfoot('Next','kNext2')}`}
+function scrKycTerms(){const t=S.k.terms;const all=t.every(x=>x);
+ const docs=['Key Information Statement','Client Terms and Conditions','Privacy Policy Statement','Market Manipulation Warning','Swap Free Account Details'];
+ const sec=[['Understand Risk','Trading CFDs carries significant risk and is not suitable for all investors. You may lose more than you invest and you do not own the underlying asset.'],['We do not provide personal advice','Information we provide is general and does not consider your objectives, financial situation or needs.'],['Leverage','A small margin controls a larger position. Gains and losses are calculated on the full position size.'],['Market volatility & slippage','Prices can move quickly and gap. Orders may be executed at a different price from the one requested.'],['Liquidation risk','If your margin level falls below the stop-out level, open positions may be closed automatically.'],['Counterparty risk','When you trade OTC derivatives, we are the counterparty to your trades, not an exchange.'],['Dispute resolution','Contact our Dispute Resolution Team first. If unresolved, you may refer the matter to the external dispute scheme for your region.']];
+ return `${khdr('Terms and Conditions')}${kstep(3,'Terms and Conditions')}
+ <div class="kh" style="margin-bottom:6px">Terms and Conditions</div>
+ <div class="msg info" style="margin:0 16px 8px">Please confirm you have read and accept our Terms and Conditions before moving on to the next step.</div>
+ <div class="legal">${sec.map(([h,p],i)=>`<h6>${i+1}. ${h}</h6>${p}`).join('')}<h6>Regulator</h6>Your application will be handled under ${REG(S.k.country)} based on your country of residence (${S.k.country}).</div>
+ <div style="margin:14px 16px 4px">${docs.map((d,i)=>`<div class="check" data-act="kterm" data-v="${i}" style="margin:10px 0"><span class="cb ${t[i]?'on':''}" style="border-radius:4px">${t[i]?ic('check'):''}</span><span>I have read the <u style="color:var(--brand)">${d}</u></span></div>`).join('')}</div>
+ ${!all?'<div class="xs muted" style="text-align:center">Tick all 5 documents to continue</div>':''}
+ ${kfoot('Next','kNext3',!all)}`}
+function kupBox(side){const st=S.k[side];const lbl=side==='front'?'ID Front':'ID Back';
+ let inner;
+ if(st==='err')inner=`<div style="padding:14px 0;color:#b9bfcb">${ic('alert','class="big" style="width:46px;height:46px;stroke-width:1.2"')}</div></div><div class="khelp" style="text-align:center;margin:0 16px">Failed to upload image; the format is not supported</div><div style="text-align:center"><button class="obtn" data-act="kpick" data-v="${side}">Choose Different File</button>`;
+ else if(st==='uploading')inner=`<div class="small" style="margin:10px 0">Uploading…</div><div class="kprog" style="width:70%"><i style="animation-duration:1s"></i></div></div><div>`;
+ else if(st==='ok')inner=`<button class="idx" data-act="kdel" data-v="${side}">${ic('x')}</button><div class="idimg"></div></div><div style="text-align:center"><button class="obtn" data-act="kpick" data-v="${side}">Choose Different File</button>`;
+ else inner=`${ic('deposit','class="big" style="transform:rotate(180deg)"')}<div style="margin:6px 0 2px">Drivers Licence / Passport / Photo ID</div><button class="obtn" data-act="kpick" data-v="${side}">Choose File</button><div class="lim">Upload File<br>MAX LIMIT 5 MB · JPG, PNG, PDF</div></div><div>`;
+ return `<div class="kf" style="margin-bottom:4px"><label>${lbl} <span style="color:var(--err)">*</span></label></div><div class="kup" style="${st==='ok'||st==='err'?'border-color:transparent':''}">${inner}</div><div style="height:14px"></div>`}
+function scrKycId(){const ok=S.k.front==='ok'&&S.k.back==='ok';
+ return `${hdr('Confirm ID')}${kstep(4,'Confirm ID')}${S.kyc==='action'?`<div class="msg err" style="margin:0 16px 12px">${ic('alert')}<span>Your previous ID front image was unclear. Please upload a new photo.</span></div>`:''}${kupBox('front')}${kupBox('back')}${kfoot('Next','kSubmit',!ok)}`}
+function scrKycDone(){return `<div class="hdr"><div class="t">Application Complete</div></div><div style="height:250px"></div><div style="text-align:center"><b style="font-size:16px">Application submitted</b><div class="small muted">Taking you back to Home…</div><div class="kprog"><i></i></div></div>`}
+/* ---- portfolio ---- */
+function scrPortfolio(){const a=A(),st=stats(a);const sg=S.psg;
+ let list='';
+ if(S.data==='loading')list=skelRows(4);
+ else if(S.data==='error')list=errState('Couldn’t load your '+(sg==='history'?'history':'positions'),'Connection to trading server timed out (code 504). Your positions are not affected.');
+ else{
+  if(sg==='open'){let ps=[...a.pos];if(S.sort){const k=S.sort.k,d=S.sort.d==='desc'?-1:1;ps.sort((x,y)=>{const f={pnl:pnl,sym:p=>p.s,vol:p=>p.vol,created:p=>p.id}[k];const X=f(x),Y=f(y);return (X>Y?1:X<Y?-1:0)*d})}
+   list=(S.data==='empty'||!ps.length)?`<div class="empty"><div class="ic">${ic('portfolio')}</div><b>No open positions</b><div class="small">When you place a market order, it appears here with live P&amp;L.</div><button class="btn out" style="width:auto;padding:8px 18px;margin-top:12px" data-act="tab" data-v="quotes">Explore markets</button></div>`:
+   ps.map(p=>`<div class="li" data-act="openPos" data-v="${p.id}"><div style="flex:1"><div><span class="sym">${p.s}</span> ${sideTag(p.side)}</div><div class="xs muted num">${fv(p.s,p.vol)} ${volLabel(p.s)} · ${fmt(p.open,SY[p.s].dig)} → <span data-live="${p.side==='buy'?'bid':'ask'}:${p.s}">${fmt(p.side==='buy'?P[p.s].bid:ask(p.s),SY[p.s].dig)}</span></div></div><b class="num ${cls(pnl(p))}" data-live="pnl:${p.id}">${money(pnl(p),true)}</b></div>`).join('');}
+  else if(sg==='pending'){list=(S.data==='empty'||!a.ord.length)?`<div class="empty"><div class="ic">${ic('history')}</div><b>No pending orders</b><div class="small">Limit and stop orders waiting to trigger will show here.</div></div>`:
+   a.ord.map(o=>`<div class="li" data-act="openOrd" data-v="${o.id}"><div style="flex:1"><div><span class="sym">${o.s}</span> ${sideTag(o.side)} <span class="badge b-mute">${TYPE_N[o.type]}</span></div><div class="xs muted num">${fv(o.s,o.vol)} ${volLabel(o.s)} at ${fmt(o.price,SY[o.s].dig)} · now <span data-live="bid:${o.s}">${fmt(P[o.s].bid,SY[o.s].dig)}</span></div></div><span class="xs muted">${o.t}</span></div>`).join('');}
+  else{list=(S.data==='empty'||!a.hist.length)?`<div class="empty"><div class="ic">${ic('history')}</div><b>No closed trades yet</b><div class="small">Closed positions, dividends and adjustments appear here.</div></div>`:
+   `<div class="chips" style="padding:0 16px 6px"><span class="chip on">Last 30 days</span><span class="chip">Trades</span><span class="chip">Dividends</span><span class="chip">Journal</span></div>`+a.hist.map(h=>h.kind==='div'?`<div class="li"><div style="flex:1"><div><span class="sym">${h.s}</span> <span class="badge b-copy">Dividend</span></div><div class="xs muted">Cash adjustment · ${h.t}</div></div><div style="text-align:right"><b class="num up">${money(h.pnl,true)}</b><div class="xs muted">${h.ccy}</div></div></div>`:
+   `<div class="li"><div style="flex:1"><div><span class="sym">${h.s}</span> ${sideTag(h.side)}</div><div class="xs muted num">${fv(h.s,h.vol)} ${volLabel(h.s)} · ${fmt(h.open,SY[h.s].dig)} → ${fmt(h.close,SY[h.s].dig)} · ${h.t}</div></div><div style="text-align:right"><b class="num ${cls(h.pnl)}">${money(h.pnl,true)}</b><div class="xs muted">${h.ccy}</div></div></div>`).join('');}
+ }
+ return `<div class="hdr" style="justify-content:space-between">${acctPill()}<button class="ib" data-act="sortSheet">${ic('sort')}</button></div>
+ ${modebar()}
+ <div class="sec" style="padding-top:0">
+  <div class="card">
+   <div class="small muted">Equity (USD)</div><div style="font-size:24px;font-weight:700" class="num" data-live="acc:eq">${money(st.eq)}</div>
+   <div class="metrics num" style="grid-template-columns:1fr 1fr 1fr">
+    <div>Net P&amp;L<b data-live="acc:up" class="${cls(st.up)}">${money(st.up,true)}</b></div>
+    <div>Free margin<b data-live="acc:free">${money(st.free)}</b></div>
+    <div>Margin level<b data-live="acc:lvl">${st.level?fmt(st.level,0)+'%':'—'}</b></div>
+   </div>
+   <div style="border-top:1px solid var(--line);margin-top:10px;padding-top:8px;cursor:pointer" class="row small" data-act="acctDetails"><span class="muted">Account details</span>${ic(S.acctOpen?'down':'chev','class="chev"')}</div>
+   ${S.acctOpen?`<div class="num">${[['Balance',money(a.bal)],['Credit',money(a.credit)],['Used margin',money(st.used)],['Leverage','1 : 500'],['Account type',a.plan]].map(r=>`<div class="kv"><span>${r[0]}</span><b style="font-weight:600">${r[1]}</b></div>`).join('')}<div class="xs muted" style="padding:4px 0">Deposits &amp; withdrawals are in Account Center.</div></div>`:''}
+  </div>
+  ${(()=>{const act=S.copies.filter(c=>c.status!=='ended');return act.length?`<div class="card" style="margin-top:10px;display:flex;gap:10px;align-items:center;cursor:pointer" data-act="goMyCopy"><div class="av" style="background:#e9f3ff;color:#245fae">${ic('users','style="width:18px;height:18px"')}</div><div style="flex:1"><b style="font-size:13px">My Copy Trading</b><div class="xs muted">${act.filter(c=>c.status==='copying').length} copying · ${act.filter(c=>c.status==='paused').length} paused · ${money(act.reduce((t,c)=>t+c.bal,0))} allocated</div></div>${ic('chev','class="chev"')}</div>`:''})()}
+ </div>
+ <div class="segc">${[['open','Open · '+a.pos.length],['pending','Pending · '+a.ord.length],['history','History']].map(([k,l])=>`<button class="${sg===k?'on':''}" data-act="psg" data-v="${k}">${l}</button>`).join('')}</div>
+ ${S.sort&&sg==='open'?`<div style="padding:0 16px 6px"><span class="chip on" data-act="clearSort" style="cursor:pointer">Sorted: ${{pnl:'Net P&L',sym:'Symbol',vol:'Volume',created:'Created'}[S.sort.k]} ${S.sort.d==='desc'?'↓':'↑'} ✕</span></div>`:''}
+ <div class="${S.sys==='offline'?'stale':''}">${list}</div><div style="height:20px"></div>`}
+
+function scrPosition(){const a=A();const p=a.pos.find(x=>x.id===S.posId);if(!p)return hdr('Position')+'<div class="empty">Position closed.</div>';
+ const sp=SY[p.s];const closed=S.market==='closed';const now=p.side==='buy'?P[p.s].bid:ask(p.s);
+ return `${hdr(p.s+' · '+(p.side==='buy'?'Buy':'Sell'),'Position #'+p.id.slice(1)+'7241')}
+ ${modebar()}
+ <div class="sec" style="padding-top:0">
+  <div class="card" style="text-align:center"><div class="small muted">Unrealized P&amp;L</div><div style="font-size:26px;font-weight:700" class="num ${cls(pnl(p))}" data-live="pnl:${p.id}">${money(pnl(p),true)}</div>
+   <div class="xs muted num">${fmt(p.open,sp.dig)} → <span data-live="${p.side==='buy'?'bid':'ask'}:${p.s}">${fmt(now,sp.dig)}</span></div></div>
+  <div class="num" style="margin-top:8px">${[['Volume',fv(p.s,p.vol)+' '+volLabel(p.s)],['Entry price',fmt(p.open,sp.dig)],['Used margin',money(marginOf(p.s,p.vol,p.open))],['Opened',p.t+' (GMT+8)']].map(r=>`<div class="kv"><span>${r[0]}</span><b style="font-weight:600">${r[1]}</b></div>`).join('')}</div>
+  <div class="sec-t"><b>Protect this position</b></div>
+  <div class="row" style="gap:10px"><div class="field" style="flex:1;margin:0"><label>Stop loss</label><input class="inp num" data-in="psl" value="${p.sl}" placeholder="None" ${closed?'disabled':''}></div><div class="field" style="flex:1;margin:0"><label>Take profit</label><input class="inp num" data-in="ptp" value="${p.tp}" placeholder="None" ${closed?'disabled':''}></div></div>
+  ${closed?`<div class="msg warn">${ic('lock')}<span>Market is closed. Orders can only be placed or modified during trading hours.\nMarket opens in <span data-live="cd" class="num">${cd()}</span></span></div>`:''}
+ </div>
+ <div class="sticky" style="display:flex;gap:8px"><button class="btn out" ${closed?'disabled':''} data-act="saveSLTP">Save SL / TP</button><button class="btn danger" ${closed?'disabled':''} data-act="closeSheet">Close position</button></div>`}
+
+/* ---- copy trading ---- */
+function riskBar(r){const c=r<=2?'lo':r>=5?'hi':'';return `<span class="risk ${c}">${[1,2,3,4,5,6,7].map(i=>`<i class="${i<=r?'f':''}"></i>`).join('')}</span>`}
+function scrSignalsInner(){let list=[...SIG];const f=S.sigFilter;if(f==='low')list=list.filter(x=>x.mdd<10);if(f==='ret')list.sort((a,b)=>b.ret['3M']-a.ret['3M']);if(f==='cop')list.sort((a,b)=>b.copiers-a.copiers);
+ return `<div style="padding:0 16px">
+  <div class="msg info" style="margin-top:0">${ic('info')}<span>Past performance does not guarantee future results. Copying can lose money.</span></div>
+  <div class="chips" style="margin-bottom:10px">${[['all','All'],['ret','Top return (3M)'],['cop','Most copied'],['low','Low drawdown']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-act="sigf" data-v="${k}">${l}</button>`).join('')}</div>
+  ${list.map(x=>`<div class="sigcard" data-act="openSig" data-v="${x.id}"><div class="row"><div class="row" style="gap:10px"><div class="av" style="background:var(--brand-soft);color:var(--brand)">${x.ab}</div><div><b>${x.name}</b><div class="xs muted">${x.style}</div></div></div><div style="text-align:right"><b class="num ${cls(x.ret['3M'])}">${x.ret['3M']>0?'+':''}${x.ret['3M']}%</b><div class="xs muted">3M return</div></div></div>
+   <div class="row xs muted" style="margin-top:10px"><span>MDD ${x.mdd}%</span><span>${fmt(x.copiers,0)} copiers</span><span>Min $${x.min}</span></div></div>`).join('')}
+ </div>`}
+function scrSignals(){const seg=S.ctSeg;
+ return `<div class="hdr" style="justify-content:space-between">${acctPill()}<div style="display:flex;gap:2px"><button class="ib" data-act="quick" data-v="support">${ic('chatuser')}</button><button class="ib" data-act="go" data-v="search">${ic('search')}</button></div></div>
+ <div class="segc">${[['signals','Signals'],['mine','My Copy Trading']].map(([k,l])=>`<button class="${seg===k?'on':''}" data-act="ctSeg" data-v="${k}">${l}</button>`).join('')}</div>
+ ${seg==='signals'?scrSignalsInner():scrMyCopy()}`}
+function scrMyCopy(){const list=S.copies;
+ const head=`<div class="xs" style="color:var(--ink2);padding:0 16px 12px;line-height:1.55">Last updated: 2026-11-25 09:37:32. Updates on refresh.<br>Copy trading accounts with no trading activity or billing transaction for 3 consecutive months will be automatically unsubscribed. You can re-subscribe at any time.</div><div style="height:8px;background:#f4f5f7"></div>`;
+ if(S.data==='loading')return head+skelRows(3);
+ if(S.data==='error')return head+errState('Couldn’t load your copy trading','Copy service timed out (code 504). Your copied positions are not affected.');
+ if(S.data==='empty'||!list.length)return head+`<div class="empty"><div class="ic">${ic('users')}</div><b>You’re not copying anyone yet</b><div class="small">Browse signals and start copying a strategy.</div><button class="btn out" style="width:auto;padding:8px 18px;margin-top:12px" data-act="ctSeg" data-v="signals">Browse signals</button></div>`;
+ const ST={copying:['Copying','#e8f7ee','#16794a','check'],paused:['Paused','#eef0f3','#4a5568','pause'],ended:['Copy Ended','#fdecec','#c53030','x']};
+ return head+`<div style="padding:12px 16px 20px">${list.map(c=>{const x=SIG.find(s=>s.id===c.sig);const [lab,bg,fg,ico]=ST[c.status];const ended=c.status==='ended';
+  return `<div class="cpc ${ended?'ended':''}"><div class="cpst" style="background:${bg};color:${fg}">${ic(ico,'style="width:13px;height:13px"')} ${lab}</div>
+   <div style="padding:12px 12px 4px"><div class="row" style="justify-content:flex-start;gap:10px"><div class="av" style="width:38px;height:38px;background:var(--brand-soft);color:var(--brand)">${x.ab}</div><div style="flex:1"><div class="xs muted">${x.name}</div><b style="font-size:15px">${c.name}</b></div>${ended?'':`<button class="cfgbtn" title="Copy settings" data-act="cpCfg" data-v="${c.id}">${ic('sliders')}</button>`}</div>
+   <div class="feestrip"><span>Sub. Fee <b>$${x.sub}/Mo</b></span><span>Perf. Fee <b>${x.fee}%/Mo</b></span></div>
+   <div class="cpg num"><div><span>Stop-Loss</span>${c.sl?'$'+fmt(c.sl,0):'—'}</div><div><span>Trade Size</span>${c.type==='exact'?'1:1':'Scaled'} × ${fmt(c.mult,2)}</div><div><span>Margin Call Level</span>${c.mcl}%</div>
+   <div><span>Accumulated P&amp;L</span><b class="${cls(c.pnl)}" style="font-weight:600">${money(c.pnl)}</b></div><div><span>Highwatermark <button class="tip" data-act="expl" data-v="hwm">${ic('info')}</button></span>${c.hwm?'$'+fmt(c.hwm,0):'--'}</div><div><span>Next Billing Day</span>${c.next}</div></div>
+   ${S.expl.hwm?`<div class="expl">High-water mark: performance fees are only charged on profits above the highest equity this copy has reached.</div>`:''}
+   ${ended?`<div style="display:flex;gap:8px;margin:12px 0 8px"><button class="btn pri rd" style="padding:10px" data-act="openSig" data-v="${x.id}">Copy again</button></div><div class="cpacts"><button data-act="cpAnalysis" data-v="${x.id}">${ic('quotes')}Analysis</button><button data-act="cpBilling" data-v="${c.id}">${ic('doc')}Billing</button></div>`:
+   `<div style="display:flex;gap:8px;margin:12px 0 8px"><button class="btn pri rd" style="padding:10px" data-act="cpAdd" data-v="${c.id}">Add Funds</button><button class="kebab" data-act="cpMenu" data-v="${c.id}">⋮</button></div>
+   <div class="cpacts"><button data-act="cpAnalysis" data-v="${x.id}">${ic('quotes')}Analysis</button><button data-act="cpBilling" data-v="${c.id}">${ic('doc')}Billing</button>${c.status==='paused'?`<button data-act="cpResume" data-v="${c.id}" style="color:var(--brand)">${ic('play')}Resume</button>`:`<button data-act="cpPause" data-v="${c.id}">${ic('pause')}Pause</button>`}</div>`}
+   </div></div>`}).join('')}</div>`}
+function scrCtBilling(){const c=S.copies.find(x=>x.id===S.cpId)||S.copies[0];const x=SIG.find(s=>s.id===c.sig);const tab=S.bill;
+ const orders=[['9b40cc13','2026-11-14 14:29:05',x.sub?-x.sub:0,'Subscription Fee'],['1234a412','2026-10-14 14:29:05',x.sub?-x.sub:0,'Subscription Fee']];
+ const perf=c.pnl>0?[['7f21de09','2026-11-01 00:05:12',-(c.pnl*x.fee/100),'Performance Fee']]:[];
+ const rows=tab==='sub'?(x.sub?orders:[]):perf;
+ return `${hdr('Billing')}<div class="sec" style="padding-top:0">
+  <div class="sec-t"><b>Subscription</b></div>
+  <div class="card num" style="padding:4px 14px"><div class="small" style="font-weight:600;padding:8px 0 2px">${x.name} · ${c.name}</div>${[['Subscribe Date','2026-05-14'],['Subscription Fee','$'+x.sub],['Performance Fee',x.fee+'%'],['Next Billing Day',c.next],['Auto Renewal',c.status==='ended'?'<span style="color:var(--err)">Disabled</span>':'Enabled']].map(r=>`<div class="kv"><span>${r[0]}</span><b style="font-weight:500">${r[1]}</b></div>`).join('')}</div>
+  <div class="sec-t" style="margin-top:18px"><b>Billing</b><button class="ib" data-act="toast" data-v="${rows.length?'Billing records exported (CSV)':'Nothing to export · no billing records available'}">${ic('doc')}</button></div>
+  <div class="chips" style="margin-bottom:8px">${[['sub','Subscription'],['perf','Performance']].map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="billTab" data-v="${k}">${l}</button>`).join('')}</div>
+  ${rows.length?rows.map(([id,t,amt,typ])=>`<div class="card num" style="padding:4px 14px;margin-bottom:8px"><div class="kv"><b>Order ID ${id}</b><b style="font-weight:600">${money(amt)}</b></div>${[['Time',t],['Signal',c.name],['Type',typ],['Paid from','Copier account '+c.acct]].map(r=>`<div class="kv"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}</div>`).join(''):`<div class="card" style="text-align:center;color:var(--muted);padding:26px">No billings</div>`}
+ </div>`}
+
+function scrSignal(){const x=SIG.find(s=>s.id===S.sig);const per=S.sigPer;const r=x.ret[per];
+ return `${hdr(x.name,'Signal provider since '+x.since)}
+ <div class="sec" style="padding-top:0">
+  <div class="row"><div class="row" style="gap:10px"><div class="av" style="width:44px;height:44px;background:var(--brand-soft);color:var(--brand)">${x.ab}</div><div><div class="small">${x.style}</div><div class="xs muted">${fmt(x.copiers,0)} copiers · balance $${fmt(x.bal)}</div></div></div></div>
+  <div class="chips" style="margin:14px 0 4px">${['1M','3M','6M'].map(p=>`<button class="chip ${per===p?'on':''}" data-act="sigPer" data-v="${p}">${p}</button>`).join('')}<span class="xs muted" style="align-self:center;margin-left:auto">Updated today 08:00</span></div>
+  <canvas id="eqc" height="120"></canvas>
+  <div class="num">
+   ${tipRow('sret','Return ('+per+')',`<span class="${cls(r)}">${r>0?'+':''}${r}%</span>`,'Time-weighted return of the signal account over the selected period, after spreads and swaps, before your performance fee. Deposits and withdrawals are excluded.')}
+   ${tipRow('smdd','Max drawdown',x.mdd+'%','Largest peak-to-trough fall in equity in the period. If you had copied at the worst moment, this is how much of your allocation you could have seen drop.')}
+   ${tipRow('swin','Win rate',x.win+'%','Share of closed trades that made money. A high win rate can still lose overall if losses are larger than wins.')}
+   ${tipRow('sfee','Performance fee',x.fee+'% of new profits','Charged monthly only on profits above your previous high (high-water mark). No fee in losing months.')}
+  </div>
+  <div class="msg warn">${ic('alert')}<span>Copied trades open automatically on your account and use your margin. You can lose some or all of the amount you allocate.</span></div>
+ </div>
+ <div class="sticky"><button class="btn pri" data-act="copySetup">Copy</button></div>`}
+function scrCopySetup(){const x=SIG.find(s=>s.id===S.sig);const c=S.copy;const from=ACC[c.from];const st=stats(from);
+ const amt=+c.amt||0;
+ const amtErr=!c.amt?'':amt<x.min?`At least ${x.min} USD`:amt>st.free?'Insufficient free margin in this account':'';
+ const ratio=amt/x.bal;
+ const size=!amt||amtErr?'--':c.mode==='smart'?`×${fmt(ratio,2)} of signal lots`:'Same lots as signal';
+ const slOk=c.sl===''||(+c.sl>0&&+c.sl<amt);
+ const ok=amt&&!amtErr&&slOk&&from.access!=='close';
+ const types={smart:['Smart Scaling','Automatically scales copied trades to match your account size.'],exact:['Exact Copy','Copies the exact same lot size as the signal provider.']};
+ const coins=n=>`<div class="coins">${Array.from({length:n},()=>'<i></i>').join('')}</div>`;
+ const info=c.info?`<div class="ctinfo">${['smart','exact'].map(k=>`<div><b>${types[k][0]}</b><p>${types[k][1]}</p><div class="ctill"><div><span class="small"><b class="num">1</b> Lot Gold</span>${coins(10)}<span class="xs muted">Signal<br>$3,000</span></div><div><span class="small"><b class="num">${k==='smart'?'0.1':'1'}</b> Lot Gold</span>${coins(k==='smart'?1:10)}<span class="xs muted">Your balance<br>$300</span></div></div></div>`).join('')}</div>`:'';
+ return `<div class="hdr"><div class="t" style="text-align:left;font-size:19px;font-weight:700;padding-left:4px">Copy Signal</div><button class="ib" data-act="back">${ic('x')}</button></div>
+ <div class="sec" style="padding-top:0">
+  <div class="row" style="justify-content:flex-start;gap:12px;margin-bottom:14px"><div class="av" style="width:48px;height:48px;font-size:14px;background:#fde4dc;color:#b4533a">${x.ab}</div><div><b style="font-size:16px">${x.strat}</b><div class="small muted num">Signal Balance: ${fmt(x.bal)} USD</div></div></div>
+
+  <div class="flabel">Copy Type <button class="tip" data-act="cinfo">${ic('info')}</button></div>
+  ${info}
+  <div class="dd" data-act="cdd"><span>${types[c.mode][0]}</span>${ic(c.dd?'up':'down','class="chev"')}</div>
+  ${c.dd?`<div class="ddlist">${['smart','exact'].map(k=>`<div data-act="cmode" data-v="${k}" class="${c.mode===k?'on':''}">${types[k][0]}</div>`).join('')}</div>`:''}
+
+  <div class="flabel" style="margin-top:14px">Amount</div>
+  <div class="dd" style="cursor:text"><input class="ddin num" data-in="camt" inputmode="decimal" placeholder="At least ${x.min}" value="${c.amt}"><span class="small muted">USD</span></div>
+  <div class="ferr">${amtErr}</div>
+
+  <div class="flabel" style="margin-top:10px">From <button class="tip" data-act="expl" data-v="cfrom">${ic('info')}</button></div>
+  ${S.expl.cfrom?`<div class="expl">Funds are moved from this trading account into a new copier account. Copied trades only use the copier account’s balance.</div>`:''}
+  <div class="row" style="gap:10px"><div class="dd" style="flex:1" data-act="cfromdd"><span class="num" style="font-size:13px">${from.id} · ${from.kind} | ${fmt(st.free)} USD</span>${ic('down','class="chev"')}</div><a class="link" data-act="quick" data-v="deposit">Deposit</a></div>
+  ${c.fdd?`<div class="ddlist">${['live','demo'].map(k=>`<div data-act="cfrom" data-v="${k}" class="${c.from===k?'on':''} num">${ACC[k].id} · ${ACC[k].kind} | ${fmt(stats(ACC[k]).free)} USD</div>`).join('')}</div>`:''}
+
+  <div class="row" style="margin-top:18px"><b style="font-size:15px">Customized Stop-Loss</b><a class="link" style="color:var(--muted)" data-act="csl">${c.slEdit?'Done':'Edit'}</a></div>
+  <div class="small" style="color:var(--ink2);margin-top:4px">Unsubscribe and close all positions if equity drops below: ${c.slEdit?'':`<span class="dotted num">${c.sl?fmt(+c.sl)+' USD':'-- USD'}</span>`}</div>
+  ${c.slEdit?`<div class="dd" style="margin-top:6px;cursor:text"><input class="ddin num" data-in="csl" inputmode="decimal" placeholder="e.g. ${amt?fmt(amt*.7,0):'700'}" value="${c.sl}"><span class="small muted">USD</span></div>`:''}
+  ${!slOk?`<div class="ferr">Stop-loss must be lower than the amount you copy.</div>`:''}
+
+  <div style="font-size:15px;font-weight:700;margin:20px 0 8px">Copier Account Overview After Copy</div>
+  <div class="ovgrid num">
+   <div><span>Balance</span>${amt&&!amtErr?fmt(amt):'--'} USD</div>
+   <div><span>Trade Size</span>${size}</div>
+   <div><span>Leverage</span>1:500</div>
+   <div><span>Stop-Loss</span>${c.sl?fmt(+c.sl):'--'} USD</div>
+   <div><span>Margin Call Level</span>100% of used margin</div>
+   <div><span>Subscription Fee</span>$0 USD / month</div>
+  </div>
+  <div class="xs muted" style="margin-top:10px">Performance fee ${x.fee}% of new profits. Past performance does not guarantee future results.</div>
+ </div>
+ <div class="sticky"><button class="btn pri" style="border-radius:999px" ${ok?'':'disabled'} data-act="confirmCopy">Copy Now</button></div>`}
+
+/* ---- settings ---- */
+function setRow(label,sub,right,act='',v=''){return `<div class="li" ${act?`data-act="${act}" data-v="${v}"`:''}><div style="flex:1"><div style="font-size:14.5px">${label}</div>${sub?`<div class="xs muted">${sub}</div>`:''}</div>${right}</div>`}
+function sgrp(title,rows){return `<div class="sg-t">${title}</div><div class="sg">${rows}</div>`}
+function scrSettings(){const chev=ic('chev','class="chev"');const live=S.persona==='client';const a=A();const demo=a.kind==='Demo';
+ return `<div class="sethero">
+  <div class="setav">BC</div>
+  <div style="font-size:21px;font-weight:700;margin-top:12px">${live?'Bella Chen':'bella.chen@mail.com'}</div>
+  <div class="actpill"><i style="background:${demo?'var(--brand)':'#16a05a'}"></i>${a.access==='close'?'Copier Account Active':demo?'Demo Account Active':'Live Account Active'}</div>
+  <button class="swbtn" data-act="swAcct">${ic('swap')}Switch to ${demo?'Live':'Demo'} Account</button>
+ </div>
+ <div class="setbody">
+ ${sgrp('Account',setRow('Account Center','',chev,'toast','Opens Account Center in a secure web view')+setRow('Payment Methods','',chev,'toast','Payment methods are managed in Account Center')+setRow('Live Account','',chev,live?'acctSheet':'toast',live?'':'Complete your live account application to unlock')+setRow('Demo Account','',chev,'acctSheet'))}
+ ${sgrp('Profile &amp; Preferences',setRow('User Information','',chev,'go','userinfo')+setRow('System Settings','',chev,'go','sysset'))}
+ ${sgrp('Support',setRow('Help &amp; Support','',chev,'quick','support'))}
+ ${sgrp('Legal',setRow('Disclaimer','',chev,'toast','Disclaimer')+setRow('Legal Documents','',chev,'toast','Legal documents')+setRow('Privacy Policy','',chev,'toast','Privacy policy'))}
+ <div style="text-align:center;padding:26px 0 6px"><button style="border:0;background:none;color:#e0302f;font-size:17px;font-weight:600" data-act="toast" data-v="Logged out (prototype)">Logout</button></div>
+ <div class="xs muted" style="text-align:center;padding:0 0 30px">Version 1.0.201 (179488385)</div>
+ </div>`}
+function scrSysSet(){const chev=ic('chev','class="chev"');
+ return `${hdr('System Settings')}<div class="setbody" style="padding-top:6px">
+ ${sgrp('General',setRow('Language','English',chev,'toast','English · 简体中文 · 繁體中文 · العربية (RTL)')+setRow('Price colours',S.color==='tw'?'Red up · green down (Taiwan)':'Green up · red down (International)',`<button class="toggle ${S.color==='tw'?'on':''}" data-act="color"></button>`))}
+ ${sgrp('Security',setRow('Biometric Login','Enabled','<button class="toggle on"></button>')+setRow('OTP Security Check','Not configured',chev,'toast','OTP setup'))}
+ ${sgrp('Trading',setRow('One Click Trading',S.oneClick?'On · '+S.ocVol+' lot per tap':'Send orders without the review step',`<button class="toggle ${S.oneClick?'on':''}" data-act="oneClick"></button>`))}
+ </div>`}
+function scrUserInfo(){const live=S.persona==='client';
+ return `${hdr('User Information')}<div class="setbody" style="padding-top:6px">
+ <div class="sg num" style="padding:4px 16px">${[['Regulation',live?'ASIC (Australia)':'—'],['Account Type','Personal'],['Trader ID',live?'161328':'—'],['Name',live?'Bella Chen':'Not verified yet'],['Email','bella.chen@mail.com']].map(r=>`<div class="kv"><span>${r[0]}</span><b style="font-weight:500">${r[1]}</b></div>`).join('')}</div>
+ <div class="sg">${setRow('Change password','',ic('chev','class="chev"'),'toast','Change password')}</div>
+ ${live?`<div class="sg">${setRow('<span style="color:var(--err)">Close Account</span>','','','closeAcct')}</div>`:''}
+ </div>`}
+
+/* ---- overlays ---- */
+function overlays(){let h='';const sh=S.sheet;if(!sh)S._ls='';
+ if(sh){let c='';
+  if(sh.t==='acct'){c=`<h4>Trading accounts</h4><div class="small muted" style="margin-bottom:6px">Switching changes prices, positions and orders shown.</div>${accList().map(k=>{const a=ACC[k],st=stats(a);return `<div class="opt" data-act="pickAcct" data-v="${k}"><span class="radio ${A()===a?'on':''}"></span><div style="flex:1"><b>${a.id}</b> ${accBadge(a)} ${a.tag?`<span class="xs muted">${a.tag}</span>`:''}<div class="xs muted num">${a.plan} · Equity ${money(st.eq)}</div></div></div>`}).join('')}`}
+  else if(sh.t==='toLive'){const a=ACC.live,st=stats(a);c=`<h4>Switch to live account?</h4><div class="small muted">Orders on this account use real money.</div><div class="card num" style="margin:12px 0;padding:4px 14px"><div class="kv"><span>Account</span><b style="font-weight:600">${a.id} · ${a.plan}</b></div><div class="kv"><span>Entity</span><b style="font-weight:600">Sample Markets Pty Ltd (ASIC)</b></div><div class="kv"><span>Equity</span><b style="font-weight:600">${money(st.eq)}</b></div></div><button class="btn pri" data-act="confirmLive">Switch to live</button><button class="btn" style="background:none;margin-top:4px" data-act="closeSheet0">Stay on demo</button>`}
+  else if(sh.t==='lp'){const s=sh.s;c=`<h4>${s}</h4><div class="small muted" style="margin-bottom:6px">${SY[s].name}</div>${[['Open chart','openSym'],['Move to top','moveTop'],['Remove from watchlist','unwatch']].map(([l,a])=>`<div class="opt" data-act="${a}" data-v="${s}" style="${a==='unwatch'?'color:var(--err)':''}">${l}</div>`).join('')}`}
+  else if(sh.t==='sort'){const cur=S.sortDraft||S.sort||{k:'created',d:'desc'};c=`<h4>Sort positions by</h4>${[['created','Created time'],['pnl','Net P&L'],['sym','Symbol'],['vol','Volume']].map(([k,l])=>`<div class="opt" data-act="sortK" data-v="${k}"><span class="radio ${cur.k===k?'on':''}"></span>${l}</div>`).join('')}<div class="segc" style="margin:12px 0"><button class="${cur.d==='desc'?'on':''}" data-act="sortD" data-v="desc">High → low ↓</button><button class="${cur.d==='asc'?'on':''}" data-act="sortD" data-v="asc">Low → high ↑</button></div><button class="btn pri" data-act="applySort">Apply</button>`}
+  else if(sh.t==='close'){const p=A().pos.find(x=>x.id===S.posId);const sp=SY[p.s];c=`<h4>Close ${p.s} ${p.side==='buy'?'buy':'sell'} position?</h4><div class="card num" style="margin:12px 0;padding:4px 14px"><div class="kv"><span>Volume</span><b style="font-weight:600">${fv(p.s,p.vol)} ${volLabel(p.s)}</b></div><div class="kv"><span>Est. close price</span><b style="font-weight:600" data-live="${p.side==='buy'?'bid':'ask'}:${p.s}">${fmt(p.side==='buy'?P[p.s].bid:ask(p.s),sp.dig)}</b></div><div class="kv"><span>Est. realized P&amp;L</span><b class="${cls(pnl(p))}" data-live="pnl:${p.id}">${money(pnl(p),true)}</b></div></div><div class="xs muted" style="margin-bottom:10px">Closes at market. Final P&amp;L may differ slightly. No reverse order is created.</div><button class="btn danger" data-act="doClose">Close position</button>`}
+  else if(sh.t==='oneclick'){c=`<h4>Turn on one-click trading?</h4><div class="small" style="color:var(--ink2);margin:6px 0 10px">Tapping Buy or Sell on a market will send an order <b>immediately</b>, without the review step.</div><div class="field"><label>Volume per tap</label><div class="chips">${[.01,.1,.5,1].map(v=>`<button class="chip ${S.ocVol===v?'on':''}" data-act="ocVol" data-v="${v}">${v} lot</button>`).join('')}</div></div><div class="check" data-act="ocAck"><span class="cb ${sh.ack?'on':''}">${sh.ack?ic('check'):''}</span><span>I understand orders are sent at market price with no confirmation and may be affected by slippage.</span></div><button class="btn pri" ${sh.ack?'':'disabled'} data-act="ocOn">Turn on</button>`}
+  else if(sh.t==='closeAcct'){c=`<h4>Close your account?</h4><div class="small" style="color:var(--ink2);margin:6px 0 14px">Open positions must be closed and funds withdrawn first. This cannot be undone after review.</div><button class="btn danger" data-act="closeAcct2">Close account</button><button class="btn" style="background:none;margin-top:4px" data-act="closeSheet0">Cancel</button>`}
+  else if(sh.t==='closeAcct2'){c=`<div style="text-align:center"><div class="dlg" style="padding:0"><div class="big" style="background:var(--warn-soft);color:var(--warn)">${ic('history')}</div></div><h4>Under review · 1–3 business days</h4><div class="small" style="color:var(--ink2);margin:6px 0 14px">Your request to close the account has been submitted. We are performing a final review to make sure your funds are secure and all records are properly handled.</div><button class="btn pri" data-act="closeSheet0">OK</button></div>`}
+  else if(sh.t==='deposit'){c=`<h4>Deposit</h4>${A().kind==='Demo'?`<div class="msg info">${ic('info')}<span>Demo accounts use virtual funds and can’t receive deposits. Switch to a live account to deposit.</span></div>`:`<div class="small" style="color:var(--ink2);margin:6px 0 12px">Deposits are handled securely in Account Center.</div><button class="btn pri" data-act="closeSheet0">Open Account Center ↗</button>`}`}
+  else if(sh.t==='country'){const q=(sh.q||'').toLowerCase();c=`<div class="row"><h4>Country of Residence</h4><button class="ib" data-act="closeSheet0">${ic('x')}</button></div><div class="dd" style="background:#fff;border:1px solid #dfe2e8;border-radius:999px;padding:9px 14px;margin:10px 0">${ic('search','style="width:16px;height:16px;color:var(--muted)"')}<input class="ddin" style="font-weight:400;font-size:14px" placeholder="Search" data-in="cq" value="${sh.q||''}"></div>
+   <div id="clist">${KOPT.country.filter(x=>x.toLowerCase().includes(q)).map(x=>`<div class="kcard ${sh.v===x?'on':''}" style="margin:0 0 6px;padding:12px 14px" data-act="kcountry" data-v="${x}"><b style="flex:1;font-size:14.5px">${x}</b>${sh.v===x?`<span class="kcheck">${ic('check')}</span>`:''}</div>`).join('')}</div>
+   ${sh.v==='United States'?`<div class="msg err">${ic('alert')}<span>We can’t open accounts for residents of the United States. You can keep using demo trading.</span></div>`:''}
+   <button class="btn pri rd" style="margin-top:10px" ${sh.v==='United States'?'disabled':''} data-act="kcountryGo">Continue</button>`}
+  else if(sh.t==='reg'){c=`<h4>Confirm Regulation</h4><div class="small" style="color:var(--ink2);margin:8px 0 16px;line-height:1.6">Your Country of Residence has changed from ${sh.from} to ${sh.to}.<br>Your regulation will be changed to ${REG(sh.to)}. If you want to keep this change (Country of Residence: ${sh.to}) please select Account Type, Funding Currency and Leverage again.</div><button class="btn pri rd" data-act="kregOk">Change</button><button class="btn rd" style="background:#fff;border:1.5px solid var(--brand);color:var(--brand);margin-top:8px" data-act="kregNo">Cancel</button>`}
+  else if(sh.t==='dear'){c=`<div style="text-align:right"><button class="ib" data-act="kdearOk">${ic('x')}</button></div><div style="height:60px;border-bottom:1px solid var(--line);margin-bottom:14px"></div><h4>Dear Applicant</h4><div class="small" style="color:var(--ink2);line-height:1.65;margin:8px 0 16px">Thank you for your interest in Sample Markets.<br><br>Unfortunately, we are unable to proceed with your trading account application at this stage. Trading CFDs carries substantial risks and your responses indicate that you are not within the target market for our products. If you believe you have made a mistake during the application process, please contact our support team.<br><br>Best regards,<br>Customer Support</div><button class="btn pri rd" data-act="kdearOk">Understand</button>`}
+  else if(sh.t==='pick'){c=`<h4>Upload ${sh.side==='front'?'ID front':'ID back'}</h4><div class="small muted" style="margin-bottom:6px">Make sure all four corners are visible and the text is sharp.</div>${[['camera','Take Photo','Camera with alignment guide'],['album','Choose from Album',''],['file','Choose File','JPG, PNG or PDF · max 5 MB'],['heic','(Prototype) Upload unsupported file','e.g. .heic → shows format error']].map(([k,l,d])=>`<div class="opt" data-act="kpicked" data-v="${k}"><div style="flex:1"><div>${l}</div>${d?`<div class="xs muted">${d}</div>`:''}</div>${ic('chev','class="chev"')}</div>`).join('')}`}
+  else if(sh.t==='otype'){c=`<h4>Order Type</h4>${Object.keys(TYPE_N).map(t=>`<div class="opt" data-act="otype" data-v="${t}"><span class="radio ${S.ord.type===t?'on':''}"></span><div style="flex:1">${TYPE_N[t]} Order${SY[S.ord.sym].types.includes(t)?'':' <span class="xs muted">· not available for this instrument</span>'}</div></div>`).join('')}`}
+  else if(sh.t==='slT'||sh.t==='tpT'){const isSl=sh.t==='slT';const opts=isSl?[['none','None'],['sl','Stop Loss'],['tob','TOB Stop Loss'],['gsl','Guaranteed Stop Loss']]:[['none','None'],['tp','Take Profit'],['gtp','Guaranteed Take Profit']];const curv=isSl?S.ord.slT:S.ord.tpT;
+   c=`<h4>${isSl?'Stop Loss Type':'Take Profit Type'}</h4>${opts.map(([k,l])=>`<div class="opt" data-act="${isSl?'setSlT':'setTpT'}" data-v="${k}"><span class="radio ${curv===k?'on':''}"></span>${l}</div>`).join('')}<div class="xs muted" style="margin-top:8px">${isSl?'TOB stop loss triggers on the top-of-book price. A guaranteed stop closes at your exact level for a premium.':'A guaranteed take profit closes at your exact level without slippage, for a premium.'}</div>`}
+  else if(sh.t==='cpAdd'||sh.t==='cpRem'){const cp=S.copies.find(x=>x.id===sh.id);const add=sh.t==='cpAdd';const from=ACC.live,fs=stats(from);const amt=+sh.amt||0;
+   const err=!amt?'':add?(amt>fs.free?'Insufficient balance in '+from.id:''):(amt>cp.bal-100?'Max '+fmt(cp.bal-100,0)+' USD (keep at least $100 in the copy account)':'');
+   c=`<div class="row"><h4>${add?'Add Funds':'Remove Funds'}</h4><button class="ib" data-act="closeSheet0">${ic('x')}</button></div>
+   <div class="row" style="justify-content:flex-start;gap:10px;margin:12px 0"><div class="av" style="background:var(--brand-soft);color:var(--brand)">${SIG.find(x=>x.id===cp.sig).ab}</div><div><b>${cp.name}</b><div class="xs muted num">Copy account balance: ${fmt(cp.bal)} USD</div></div></div>
+   <div class="row"><b style="font-size:13.5px">${add?'Add Funds':'Remove Funds'}</b><span class="balchip num">${add?'Available: '+fmt(fs.free)+' USD':'Current Balance: '+fmt(cp.bal)+' USD'}</span></div>
+   <div class="bigin"><input data-in="cpamt" inputmode="decimal" placeholder="${add?'Amount':'Max '+fmt(cp.bal-100,0)}" value="${sh.amt||''}"><span class="small muted">USD</span></div><div class="ferr" id="e_cpamt">${err}</div>
+   ${add?'':'<div class="xs muted">Note: a lower balance may change the trade size of copied positions.</div>'}
+   <div class="flabel" style="margin-top:12px;font-size:13.5px">${add?'From':'To'}</div><div class="dd num" style="font-size:13px">${from.id} · Live | ${fmt(fs.free)} USD ${ic('down','class="chev"')}</div>
+   <div class="row" style="margin-top:14px"><b style="font-size:13.5px">Stop-Loss</b><a class="link" data-act="cpSL" data-v="${cp.id}">Edit</a></div><div class="xs" style="color:var(--ink2)">Unsubscribe and close all positions if equity drops below: <b>${cp.sl?fmt(cp.sl,0)+' USD':'--'}</b></div>
+   <button class="btn pri rd" style="margin-top:16px" ${amt&&!err?'':'disabled'} data-act="cpFundsGo">${add?'Add Funds':'Remove Funds'}</button>`}
+  else if(sh.t==='cpMenu'){const cp=S.copies.find(x=>x.id===sh.id);c=`<div class="row"><h4>${cp.name}</h4><button class="ib" data-act="closeSheet0">${ic('x')}</button></div><div class="opt" data-act="cpRem" data-v="${sh.id}">${ic('deposit','style="width:18px;height:18px;transform:rotate(180deg)"')} Remove Funds</div><div class="opt" data-act="cpStop" data-v="${sh.id}" style="color:var(--err)">${ic('block','style="width:18px;height:18px"')} Stop Copying</div>`}
+  else if(sh.t==='cpSL'){const cp=S.copies.find(x=>x.id===sh.id);const v=+sh.v;const mn=Math.round(cp.bal*.35),mx=Math.round(cp.bal*.95);const bad=sh.on&&(!v||v<mn||v>mx);const slMsg=!sh.on?'':(String(sh.v)===''?'Enter a stop-loss amount':!v?'Enter a valid number':v<mn?`Too close to current equity risk floor — minimum is ${mn} USD`:v>mx?`Must be below current equity — maximum is ${mx} USD`:'');
+   c=`<div class="row"><h4>Adjust Stop-Loss</h4><button class="ib" data-act="closeSheet0">${ic('x')}</button></div>
+   <div class="row" style="justify-content:flex-start;gap:10px;margin:12px 0 4px"><b style="font-size:13.5px">Equity Stop-Loss</b><button class="toggle ${sh.on?'on':''}" data-act="cpSLtog"></button></div>
+   <div class="xs" style="color:var(--ink2);line-height:1.5">When equity drops below the value you set, copying stops automatically, you are unsubscribed from the signal, and all open positions are closed to protect your balance.</div>
+   ${sh.on?`<div class="bigin"><input data-in="cpsl" inputmode="decimal" value="${sh.v}"><span class="small muted">USD</span></div><div class="xs muted num">Min: <b>${mn} USD</b> · Max: <b>${mx} USD</b> · Current Equity: <b>${fmt(cp.bal,0)} USD</b></div>${slMsg?`<div class="ferr">${slMsg}</div>`:''}`:''}
+   ${sh.serr?`<div class="msg err">${ic('alert')}<span>${sh.serr}</span></div>`:''}<button class="btn pri rd" style="margin-top:16px" ${bad?'disabled':''} data-act="cpSLgo">Confirm</button><div style="text-align:center;margin-top:8px"><button class="tip xs" style="font-size:11px;color:var(--muted);text-decoration:underline" data-act="failNext">${S.failNext?"(Prototype) Next save will fail ✓":"(Prototype) Simulate save failure"}</button></div>`}
+  else if(sh.t==='cpCfg'){const cp=S.copies.find(x=>x.id===sh.id);
+   c=`<div class="row"><h4>Copy settings</h4><button class="ib" data-act="closeSheet0">${ic('x')}</button></div><div class="xs muted" style="margin-bottom:6px">${cp.name} · ${SIG.find(x=>x.id===cp.sig).name}</div>
+   ${[['cpSL','Stop-Loss','Close all and unsubscribe below this equity',cp.sl?'$'+fmt(cp.sl,0):'Off'],['cpType','Copy Type','How trade size is calculated',cp.type==='exact'?'Exact Copy':'Smart Scaling'],['cpMult','Multiplier','Applied on top of the copy type',fmt(cp.mult,2)+'×']].map(([a,k,d,v])=>`<div class="cfgrow" data-act="${a}" data-v="${cp.id}"><div class="k">${k}<small>${d}</small></div><span class="v num">${v}</span>${ic('chev','class="chev"')}</div>`).join('')}`}
+  else if(sh.t==='cpType'){const cp=S.copies.find(x=>x.id===sh.id);
+   c=`<div class="row"><h4>Copy Type</h4><button class="ib" data-act="closeSheet0">${ic('x')}</button></div>
+   ${[['smart','Smart Scaling','Scales each copied trade to your account size. e.g. signal $3,000 trades 1 lot → your $300 copies 0.1 lot.'],['exact','Exact Copy','Copies the same lot size as the signal provider. Needs enough margin for the provider’s full size.']].map(([k,t,d])=>`<div class="mode ${sh.v===k?'on':''}" data-act="cpTypePick" data-v="${k}"><span class="radio ${sh.v===k?'on':''}" style="margin-top:2px"></span><div style="flex:1"><b>${t}</b><p>${d}</p></div></div>`).join('')}
+   ${sh.v==='exact'&&cp.bal<1000?`<div class="msg warn">${ic('alert')}<span>Your copy account has ${money(cp.bal)}. With Exact Copy, some trades may be skipped if margin is insufficient.</span></div>`:''}
+   <div class="xs muted">Applies to new copied trades only. Open positions keep their current size.</div>
+   ${sh.err?`<div class="msg err">${ic('alert')}<span>${sh.err}</span></div>`:''}
+   <button class="btn pri rd" style="margin-top:14px" ${sh.v===cp.type?'disabled':''} data-act="cpTypeGo">Confirm</button><div style="text-align:center;margin-top:8px"><button class="tip xs" style="font-size:11px;color:var(--muted);text-decoration:underline" data-act="failNext">${S.failNext?"(Prototype) Next save will fail ✓":"(Prototype) Simulate save failure"}</button></div>`}
+  else if(sh.t==='cpMult'){const cp=S.copies.find(x=>x.id===sh.id);const raw=String(sh.v??'');const v=+raw;
+   let err='';if(raw==='')err='Enter a multiplier';else if(!/^\d+(\.\d{1,2})?$/.test(raw))err='Use a number with up to 2 decimals (e.g. 1.25)';else if(v<0.1)err='Minimum multiplier is 0.10×';else if(v>5)err='Maximum multiplier is 5.00×';
+   const warn=!err&&v>2&&cp.bal<1500?`Higher multipliers increase risk. At ${fmt(v,2)}× a copy account of ${money(cp.bal)} may reach the margin call level (${cp.mcl}%) faster.`:'';
+   c=`<div class="row"><h4>Adjust Multiplier</h4><button class="ib" data-act="closeSheet0">${ic('x')}</button></div>
+   <div class="small" style="margin-top:10px"><b>Current: ${fmt(cp.mult,2)}× · ${cp.type==='exact'?'Exact Copy':'Smart Scaling'}</b></div>
+   <div class="xs muted">${cp.type==='exact'?'Copied lots = signal lots × multiplier':'Copied lots = scaled lots × multiplier'}. Allowed 0.10× – 5.00×.</div>
+   <div class="bigin" style="${err&&raw!==''?'box-shadow:inset 0 0 0 1.5px var(--err)':''}"><input data-in="cpmult" inputmode="decimal" value="${raw}"><span class="small muted">×</span></div>
+   <div class="chips" style="margin:2px 0 6px">${[0.5,1,1.5,2].map(m=>`<button class="chip ${v===m?'on':''}" data-act="cpMultQ" data-v="${m}">${m}×</button>`).join('')}</div>
+   ${err?`<div class="ferr">${err}</div>`:''}${warn?`<div class="msg warn">${ic('alert')}<span>${warn}</span></div>`:''}
+   ${sh.serr?`<div class="msg err">${ic('alert')}<span>${sh.serr}</span></div>`:''}
+   <div class="xs muted">Applies to new copied trades only. Open positions keep their current size.</div>
+   <button class="btn pri rd" style="margin-top:14px" ${err||v===cp.mult?'disabled':''} data-act="cpMultGo">${sh.busy?'Saving…':'Confirm'}</button><div style="text-align:center;margin-top:8px"><button class="tip xs" style="font-size:11px;color:var(--muted);text-decoration:underline" data-act="failNext">${S.failNext?"(Prototype) Next save will fail ✓":"(Prototype) Simulate save failure"}</button></div>`}
+  else if(sh.t==='support'){c=`<h4>Support tickets</h4><div class="opt"><div style="flex:1"><b style="font-size:13.5px">#20418 · Withdrawal status</b><div class="xs muted">Replied 2h ago</div></div><span class="badge b-warn">Awaiting you</span></div><div class="opt"><div style="flex:1"><b style="font-size:13.5px">#19977 · Swap charge question</b><div class="xs muted">Resolved Nov 12</div></div><span class="badge b-mute">Closed</span></div><button class="btn pri" style="margin-top:12px" data-act="closeSheet0">New ticket</button>`}
+  const _k=sh.t+(sh.id||"")+(sh.side||"");const _na=S._ls===_k;S._ls=_k;h+=`<div class="scrim" data-act="scrim" style="${_na?"animation:none":""}"><div class="sheet ${_na?"noanim":""}" data-stop="1"><div class="grab"></div>${c}</div></div>`;}
+ if(S.dlg){const d=S.dlg;const D={stop:[ic('block'),'var(--err-soft)','var(--err)','Stop Copying?','You will be unsubscribed from this signal and all open positions will be closed. This cannot be undone.','Stop Copying','danger','cpStopGo'],
+  pause:[ic('pause'),'var(--soft)','var(--ink2)','Pause Copying?','New trades from this signal won’t be copied. Open positions stay open, and you can resume at any time.','Pause','pri','cpPauseGo'],
+  success:[ic('check'),'var(--ok-soft)','#16794a','Copy Success!','Your copy account has been created. New trades from this signal will be copied automatically.','View My Copy Trading','pri','goMyCopy'],
+  funds:[ic('check'),'var(--ok-soft)','#16794a',d.title||'Funds Added Success','The balance of your copy account has been updated.','Got it','pri','dlgClose']}[d.t];
+  h+=`<div class="center-dlg"><div class="dlg"><div style="text-align:right;margin:-8px -8px 0"><button class="ib" data-act="dlgClose">${ic('x')}</button></div><div class="big" style="background:${D[1]};color:${D[2]}">${D[0]}</div><h3 style="margin:0 0 6px">${D[3]}</h3><div class="small" style="color:var(--ink2);margin-bottom:16px">${D[4]}</div><button class="btn ${D[6]==='danger'?'':'pri'} rd" style="${D[6]==='danger'?'background:var(--err);color:#fff':''}" data-act="${D[7]}">${D[5]}</button><button class="btn rd" style="background:#fff;border:1.5px solid var(--line);margin-top:8px" data-act="dlgClose">${d.t==='success'?'Keep Browsing':'Cancel'}</button></div></div>`}
+ if(S.sys==='maint')h+=`<div class="center-dlg" style="background:var(--paper)"><div style="text-align:center"><div class="dlg" style="padding:0;background:none"><div class="big" style="background:var(--warn-soft);color:var(--warn)">${ic('tool')}</div></div><h3 style="margin:6px 0">Scheduled maintenance</h3><div class="small" style="color:var(--ink2)">We’re upgrading our systems. Trading and account access will be back by <b>14:00 (GMT+8)</b>.<br><br>Your open positions remain active and stop loss / take profit orders still apply.</div><button class="btn out" style="margin-top:18px" data-act="sys" data-v="none">(Prototype) Exit state</button></div></div>`;
+ if(S.sys==='update')h+=`<div class="center-dlg"><div class="dlg"><div class="big" style="background:var(--brand-soft);color:var(--brand)">${ic('deposit')}</div><h3 style="margin:0 0 6px">Update required</h3><div class="small" style="color:var(--ink2);margin-bottom:16px">This version is no longer supported. Update to continue trading securely.</div><button class="btn pri">Update now</button><button class="btn" style="background:none;margin-top:4px;font-size:12px;color:var(--muted)" data-act="sys" data-v="none">(Prototype) Exit state</button></div></div>`;
+ if(S.sys==='geo'&&!S.geoAck)h+=`<div class="center-dlg"><div class="dlg" style="text-align:left"><div class="big" style="background:var(--soft);color:var(--ink2);margin-left:0">${ic('globe')}</div><h3 style="margin:0 0 6px">Live trading isn’t available in your region</h3><div class="small" style="color:var(--ink2);margin-bottom:16px">Based on your network location, you can use demo trading and market data only. If you’re travelling, live access returns automatically when you’re back in a supported region.</div><button class="btn pri hold" id="holdBtn"><i></i><span style="position:relative">Hold to continue with demo</span></button></div></div>`;
+ if(S.toast)h+=`<div class="toast"><span>${S.toast.t}</span>${S.toast.a?`<a data-act="${S.toast.a}">${S.toast.al}</a>`:''}</div>`;
+ return h}
+
+/* =========================================================
+   MAIN RENDER
+   ========================================================= */
+const ROOTS=['home','quotes','portfolio','signals','settings'];
+function screenHTML(){const c=cur();
+ const map={home:scrHome,quotes:scrQuotes,search:scrSearch,symbol:scrSymbol,spec:scrSpec,ticket:scrTicket,status:scrStatus,portfolio:scrPortfolio,position:scrPosition,signals:scrSignals,signal:scrSignal,copysetup:scrCopySetup,settings:scrSettings,sysset:scrSysSet,userinfo:scrUserInfo,kycType:scrKycType,kycIntro:scrKycIntro,kycTrade:scrKycTrade,kycPersonal:scrKycPersonal,kycTerms:scrKycTerms,kycId:scrKycId,kycDone:scrKycDone,ctbilling:scrCtBilling};
+ return (map[c]||scrHome)();}
+function render(keepScroll){
+ document.body.classList.toggle('tw',S.color==='tw');
+ const el=document.getElementById('screen');el.classList.toggle('grad',cur()==='settings');const b=el.querySelector('.body');const st=keepScroll&&b?b.scrollTop:0;
+ const showTabs=ROOTS.includes(cur());
+ el.innerHTML=statusBar()+(S.sys==='offline'?`<div class="netbar">${ic('wifi')}No internet connection · prices may be outdated</div>`:'')+(S.sys==='geo'&&S.geoAck?`<div class="netbar" style="background:var(--demo)">${ic('globe')}Demo-only access in your region</div>`:'')+`<div class="body">${screenHTML()}</div>`+(showTabs?tabbar():'')+overlays();
+ const nb=el.querySelector('.body');if(nb)nb.scrollTop=st;
+ if(cur()==='ticket')refreshTicket();
+ if(cur()==='symbol')drawChart();
+ if(cur()==='signal')drawEq();
+ bindHold();
+ renderSide();
+}
+function noteKey(){const c=cur();if(c==='signals'&&S.ctSeg==='mine'&&S.sys==='none')return 'mycopy';if(S.sys!=='none')return 'system';if(c==='home')return S.persona==='new'?'home':'homeLive';return c}
+function renderSide(){
+ const nk=noteKey();
+ document.getElementById('navlist').innerHTML=NAV.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([k,l])=>`<button class="nav ${nk===k?'on':''}" data-nav="${k}">${l}</button>`).join('')).join('');
+ const n=NOTES[nk]||NOTES.home;
+ if(0)document.getElementById('notes').innerHTML=`<div class="eyebrow">Spec → Prototype</div><h2>${n.t}</h2><p class="lead">${n.lead}</p>
+  <h3>Jira / 來源</h3>${n.refs.map(r=>`<div class="ref"><code>${r[0]}</code><span>${r[1]}</span></div>`).join('')}
+  <h3>這個畫面實作的 AC</h3><ul>${n.ac.map(a=>`<li>${a}</li>`).join('')}</ul>
+  ${n.fixes.length?`<h3>Design Review 修正</h3>${n.fixes.map(f=>`<div class="fix"><b>${f[0]}</b> · ${f[1]}</div>`).join('')}`:''}
+  <h3>可以試試</h3><ul class="try">${n.try.map(t=>`<li>${t}</li>`).join('')}</ul>
+  <div class="foot" style="text-align:left;margin-top:28px">Bella Chen</div>`;
+ const ctl=[['User','persona',[['new','New user'],['client','Live client']]],['KYC status','kyc',[['not_started','Not started'],['in_progress','In progress'],['under_review','Under review'],['action','Resubmit'],['reverify','Re-verifying'],['rejected','Rejected']]],['Market','market',[['open','Open'],['closed','Closed']]],['Data','data',[['normal','Normal'],['loading','Loading'],['empty','Empty'],['error','Error']]],['Price colour','color',[['intl','Green up'],['tw','Red up (TW)']]],['System state','sys',[['none','None'],['offline','Offline'],['maint','Maintenance'],['update','Force update'],['geo','Geo restricted']]]];
+ const lab=(k,opts)=>(opts.find(o=>o[0]===S[k])||[])[1];document.getElementById('scnSum').textContent=ctl.filter(([l,k])=>!(k==='kyc'&&S.persona!=='new')).map(([l,k,opts])=>lab(k,opts)).filter(x=>x&&x!=='None'&&x!=='Normal'&&x!=='Open'&&x!=='Green up').join(' · ')||'Default';
+ document.getElementById('controls').innerHTML='<div class="ttl"><span>Scenario controls</span><span style="text-transform:none;letter-spacing:0;font-weight:400">Switch states to preview edge cases</span></div>'+ctl.map(([l,k,opts])=>`<span class="ctl-l">${l}</span><div class="seg">${opts.map(([v,t])=>`<button class="${S[k]===v?'on':''}" data-ctl="${k}" data-v="${v}">${t}</button>`).join('')}</div>`).join('');
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+let toastT;
+function toast(t,a,al){S.toast={t,a,al};clearTimeout(toastT);toastT=setTimeout(()=>{S.toast=null;render(true)},3200)}
+function go(s){S.stack.push(s);S.sheet=null;render()}
+function back(){if(S.stack.length>1)S.stack.pop();S.sheet=null;render()}
+function startOrder(side,sym=S.sym){const sp=SY[sym];const du={Forex:1000,Commodities:10,Indices:1,Shares:10}[sp.cat];S.ord={sym,side,type:'market',vol:du/sp.cs,price:'',slT:'none',sl:'',tpT:'none',tp:''};go('ticket')}
+function place(){const o=S.ord,a=A();const btn=document.getElementById('placeBtn');if(btn)btn.disabled=true;
+ S.orderRes={o:{...o},phase:'submitted'};S.stack=[S.stack[0],'status'];render();
+ setTimeout(()=>{const r=S.orderRes;if(S.data==='error'){r.phase='rejected'}
+  else if(o.type==='market'){const fill=o.side==='buy'?ask(o.sym):P[o.sym].bid;const p=mkPos(o.sym,o.side,o.vol,fill,{t:'Today 09:41',sl:o.slT!=='none'?o.sl:'',tp:o.tpT!=='none'?o.tp:''});a.pos.unshift(p);r.phase='filled';r.fill=fill;r.id=p.id}
+  else{const id='O'+(++pid);a.ord.unshift({id,s:o.sym,side:o.side,type:o.type,vol:o.vol,price:+o.price,t:'Today 09:41'});r.phase='pending';r.id=id}
+  if(cur()==='status')render()},1300)}
+const ACT={
+ tab:v=>{S.stack=[v];S.sheet=null;render()},
+ go:v=>go(v),back:()=>back(),
+ openSym:v=>{S.sym=v;S.sheet=null;if(cur()==='symbol'){S.stack.pop()}go('symbol')},
+ star:v=>{const i=S.watch.indexOf(v);i>=0?S.watch.splice(i,1):S.watch.push(v);toast(i>=0?`${v} removed from watchlist`:`${v} added to watchlist`);render(true)},
+ qseg:v=>{S.qseg=v;render()},mcat:v=>{S.mcat=v;render(true)},
+ acctSheet:()=>{S.sheet={t:'acct'};render(true)},
+ pickAcct:v=>{if(v==='live'&&S.acc!=='live'){S.sheet={t:'toLive'};render(true);return}S.acc=v;S.sheet=null;toast(`Switched to ${ACC[v].id} · ${ACC[v].plan}`);render()},
+ confirmLive:()=>{S.acc='live';S.sheet=null;toast('Switched to live account '+ACC.live.id);render()},
+ closeSheet0:()=>{S.sheet=null;render(true)},
+ scrim:(v,e)=>{if(e.target.closest('[data-stop]'))return;S.sheet=null;render(true)},
+ quick:v=>{if(v==='history'){S.psg='history';S.stack=['portfolio'];render();return}S.sheet={t:v};render(true)},
+ toast:v=>{toast(v);render(true)},
+ kycStart:()=>{S.k.terms=[0,0,0,0,0];S.k.front=null;S.k.back=null;S.kerr={};go('kycType')},
+ kycResume:()=>{S.stack=['home','kycIntro','kycTrade','kycPersonal','kycTerms'];render()},
+ kycResubmit:()=>{S.k.front='err';S.k.back='ok';S.stack=['home','kycId'];render()},
+ kycDear:()=>{S.sheet={t:'dear'};render(true)},kdearOk:()=>{S.sheet=null;if(S.kyc!=='rejected'){S.kyc='rejected';S.stack=['home']}render()},
+ ktype:v=>{S.k.type=v;render(true)},
+ ktypeNext:()=>{if(S.k.type==='corporate'){toast('Corporate accounts are opened on the website (separate flow)');render(true);return}S.sheet={t:'country',v:S.k.country,q:''};render(true)},
+ kcountry:v=>{S.sheet.v=v;render(true)},kcountryGo:()=>{S.k.country=S.sheet.v;S.sheet=null;go('kycIntro')},
+ kgo:v=>{if(S.kyc==='not_started')S.kyc='in_progress';go(v)},
+ kfill:()=>{const c=cur();if(c==='kycTerms'){S.k.terms=[1,1,1,1,1];render(true);return}Object.assign(S.k,c==='kycTrade'?{inv:'$10,000 – $50,000',ccy:'USD',acct:'ProZero',exp:'I trade CFDs / FX regularly',emp:'Employed',src:'Income from employment',ind:'Finance',occ:'Professional',inc:'$50,000 – $100,000',sav:'$10,000 – $50,000'}:{gender:'Female',dob:'1990-05-12',nat:'Taiwanese',pid:'A2•••••789',state:'Region 1',city:'Taipei',zip:'110',addr:'No. 1, Example Rd.'});S.kerr={};render(true)},
+ kNext1:()=>{const req=['inv','ccy','acct','exp','emp','src','ind','occ','inc','sav'];S.kerr={};req.forEach(k=>{if(!S.k[k])S.kerr[k]='Please select an option'});if(Object.keys(S.kerr).length){toast('Please complete the highlighted fields');render(true);return}
+   if(S.k.exp===KOPT.exp[3]){S.sheet={t:'dear'};render(true);return}go('kycPersonal')},
+ kNext2:()=>{const req=['fn','ln','gender','dob','nat','pid','state','city','zip','addr'];S.kerr={};req.forEach(k=>{if(!S.k[k])S.kerr[k]=k==='city'?'Please enter your city':'This field is required'});
+   if(S.k.dob){const age=(Date.now()-new Date(S.k.dob))/31557600000;if(age<18)S.kerr.dob='You must be at least 18 years old'}
+   if(Object.keys(S.kerr).length){toast('Please complete the highlighted fields');render(true);return}go('kycTerms')},
+ kterm:v=>{S.k.terms[+v]=S.k.terms[+v]?0:1;render(true)},
+ kNext3:()=>go('kycId'),
+ kpick:v=>{S.sheet={t:'pick',side:v};render(true)},
+ kpicked:v=>{const side=S.sheet.side;S.sheet=null;if(v==='heic'){S.k[side]='err';render(true);return}S.k[side]='uploading';render(true);setTimeout(()=>{S.k[side]='ok';if(cur()==='kycId')render(true)},1000)},
+ kdel:(v,e)=>{S.k[v]=null;render(true)},
+ kSubmit:()=>{const re=S.kyc==='action';S.stack=['home','kycDone'];render();setTimeout(()=>{S.kyc=re?'reverify':'under_review';S.stack=['home'];toast(re?'Documents resubmitted':'Application submitted');render()},2700)},
+ kregOk:()=>{const sh=S.sheet;S.k.country=sh.to;S.k.acct='';S.k.ccy='';S.sheet=null;toast('Regulation changed to '+REG(sh.to)+' · please reselect Account Type & Funding Currency in Step 1');render(true)},
+ kregNo:()=>{S.sheet=null;render(true)},
+ ctSeg:v=>{S.ctSeg=v;render()},
+ goMyCopy:()=>{S.dlg=null;S.sheet=null;S.ctSeg='mine';S.stack=['signals'];render()},
+ dlgClose:()=>{S.dlg=null;render(true)},
+ cpAdd:v=>{S.sheet={t:'cpAdd',id:v,amt:''};render(true)},cpRem:v=>{S.sheet={t:'cpRem',id:v,amt:''};render(true)},
+ cpFundsGo:()=>{const sh=S.sheet,c=S.copies.find(x=>x.id===sh.id),a=+sh.amt;if(sh.t==='cpAdd'){c.bal+=a;ACC.live.bal-=a}else{c.bal-=a;ACC.live.bal+=a}S.sheet=null;S.dlg={t:'funds',title:sh.t==='cpAdd'?'Funds Added Success':'Funds Removed Success'};render(true)},
+ cpMenu:v=>{S.sheet={t:'cpMenu',id:v};render(true)},
+ cpStop:v=>{S.sheet=null;S.dlg={t:'stop',id:v};render(true)},cpStopGo:()=>{const c=S.copies.find(x=>x.id===S.dlg.id);c.status='ended';ACC.live.bal+=c.bal;c.bal=0;c.next='—';S.dlg=null;toast(c.name+' stopped · funds returned to '+ACC.live.id);render(true)},
+ cpPause:v=>{S.dlg={t:'pause',id:v};render(true)},cpPauseGo:()=>{S.copies.find(x=>x.id===S.dlg.id).status='paused';S.dlg=null;toast('Copying paused');render(true)},
+ cpResume:v=>{S.copies.find(x=>x.id===v).status='copying';toast('Copying resumed');render(true)},
+ cpSL:v=>{const c=S.copies.find(x=>x.id===v);S.sheet={t:'cpSL',id:v,on:!!c.sl,v:c.sl||Math.round(c.bal*.7)};render(true)},cpSLtog:()=>{S.sheet.on=!S.sheet.on;render(true)},
+ cpSLgo:()=>{const sh=S.sheet;if(S.failNext&&!(S.failNext=false)){sh.serr='Couldn’t update stop-loss. Your previous setting is still active.';render(true);return}const c=S.copies.find(x=>x.id===sh.id);c.sl=sh.on?+sh.v:0;S.sheet={t:'cpCfg',id:sh.id};toast('Stop-loss updated');render(true)},
+ failNext:()=>{S.failNext=!S.failNext;render(true)},
+ cpCfg:v=>{S.sheet={t:'cpCfg',id:v};render(true)},
+ cpType:v=>{const c=S.copies.find(x=>x.id===v);S.sheet={t:'cpType',id:v,v:c.type};render(true)},cpTypePick:k=>{S.sheet.v=k;S.sheet.err='';render(true)},
+ cpTypeGo:()=>{const sh=S.sheet;if(S.failNext&&!(S.failNext=false)){sh.err='Couldn’t update copy type. Your previous setting is still active. Please try again.';render(true);return}S.copies.find(x=>x.id===sh.id).type=sh.v;S.sheet={t:'cpCfg',id:sh.id};toast('Copy type changed to '+(sh.v==='exact'?'Exact Copy':'Smart Scaling'));render(true)},
+ cpMult:v=>{const c=S.copies.find(x=>x.id===v);S.sheet={t:'cpMult',id:v,v:String(c.mult)};render(true)},cpMultQ:m=>{S.sheet.v=String(m);S.sheet.serr='';render(true)},
+ cpMultGo:()=>{const sh=S.sheet;sh.busy=1;render(true);setTimeout(()=>{sh.busy=0;if(S.failNext&&!(S.failNext=false)){sh.serr='Couldn’t save the multiplier (network timeout). Your previous setting is still active.';render(true);return}S.copies.find(x=>x.id===sh.id).mult=+sh.v;S.sheet={t:'cpCfg',id:sh.id};toast('Multiplier updated to '+fmt(+sh.v,2)+'×');render(true)},600)},
+ cpBilling:v=>{S.cpId=v;S.bill='sub';go('ctbilling')},billTab:v=>{S.bill=v;render(true)},
+ cpAnalysis:v=>{S.sig=v;go('signal')},
+ cpSwitch:v=>{const c=S.copies.find(x=>x.id===v);ACC.copier.id=c.acct;ACC.copier.tag='Copy · '+SIG.find(x=>x.id===c.sig).name;S.acc='copier';S.persona='client';S.stack=['portfolio'];toast('Switched to copy account '+c.acct);render()},
+ hideBal:()=>{S.hideBal=!S.hideBal;render(true)},
+ tf:v=>{S.tf=v;genCandles();render(true)},ctype:v=>{S.ctype=v;render(true)},
+ expl:v=>{S.expl[v]=!S.expl[v];render(true)},spTab:v=>{S.spTab=v;render()},
+ trade:v=>{const sp=SY[S.sym];if(S.oneClick){const vol=sp.unit==='share'?S.ocVol*100:S.ocVol;const o={sym:S.sym,side:v,type:'market',vol,sl:'',tp:''};S.ord=o;const r=validate();if(!r.ok){toast(r.v[0]?r.v[0][1].split('\n')[0]:'Order not valid');render(true);return}
+   const fill=v==='buy'?ask(S.sym):P[S.sym].bid;const p=mkPos(S.sym,v,vol,fill,{t:'Today 09:41'});A().pos.unshift(p);S.posId=p.id;toast(`Filled · ${v==='buy'?'Bought':'Sold'} ${fv(S.sym,vol)} ${S.sym} @ ${fmt(fill,sp.dig)}`,'viewOC','View');render(true);return}
+  startOrder(v)},
+ viewOC:()=>{S.toast=null;go('position')},
+ oside:v=>{S.ord.side=v;render(true)},otype:v=>{S.ord.type=v;S.ord.price=v==='market'?'':(S.ord.side==='buy'?ask(S.ord.sym)-ptStep(S.ord.sym)*20:P[S.ord.sym].bid+ptStep(S.ord.sym)*20).toFixed(SY[S.ord.sym].dig);S.sheet=null;render(true)},
+ vol:v=>{const sp=SY[S.ord.sym];S.ord.vol=Math.max(sp.min,+(S.ord.vol+(+v)*sp.step).toFixed(4));document.getElementById('volIn').value=fu(S.ord.sym,unitsOf(S.ord));refreshTicket()},
+  place:()=>{if(validate().ok)place()},
+ retryOrder:()=>{S.stack=[S.stack[0],'ticket'];render()},
+ otypeSheet:()=>{S.sheet={t:'otype'};render(true)},slSheet:()=>{S.sheet={t:'slT'};render(true)},tpSheet:()=>{S.sheet={t:'tpT'};render(true)},
+ setSlT:v=>{const o=S.ord,st=ptStep(o.sym)*20,px=o.side==='buy'?ask(o.sym):P[o.sym].bid;o.slT=v;o.sl=v==='none'?'':(o.side==='buy'?px-st:px+st).toFixed(SY[o.sym].dig);S.sheet=null;render(true)},
+ setTpT:v=>{const o=S.ord,st=ptStep(o.sym)*40,px=o.side==='buy'?ask(o.sym):P[o.sym].bid;o.tpT=v;o.tp=v==='none'?'':(o.side==='buy'?px+st:px-st).toFixed(SY[o.sym].dig);S.sheet=null;render(true)},
+ pstep:v=>{const [k,d]=v.split(':');const o=S.ord,sp=SY[o.sym];const base=+o[k]||(o.side==='buy'?ask(o.sym):P[o.sym].bid);o[k]=(base+(+d)*ptStep(o.sym)).toFixed(sp.dig);const i=document.querySelector(`[data-in=${k}]`);if(i)i.value=o[k];refreshTicket()},
+ done:()=>{S.stack=[S.stack[0]];render()},
+ viewResult:()=>{const r=S.orderRes;if(r.phase==='filled'){S.posId=r.id;S.stack=['portfolio','position']}else{S.psg='pending';S.stack=['portfolio']}render()},
+ psg:v=>{S.psg=v;render(true)},acctDetails:()=>{S.acctOpen=!S.acctOpen;render(true)},
+ sortSheet:()=>{S.sortDraft={...(S.sort||{k:'created',d:'desc'})};S.sheet={t:'sort'};render(true)},
+ sortK:v=>{S.sortDraft.k=v;render(true)},sortD:v=>{S.sortDraft.d=v;render(true)},
+ applySort:()=>{S.sort={...S.sortDraft};S.sheet=null;S.psg='open';render(true)},clearSort:()=>{S.sort=null;render(true)},
+ openPos:v=>{S.posId=v;go('position')},
+ openOrd:v=>{const a=A();const o=a.ord.find(x=>x.id===v);if(S.market==='closed'){toast('Market is closed · pending orders can’t be modified now');render(true);return}if(a.access==='close'){toast('Close Only account · cancelling orders is not allowed');render(true);return}toast(`${TYPE_N[o.type]} ${o.side} ${o.s} @ ${fmt(o.price,SY[o.s].dig)} — modify or cancel`);render(true)},
+ saveSLTP:()=>{const p=A().pos.find(x=>x.id===S.posId);const sl=document.querySelector('[data-in=psl]').value,tp=document.querySelector('[data-in=ptp]').value;const now=p.side==='buy'?P[p.s].bid:ask(p.s);
+  if(sl&&((p.side==='buy'&&+sl>=now)||(p.side==='sell'&&+sl<=now))){toast('Stop loss must be on the losing side of the current price');render(true);return}
+  if(tp&&((p.side==='buy'&&+tp<=now)||(p.side==='sell'&&+tp>=now))){toast('Take profit must be on the winning side of the current price');render(true);return}
+  p.sl=sl;p.tp=tp;toast('Stop loss / take profit updated');render(true)},
+ closeSheet:()=>{S.sheet={t:'close'};render(true)},
+ doClose:()=>{const a=A();const i=a.pos.findIndex(x=>x.id===S.posId);const p=a.pos[i];const v=pnl(p);a.pos.splice(i,1);a.bal+=v;a.hist.unshift({s:p.s,side:p.side,vol:p.vol,open:p.open,close:p.side==='buy'?P[p.s].bid:ask(p.s),pnl:v,t:'Today',ccy:'USD'});S.sheet=null;S.stack=['portfolio'];S.psg='history';toast(`Position closed · ${money(v,true)} realized`);render()},
+ sigf:v=>{S.sigFilter=v;render(true)},openSig:v=>{S.sig=v;go('signal')},sigPer:v=>{S.sigPer=v;render(true)},
+ copySetup:()=>{S.copy={from:S.persona==='new'?'demo':'live',amt:'',mode:'smart',sl:'',slEdit:false,dd:false,fdd:false,info:false};go('copysetup')},
+ cfrom:v=>{S.copy.from=v;S.copy.fdd=false;render(true)},cfromdd:()=>{S.copy.fdd=!S.copy.fdd;render(true)},cdd:()=>{S.copy.dd=!S.copy.dd;render(true)},cmode:v=>{S.copy.mode=v;S.copy.dd=false;render(true)},cinfo:()=>{S.copy.info=!S.copy.info;render(true)},csl:()=>{S.copy.slEdit=!S.copy.slEdit;render(true)},
+ confirmCopy:()=>{const c=S.copy,x=SIG.find(s=>s.id===S.sig);S.cpN++;S.copies.unshift({id:'c'+S.cpN,sig:x.id,name:'Copy trading '+S.cpN,status:'copying',bal:+c.amt,sl:+c.sl||0,type:c.mode,mult:1,mcl:100,pnl:0,hwm:+c.amt,next:'2026-12-25',acct:'951002'+(40+S.cpN)});S.stack=['signals'];S.ctSeg='signals';S.dlg={t:'success'};render()},
+ oneClick:()=>{if(S.oneClick){S.oneClick=false;toast('One-click trading off');render(true)}else{S.sheet={t:'oneclick',ack:false};render(true)}},
+ ocVol:v=>{S.ocVol=+v;render(true)},ocAck:()=>{S.sheet.ack=!S.sheet.ack;render(true)},ocOn:()=>{S.oneClick=true;S.sheet=null;toast('One-click trading on');render(true)},
+ color:()=>{S.color=S.color==='tw'?'intl':'tw';render(true)},
+ swAcct:()=>{if(S.persona==='new'){toast('Complete your live account application to switch to live');render(true);return}if(A().kind==='Demo')ACT.pickAcct('live');else{S.acc='demo';toast('Switched to demo account '+ACC.demo.id);render(true)}},
+ closeAcct:()=>{S.sheet={t:'closeAcct'};render(true)},closeAcct2:()=>{S.sheet={t:'closeAcct2'};render(true)},
+ moveTop:v=>{S.watch=[v,...S.watch.filter(x=>x!==v)];S.sheet=null;render(true)},unwatch:v=>{S.watch=S.watch.filter(x=>x!==v);S.sheet=null;toast(v+' removed');render(true)},
+ retry:()=>{S.data='normal';render(true)},
+ sys:v=>{S.sys=v;S.geoAck=false;render(true)}
+};
+function navTo(k){S.sheet=null;
+ const m={home:()=>{S.persona='new';S.stack=['home']},homeLive:()=>{S.persona='client';S.stack=['home']},quotes:()=>{S.qseg='watch';S.stack=['quotes']},search:()=>{S.stack=['quotes','search']},symbol:()=>{S.stack=['quotes','symbol']},spec:()=>{S.stack=['quotes','symbol','spec']},
+  ticket:()=>{S.stack=['quotes','symbol'];startOrder('buy');return 1},status:()=>{S.stack=['quotes','symbol'];S.ord={sym:S.sym,side:'buy',type:'market',vol:.1,price:'',slT:'none',sl:'',tpT:'none',tp:''};place();return 1},
+  portfolio:()=>{S.stack=['portfolio']},position:()=>{const a=A();if(!a.pos.length){S.stack=['portfolio'];return}S.posId=a.pos[0].id;S.stack=['portfolio','position']},
+  signals:()=>{S.ctSeg='signals';S.stack=['signals']},mycopy:()=>{S.persona='client';S.acc='live';S.ctSeg='mine';S.stack=['signals']},ctbilling:()=>{S.cpId='c1';S.bill='sub';S.stack=['signals','ctbilling']},signal:()=>{S.stack=['signals','signal']},copysetup:()=>{S.stack=['signals','signal'];ACT.copySetup();return 1},
+  kycType:()=>{S.persona='new';S.acc='demo';S.stack=['home','kycType']},kycIntro:()=>{S.persona='new';S.acc='demo';S.stack=['home','kycType','kycIntro']},kycTrade:()=>{S.persona='new';S.acc='demo';S.kyc='in_progress';S.stack=['home','kycIntro','kycTrade']},kycPersonal:()=>{S.persona='new';S.acc='demo';S.stack=['home','kycIntro','kycTrade','kycPersonal']},kycTerms:()=>{S.persona='new';S.acc='demo';S.stack=['home','kycPersonal','kycTerms']},kycId:()=>{S.persona='new';S.acc='demo';S.stack=['home','kycTerms','kycId']},kycDone:()=>{S.persona='new';S.acc='demo';S.stack=['home','kycId'];ACT.kSubmit();return 1},
+  settings:()=>{S.stack=['settings']},sysset:()=>{S.stack=['settings','sysset']},userinfo:()=>{S.stack=['settings','userinfo']}};
+ if(!m[k]())render();
+}
+
+document.addEventListener('click',e=>{const sc=document.getElementById('scn');if(e.target.closest('#scnBtn')){sc.classList.toggle('open');const r=document.getElementById('scnBtn').getBoundingClientRect(),c=document.getElementById('controls');c.style.left=(r.right+12)+'px';c.style.top=Math.max(12,Math.min(r.top,innerHeight-c.offsetHeight-12))+'px';return}if(!sc.contains(e.target))sc.classList.remove('open')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('scn').classList.remove('open')});
+/* =========================================================
+   EVENTS
+   ========================================================= */
+let lpT=null,lpAt=0;
+document.addEventListener('click',e=>{
+ const nv=e.target.closest('[data-nav]');if(nv){navTo(nv.dataset.nav);return}
+ const ct=e.target.closest('[data-ctl]');if(ct){const k=ct.dataset.ctl,v=ct.dataset.v;S[k]=v;if(k==='persona'){S.acc=v==='new'?'demo':'live';S.stack=[S.stack[0]]}if(k==='sys')S.geoAck=false;if(k==='kyc'){S.persona='new';S.acc='demo';S.stack=['home'];S.sheet=null}render(true);return}
+ if(Date.now()-lpAt<350)return;
+ const el=e.target.closest('[data-act]');if(!el||!document.getElementById('screen').contains(el))return;
+ const f=ACT[el.dataset.act];if(f)f(el.dataset.v,e);
+});
+document.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-lp]');if(!el)return;clearTimeout(lpT);lpT=setTimeout(()=>{lpAt=Date.now();S.sheet={t:'lp',s:el.dataset.lp};render(true)},500)});
+['pointerup','pointerleave','pointercancel'].forEach(t=>document.addEventListener(t,()=>clearTimeout(lpT)));
+document.addEventListener('contextmenu',e=>{if(e.target.closest('[data-lp]'))e.preventDefault()});
+document.addEventListener('change',e=>{const k=e.target.dataset.kin;if(!k||e.target.tagName!=='SELECT')return;const v=e.target.value;
+ if(k==='countryP'){if(v!==S.k.country&&REG(v)!==REG(S.k.country)){S.sheet={t:'reg',from:S.k.country,to:v};render(true);return}S.k.country=v;render(true);return}
+ S.k[k]=v;delete S.kerr[k];render(true)});
+document.addEventListener('input',e=>{const kk=e.target.dataset.kin;if(kk&&e.target.tagName==='INPUT'){S.k[kk]=e.target.value;if(S.kerr[kk]){delete S.kerr[kk];e.target.classList.remove('bad');const h=e.target.parentElement.querySelector('.khelp');if(h)h.remove()}return}
+ const k=e.target.dataset.in;if(!k)return;const v=e.target.value;
+ if(['cpamt','cpsl','cpmult'].includes(k)){const key={cpamt:'amt',cpsl:'v',cpmult:'v'}[k];S.sheet[key]=k==='cpmult'?v.trim():v.replace(/[^0-9.]/g,'');S.sheet.serr='';clearTimeout(window._ct2);window._ct2=setTimeout(()=>{render(true);const i=document.querySelector(`[data-in=${k}]`);if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},450);return}
+ if(k==='cq'){S.sheet.q=v;const tmp=document.createElement('div');tmp.innerHTML=overlays();document.getElementById('clist').innerHTML=tmp.querySelector('#clist').innerHTML;return}
+ if(k==='q'){S.q=v;const r=document.getElementById('sres');const tmp=document.createElement('div');tmp.innerHTML=scrSearch();r.innerHTML=tmp.querySelector('#sres').innerHTML;return}
+ if(k==='units'){S.ord.vol=(+v||0)/SY[S.ord.sym].cs;refreshTicket();return}
+ if(['price','sl','tp'].includes(k)){S.ord[k]=v;refreshTicket();return}
+ if(k==='camt'||k==='csl'){S.copy[k==='camt'?'amt':'sl']=v.replace(/[^0-9.]/g,'');clearTimeout(window._ct);window._ct=setTimeout(()=>{render(true);const i=document.querySelector(`[data-in=${k}]`);if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},450)}
+});
+function bindHold(){const b=document.getElementById('holdBtn');if(!b)return;let t;
+ const start=()=>{b.classList.add('holding');t=setTimeout(()=>{S.geoAck=true;S.acc='demo';toast('Demo-only mode · live features hidden');render()},1000)};
+ const end=()=>{b.classList.remove('holding');clearTimeout(t)};
+ b.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(x=>b.addEventListener(x,end));}
+
+/* =========================================================
+   LIVE PRICES & CHARTS
+   ========================================================= */
+let CAND=[],candSym=null,tickN=0;
+function genCandles(){const s=S.sym,sp=SY[s];candSym=s+S.tf;const n=48;let p=P[s].bid;const vol={'1m':.0006,'15m':.0018,'1H':.004,'1D':.012}[S.tf]*p;const arr=[];
+ for(let i=0;i<n;i++){const c=p,o=c-(Math.random()-.5)*vol;const h=Math.max(o,c)+Math.random()*vol*.5,l=Math.min(o,c)-Math.random()*vol*.5;arr.unshift({o,h,l,c});p=o}
+ arr[n-1].c=P[s].bid;CAND=arr}
+function drawChart(){const cv=document.getElementById('chart');if(!cv)return;if(candSym!==S.sym+S.tf)genCandles();
+ const dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=210;cv.width=W*dpr;cv.height=H*dpr;const x=cv.getContext('2d');x.scale(dpr,dpr);
+ const pad=54;const hi=Math.max(...CAND.map(c=>c.h)),lo=Math.min(...CAND.map(c=>c.l));const y=v=>8+(hi-v)/(hi-lo||1)*(H-24);const cw=(W-pad-12)/CAND.length;
+ x.strokeStyle='#eef0f4';x.fillStyle='#9aa3b2';x.font='10px -apple-system,sans-serif';x.lineWidth=1;
+ for(let i=0;i<4;i++){const v=lo+(hi-lo)*i/3;const yy=y(v);x.beginPath();x.moveTo(12,yy);x.lineTo(W-pad,yy);x.stroke();x.fillText(fmt(v,SY[S.sym].dig),W-pad+4,yy+3)}
+ const css=getComputedStyle(document.body),up=css.getPropertyValue('--up').trim(),dn=css.getPropertyValue('--down').trim();
+ if(S.ctype==='line'){x.beginPath();CAND.forEach((c,i)=>{const xx=12+i*cw+cw/2;i?x.lineTo(xx,y(c.c)):x.moveTo(xx,y(c.c))});x.strokeStyle='#2a3fd6';x.lineWidth=1.8;x.stroke();
+  x.lineTo(12+(CAND.length-1)*cw+cw/2,H);x.lineTo(12+cw/2,H);x.closePath();const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(42,63,214,.14)');g.addColorStop(1,'rgba(42,63,214,0)');x.fillStyle=g;x.fill()}
+ else CAND.forEach((c,i)=>{const xx=12+i*cw;const col=c.c>=c.o?up:dn;x.strokeStyle=col;x.fillStyle=col;x.beginPath();x.moveTo(xx+cw/2,y(c.h));x.lineTo(xx+cw/2,y(c.l));x.stroke();const t=y(Math.max(c.o,c.c)),b=y(Math.min(c.o,c.c));x.fillRect(xx+cw*.18,t,cw*.64,Math.max(1,b-t))});
+ const last=CAND[CAND.length-1].c,ly=y(last);x.setLineDash([3,3]);x.strokeStyle='#2a3fd6';x.beginPath();x.moveTo(12,ly);x.lineTo(W-pad,ly);x.stroke();x.setLineDash([]);
+ x.fillStyle='#2a3fd6';x.fillRect(W-pad+1,ly-8,pad-2,16);x.fillStyle='#fff';x.fillText(fmt(last,SY[S.sym].dig),W-pad+4,ly+3);
+ if(S.market==='closed'){x.fillStyle='rgba(255,255,255,.55)';x.fillRect(0,0,W,H);x.fillStyle='#4a5568';x.font='600 12px -apple-system,sans-serif';x.fillText('Market closed · showing last price',16,22)}}
+function drawEq(){const cv=document.getElementById('eqc');if(!cv)return;const x0=SIG.find(s=>s.id===S.sig);const r=x0.ret[S.sigPer];const dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=120;cv.width=W*dpr;cv.height=H*dpr;const x=cv.getContext('2d');x.scale(dpr,dpr);
+ let seed=x0.id.charCodeAt(0)+S.sigPer.length;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};const n=40;let v=100;const pts=[];for(let i=0;i<n;i++){v+= (r/n)+(rnd()-.5)*x0.mdd/6;pts.push(v)}
+ const hi=Math.max(...pts),lo=Math.min(...pts);const Y=p=>6+(hi-p)/(hi-lo||1)*(H-14);x.beginPath();pts.forEach((p,i)=>{const X=i/(n-1)*W;i?x.lineTo(X,Y(p)):x.moveTo(X,Y(p))});x.strokeStyle='#2a3fd6';x.lineWidth=1.8;x.stroke();x.lineTo(W,H);x.lineTo(0,H);x.closePath();const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(42,63,214,.12)');g.addColorStop(1,'rgba(42,63,214,0)');x.fillStyle=g;x.fill()}
+function updateLive(){document.querySelectorAll('#screen [data-live]').forEach(el=>{if(!el.dataset.live)return;const [k,a]=el.dataset.live.split(':');let t,c;
+ if(k==='bid'){t=fmt(P[a].bid,SY[a].dig)}else if(k==='ask'){t=fmt(ask(a),SY[a].dig)}
+ else if(k==='chg'){const v=(P[a].bid-P[a].open)/P[a].open*100;t=(v>0?'+':'')+fmt(v,2)+'%';el.className='chg num '+cls(v)}
+ else if(k==='chgp'){const v=(P[a].bid-P[a].open)/P[a].open*100;t=(v>0?'+':'')+fmt(v,2)+'%';el.classList.remove('up','down');if(cls(v))el.classList.add(cls(v))}
+ else if(k==='chgabs'){const v=(P[a].bid-P[a].open)/P[a].open*100;el.innerHTML=`<span class="${cls(v)}">${v>0?'+':''}${fmt(P[a].bid-P[a].open,SY[a].dig)} (${v>0?'+':''}${fmt(v,2)}%)</span>`;return}
+ else if(k==='pnl'){const p=Object.values(ACC).flatMap(x=>x.pos).find(x=>x.id===a);if(!p)return;const v=pnl(p);t=money(v,true);el.classList.remove('up','down');if(cls(v))el.classList.add(cls(v))}
+ else if(k==='acc'){const s=stats(A());if(a==='eq')t=money(s.eq);if(a==='free')t=money(s.free);if(a==='lvl')t=s.level?fmt(s.level,0)+'%':'—';if(a==='freen')t=fmt(s.free);if(a==='eqn')t=fmt(s.eq);if(a==='upchip'){t=upChip(s);el.classList.remove('up','down');if(cls(s.up))el.classList.add(cls(s.up))}if(a==='up'){t=money(s.up,true);el.classList.remove('up','down');if(cls(s.up))el.classList.add(cls(s.up))}}
+ else if(k==='cd'){t=cd()}
+ if(t!==undefined&&el.textContent!==t)el.textContent=t});
+ if(cur()==='symbol')drawChart();
+ if(cur()==='ticket'&&!document.activeElement.matches('input'))refreshTicket();}
+setInterval(()=>{
+ if(S.sys!=='offline'&&S.sys!=='maint'&&S.market==='open'){for(const k in P){const sp=SY[k];const d=(Math.random()-.5)*P[k].bid*.00035;P[k].bid=Math.max(sp.px*.9,P[k].bid+d);P[k].hi=Math.max(P[k].hi,P[k].bid);P[k].lo=Math.min(P[k].lo,P[k].bid)}
+  if(CAND.length&&candSym===S.sym+S.tf){const c=CAND[CAND.length-1];c.c=P[S.sym].bid;c.h=Math.max(c.h,c.c);c.l=Math.min(c.l,c.c);if(++tickN%8===0){CAND.shift();CAND.push({o:c.c,h:c.c,l:c.c,c:c.c})}}}
+ updateLive();
+},1000);
+
+function fitPhone(){const ph=document.querySelector('.phone');const avail=innerHeight-16-8-46;const z=Math.min(1,Math.max(.55,avail/834));ph.style.zoom=z}
+addEventListener('resize',()=>{fitPhone();if(cur()==='symbol')drawChart()});fitPhone();
+render();
+</script>
+</body>
+</html>

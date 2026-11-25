@@ -25,6 +25,7 @@ I use AI (Claude, ChatGPT) to move from idea to a testable prototype faster; pro
 | **All case studies** | [case-studies.html](https://bellaachen.github.io/Bella_Portfolio/case-studies.html) |
 | Drag & Drop Pending Orders | [Case study](https://bellaachen.github.io/Bella_Portfolio/trading/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/trading/prototype.html) |
 | Enterprise Permission Studio | [Case study](https://bellaachen.github.io/Bella_Portfolio/permission/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/permission/demo.html) |
+| Global Trading App — Web to Native | [Case study](https://bellaachen.github.io/Bella_Portfolio/mobile-trading/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/mobile-trading/prototype.html) |
 | Groups — From 0 to 1 | [Case study](https://bellaachen.github.io/Bella_Portfolio/community/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/community/prototype.html) |
 | Credit Card Reward Recommender (Rebuild) | [Case study](https://bellaachen.github.io/Bella_Portfolio/credit/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/credit/prototype.html) |
 | Merchant CRM Platform | [Case study](https://bellaachen.github.io/Bella_Portfolio/crm/case-study.html) · [Prototype](https://bellaachen.github.io/Bella_Portfolio/crm/prototype.html) |
@@ -62,6 +63,7 @@ A static site published with GitHub Pages from the `main` branch root. No build 
 | `site.css` · `site.js` | Shared styles, case data and the EN / 中文 switch for the two pages above |
 | `case.css` | Styles for the case study and article pages |
 | `trading/` | Drag & Drop Pending Orders — case study and prototype |
+| `mobile-trading/` | Global Trading App — case study and mobile prototype (KYC, order ticket, copy trading) |
 | `permission/` | Enterprise Permission Studio — case study, prototype and product specification |
 | `community/` | Groups — From 0 to 1: case study and mobile prototype |
 | `credit/` | Credit Card Reward Recommender (Rebuild): case study and prototype |
